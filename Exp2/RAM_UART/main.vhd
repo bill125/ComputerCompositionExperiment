@@ -25,7 +25,6 @@ use work.constant.ALL;
 entity main is
     Port ( i_Click 			: in  	STD_LOGIC;
            i_nReset 			: in  	STD_LOGIC;
-           i_SW 				: in  	STD_LOGIC_VECTOR (WORD_WIDTH-1 downto 0);
            i_Key0				: in  	STD_LOGIC;
            
 			  o_SysBus_Addr	: out  	STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0);
@@ -45,14 +44,15 @@ entity main is
 			  
 			  UART_nWE			: out		STD_LOGIC;
 			  UART_TBRE			: in		STD_LOGIC;
-			  UART_TSRE			: in		STD_LOGIC; );
+			  UART_TSRE			: in		STD_LOGIC  
+			);
  end main;
 
 architecture Behavioral of main is
 	type t_State is (s_Init, s_R1_Read, s_R2_Read, s_R1_Write, s_R2_Write);
 begin
 	process (i_clk, i_rst)
-		variable addr: std_logic_vector;
+		variable addr: STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0);
 	begin
 		if i_nReset = '0' then
 			-- reset
@@ -61,12 +61,7 @@ begin
 			case t_State is
 				when s_Init =>
 					s_State <= s_R1_Read;
-				when s_R1_Read =>
-					
-					s_State <= s_R1_Write;
 			end case;
 		end if
 	end process;
-
 end Behavioral;
-
