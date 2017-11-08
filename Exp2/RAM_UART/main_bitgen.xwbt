@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=D:\ComputerCompositionExperiment\Exp2\RAM_UART\main.ncd
+OUTFILE=D:\ComputerCompositionExperiment\Exp2\RAM_UART\main.bit
+FAMILY=Spartan3E
+PART=xc3s1200e-4fg320
+WORKINGDIR=D:\ComputerCompositionExperiment\Exp2\RAM_UART
+LICENSE=WebPack
+USER_INFO=__0_0_0

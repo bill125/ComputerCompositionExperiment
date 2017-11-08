@@ -1,0 +1,3 @@
+vhdl work "FreqDiv.vhd"
+vhdl work "constants.vhd"
+vhdl work "main.vhd"

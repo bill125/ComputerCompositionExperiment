@@ -1,0 +1,519 @@
+Release 14.7 - xst P.20131013 (nt)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.10 secs
+ 
+--> Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.10 secs
+ 
+--> Reading design: main.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "main.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "main"
+Output Format                      : NGC
+Target Device                      : xc3s1200e-4-fg320
+
+---- Source Options
+Top Module Name                    : main
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Mux Style                          : Auto
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : Yes
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+ROM Style                          : Auto
+Mux Extraction                     : Yes
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Multiplier Style                   : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 100000
+Add Generic Clock Buffer(BUFG)     : 24
+Register Duplication               : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+Verilog 2001                       : YES
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "D:/ComputerCompositionExperiment/Exp2/RAM_UART/constants.vhd" in Library work.
+Compiling vhdl file "D:/ComputerCompositionExperiment/Exp2/RAM_UART/FreqDiv.vhd" in Library work.
+Entity <FreqDiv> compiled.
+Entity <FreqDiv> (Architecture <FreqDiv_bhv>) compiled.
+Compiling vhdl file "D:/ComputerCompositionExperiment/Exp2/RAM_UART/main.vhd" in Library work.
+Architecture behavioral of Entity main is up to date.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <main> in library <work> (architecture <behavioral>).
+
+Analyzing hierarchy for entity <FreqDiv> in library <work> (architecture <FreqDiv_bhv>) with generics.
+	div = 1000
+	half = 500
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing Entity <main> in library <work> (Architecture <behavioral>).
+INFO:Xst:2679 - Register <i_UART_nRE> in unit <main> has a constant value of 1 during circuit operation. The register is replaced by logic.
+INFO:Xst:2679 - Register <o_SysBus_Data> in unit <main> has a constant value of ZZZZZZZZZZZZZZZZ during circuit operation. The register is replaced by logic.
+Entity <main> analyzed. Unit <main> generated.
+
+Analyzing generic Entity <FreqDiv> in library <work> (Architecture <FreqDiv_bhv>).
+	div = 1000
+	half = 500
+Entity <FreqDiv> analyzed. Unit <FreqDiv> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+INFO:Xst:2561 - Always blocking tristate driving signal <o_SysBus_Data> in unit <main> is removed.
+
+Synthesizing Unit <FreqDiv>.
+    Related source file is "D:/ComputerCompositionExperiment/Exp2/RAM_UART/FreqDiv.vhd".
+    Found 9-bit up counter for signal <counter>.
+    Found 1-bit register for signal <output>.
+    Summary:
+	inferred   1 Counter(s).
+	inferred   1 D-type flip-flop(s).
+Unit <FreqDiv> synthesized.
+
+
+Synthesizing Unit <main>.
+    Related source file is "D:/ComputerCompositionExperiment/Exp2/RAM_UART/main.vhd".
+WARNING:Xst:1306 - Output <o_Ram1_nOE> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<0>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<1>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<8>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<2>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<9>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<3>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<4>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<5>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<6>> is never assigned.
+WARNING:Xst:1306 - Output <o_Ram1_nWE> is never assigned.
+WARNING:Xst:647 - Input <UART_TBRE> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<7>> is never assigned.
+WARNING:Xst:1306 - Output <o_Ram2_nOE> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<8>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<9>> is never assigned.
+WARNING:Xst:1306 - Output <o_Led<15:8>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<10>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<11>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<12>> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<13>> is never assigned.
+WARNING:Xst:647 - Input <UART_TSRE> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<14>> is never assigned.
+WARNING:Xst:1306 - Output <o_Ram2_nWE> is never assigned.
+WARNING:Xst:2565 - Inout <o_ExtBus_Data<15>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<10>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<11>> is never assigned.
+WARNING:Xst:1306 - Output <o_ExtBus_Addr> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<12>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<13>> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<14>> is never assigned.
+WARNING:Xst:1306 - Output <UART_nWE> is never assigned.
+WARNING:Xst:2565 - Inout <o_SysBus_Data<15>> is never assigned.
+WARNING:Xst:1306 - Output <o_Ram1_nCE> is never assigned.
+WARNING:Xst:1306 - Output <o_SysBus_Addr> is never assigned.
+WARNING:Xst:1306 - Output <o_Ram2_nCE> is never assigned.
+INFO:Xst:1799 - State s3 is never reached in FSM <t_State>.
+INFO:Xst:1799 - State s4 is never reached in FSM <t_State>.
+    Found finite state machine <FSM_0> for signal <st_ygw>.
+    -----------------------------------------------------------------------
+    | States             | 4                                              |
+    | Transitions        | 21                                             |
+    | Inputs             | 5                                              |
+    | Outputs            | 3                                              |
+    | Clock              | clock                     (falling_edge)       |
+    | Clock enable       | i_nReset                  (positive)           |
+    | Power Up State     | 00000                                          |
+    | Encoding           | automatic                                      |
+    | Implementation     | LUT                                            |
+    -----------------------------------------------------------------------
+    Found finite state machine <FSM_1> for signal <t_State>.
+    -----------------------------------------------------------------------
+    | States             | 3                                              |
+    | Transitions        | 7                                              |
+    | Inputs             | 4                                              |
+    | Outputs            | 3                                              |
+    | Clock              | clock                     (falling_edge)       |
+    | Reset              | i_nReset                  (negative)           |
+    | Reset type         | asynchronous                                   |
+    | Reset State        | s_init                                         |
+    | Power Up State     | s_init                                         |
+    | Encoding           | automatic                                      |
+    | Implementation     | LUT                                            |
+    -----------------------------------------------------------------------
+    Found 8-bit register for signal <o_Led<7:0>>.
+    Found 5-bit register for signal <cnt_ygw>.
+    Found 5-bit adder for signal <cnt_ygw$addsub0000> created at line 111.
+    Found 1-bit register for signal <l_Click>.
+    Summary:
+	inferred   2 Finite State Machine(s).
+	inferred  14 D-type flip-flop(s).
+	inferred   1 Adder/Subtractor(s).
+Unit <main> synthesized.
+
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Adders/Subtractors                                   : 1
+ 5-bit adder                                           : 1
+# Counters                                             : 1
+ 9-bit up counter                                      : 1
+# Registers                                            : 11
+ 1-bit register                                        : 10
+ 5-bit register                                        : 1
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+Analyzing FSM <FSM_1> for best encoding.
+Optimizing FSM <t_State/FSM> on signal <t_State[1:2]> with gray encoding.
+--------------------
+ State  | Encoding
+--------------------
+ s_init | 00
+ s1     | 01
+ s2     | 11
+ s3     | unreached
+ s4     | unreached
+--------------------
+Analyzing FSM <FSM_0> for best encoding.
+Optimizing FSM <st_ygw/FSM> on signal <st_ygw[1:2]> with sequential encoding.
+-------------------
+ State | Encoding
+-------------------
+ 00000 | 00
+ 00001 | 01
+ 00010 | 10
+ 00011 | 11
+-------------------
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# FSMs                                                 : 2
+# Adders/Subtractors                                   : 1
+ 5-bit adder                                           : 1
+# Counters                                             : 1
+ 9-bit up counter                                      : 1
+# Registers                                            : 15
+ Flip-Flops                                            : 15
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <main> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+Found area constraint ratio of 100 (+ 5) on block main, actual ratio is 0.
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Macro Statistics
+# Registers                                            : 28
+ Flip-Flops                                            : 28
+
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : main.ngr
+Top Level Output File Name         : main
+Output Format                      : NGC
+Optimization Goal                  : Speed
+Keep Hierarchy                     : No
+
+Design Statistics
+# IOs                              : 98
+
+Cell Usage :
+# BELS                             : 74
+#      GND                         : 1
+#      INV                         : 3
+#      LUT1                        : 8
+#      LUT2_D                      : 2
+#      LUT3                        : 4
+#      LUT3_D                      : 2
+#      LUT3_L                      : 3
+#      LUT4                        : 26
+#      LUT4_D                      : 1
+#      LUT4_L                      : 5
+#      MUXCY                       : 8
+#      MUXF5                       : 1
+#      VCC                         : 1
+#      XORCY                       : 9
+# FlipFlops/Latches                : 28
+#      FDC_1                       : 2
+#      FDE                         : 1
+#      FDE_1                       : 16
+#      FDR                         : 9
+# Clock Buffers                    : 1
+#      BUFGP                       : 1
+# IO Buffers                       : 20
+#      IBUF                        : 11
+#      OBUF                        : 9
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 3s1200efg320-4 
+
+ Number of Slices:                       28  out of   8672     0%  
+ Number of Slice Flip Flops:             28  out of  17344     0%  
+ Number of 4 input LUTs:                 54  out of  17344     0%  
+ Number of IOs:                          98
+ Number of bonded IOBs:                  21  out of    250     8%  
+ Number of GCLKs:                         1  out of     24     4%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------+------------------------+-------+
+Clock Signal                       | Clock buffer(FF name)  | Load  |
+-----------------------------------+------------------------+-------+
+FD_Inst/output                     | NONE(cnt_ygw_0)        | 18    |
+i_Clock                            | BUFGP                  | 10    |
+-----------------------------------+------------------------+-------+
+INFO:Xst:2169 - HDL ADVISOR - Some clock signals were not automatically buffered by XST with BUFG/BUFR resources. Please use the buffer_type constraint in order to insert these buffers to the clock signals to help prevent skew problems.
+
+Asynchronous Control Signals Information:
+----------------------------------------
+-----------------------------------------------------------+------------------------+-------+
+Control Signal                                             | Buffer(FF name)        | Load  |
+-----------------------------------------------------------+------------------------+-------+
+t_State_FSM_Acst_FSM_inv(t_State_FSM_Acst_FSM_inv1_INV_0:O)| NONE(t_State_FSM_FFd1) | 2     |
+-----------------------------------------------------------+------------------------+-------+
+
+Timing Summary:
+---------------
+Speed Grade: -4
+
+   Minimum period: 4.880ns (Maximum Frequency: 204.918MHz)
+   Minimum input arrival time before clock: 5.586ns
+   Maximum output required time after clock: 4.310ns
+   Maximum combinational path delay: No path found
+
+Timing Detail:
+--------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default period analysis for Clock 'FD_Inst/output'
+  Clock period: 4.880ns (frequency: 204.918MHz)
+  Total number of paths / destination ports: 181 / 25
+-------------------------------------------------------------------------
+Delay:               4.880ns (Levels of Logic = 3)
+  Source:            cnt_ygw_0 (FF)
+  Destination:       cnt_ygw_4 (FF)
+  Source Clock:      FD_Inst/output falling
+  Destination Clock: FD_Inst/output falling
+
+  Data Path: cnt_ygw_0 to cnt_ygw_4
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDE_1:C->Q            8   0.591   0.792  cnt_ygw_0 (cnt_ygw_0)
+     LUT3:I2->O            4   0.704   0.622  Madd_cnt_ygw_addsub0000_cy<2>11 (Madd_cnt_ygw_addsub0000_cy<2>)
+     LUT4:I2->O            1   0.704   0.455  cnt_ygw_mux0000<0>_SW0 (N17)
+     LUT4:I2->O            1   0.704   0.000  cnt_ygw_mux0000<0> (cnt_ygw_mux0000<0>)
+     FDE_1:D                   0.308          cnt_ygw_4
+    ----------------------------------------
+    Total                      4.880ns (3.011ns logic, 1.869ns route)
+                                       (61.7% logic, 38.3% route)
+
+=========================================================================
+Timing constraint: Default period analysis for Clock 'i_Clock'
+  Clock period: 4.838ns (frequency: 206.697MHz)
+  Total number of paths / destination ports: 136 / 20
+-------------------------------------------------------------------------
+Delay:               4.838ns (Levels of Logic = 2)
+  Source:            FD_Inst/counter_5 (FF)
+  Destination:       FD_Inst/counter_0 (FF)
+  Source Clock:      i_Clock rising
+  Destination Clock: i_Clock rising
+
+  Data Path: FD_Inst/counter_5 to FD_Inst/counter_0
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDR:C->Q              2   0.591   0.622  FD_Inst/counter_5 (FD_Inst/counter_5)
+     LUT4:I0->O            1   0.704   0.424  FD_Inst/output_cmp_eq000016 (FD_Inst/output_cmp_eq000016)
+     LUT4:I3->O           10   0.704   0.882  FD_Inst/output_cmp_eq000018 (FD_Inst/output_cmp_eq0000)
+     FDR:R                     0.911          FD_Inst/counter_0
+    ----------------------------------------
+    Total                      4.838ns (2.910ns logic, 1.928ns route)
+                                       (60.1% logic, 39.9% route)
+
+=========================================================================
+Timing constraint: Default OFFSET IN BEFORE for Clock 'FD_Inst/output'
+  Total number of paths / destination ports: 40 / 33
+-------------------------------------------------------------------------
+Offset:              5.586ns (Levels of Logic = 4)
+  Source:            i_Click (PAD)
+  Destination:       cnt_ygw_4 (FF)
+  Destination Clock: FD_Inst/output falling
+
+  Data Path: i_Click to cnt_ygw_4
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             7   1.218   0.883  i_Click_IBUF (i_Click_IBUF)
+     LUT3_D:I0->O          3   0.704   0.610  cnt_ygw_mux0000<0>11_SW0 (N34)
+     LUT4:I1->O            1   0.704   0.455  cnt_ygw_mux0000<0>_SW0 (N17)
+     LUT4:I2->O            1   0.704   0.000  cnt_ygw_mux0000<0> (cnt_ygw_mux0000<0>)
+     FDE_1:D                   0.308          cnt_ygw_4
+    ----------------------------------------
+    Total                      5.586ns (3.638ns logic, 1.948ns route)
+                                       (65.1% logic, 34.9% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'FD_Inst/output'
+  Total number of paths / destination ports: 8 / 8
+-------------------------------------------------------------------------
+Offset:              4.310ns (Levels of Logic = 1)
+  Source:            o_Led_7 (FF)
+  Destination:       o_Led<7> (PAD)
+  Source Clock:      FD_Inst/output falling
+
+  Data Path: o_Led_7 to o_Led<7>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDE_1:C->Q            2   0.591   0.447  o_Led_7 (o_Led_7)
+     OBUF:I->O                 3.272          o_Led_7_OBUF (o_Led<7>)
+    ----------------------------------------
+    Total                      4.310ns (3.863ns logic, 0.447ns route)
+                                       (89.6% logic, 10.4% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 5.00 secs
+Total CPU time to Xst completion: 4.60 secs
+ 
+--> 
+
+Total memory usage is 207784 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :   36 (   0 filtered)
+Number of infos    :    6 (   0 filtered)
+

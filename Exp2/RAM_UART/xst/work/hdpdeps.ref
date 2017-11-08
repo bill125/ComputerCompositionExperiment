@@ -1,0 +1,21 @@
+V3 9
+FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/constants.vhd 2017/11/08.21:01:33 P.20131013
+PH work/constants 1510159575 \
+      FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/constants.vhd \
+      PB ieee/std_logic_1164 1381692176
+FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/FreqDiv.vhd 2017/11/09.00:41:54 P.20131013
+EN work/FreqDiv 1510159576 \
+      FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/FreqDiv.vhd \
+      PB ieee/std_logic_1164 1381692176
+AR work/FreqDiv/FreqDiv_bhv 1510159577 \
+      FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/FreqDiv.vhd \
+      EN work/FreqDiv 1510159576
+FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/main.vhd 2017/11/09.00:36:55 P.20131013
+EN work/main 1510159578 \
+      FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/main.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181 \
+      PB ieee/std_logic_arith 1381692177 PB ieee/STD_LOGIC_UNSIGNED 1381692179 \
+      PH work/constants 1510159575
+AR work/main/Behavioral 1510159579 \
+      FL D:/ComputerCompositionExperiment/Exp2/RAM_UART/main.vhd EN work/main 1510159578 \
+      CP FreqDiv
