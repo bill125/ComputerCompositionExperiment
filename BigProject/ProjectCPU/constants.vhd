@@ -28,6 +28,11 @@ package constants is
 -- function <function_name>  (signal <signal_name> : in <type_declaration>) return <type_declaration>;
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
+    constant word_length: integer := 16;
+    constant bus_addr_length: integer := 18;
+    constant reg_addr_length: integer := 4;
+    constant inst_length: integer := 16;
+    constant pc_length: integer := 16;
 
     type op_t is (op_B, op_BEQZ, op_BNEZ, op_BTEQZ,
                   op_ADDIU, op_ADDDIU3, op_ADDSP,
@@ -37,4 +42,9 @@ package constants is
                   op_MTIH, op_MTSP, op_NEG, op_NOT, op_OR,
                   op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU);
 
+    subtype word_t is std_logic_vector (word_length - 1 downto 0);
+    subtype bus_addr_t is std_logic_vector (bus_addr_length - 1 downto 0);
+    subtype reg_addr_t is std_logic_vector (reg_addr_length - 1 downto 0);
+    subtype inst_t is std_logic_vector (inst_length - 1 downto 0);
+    subtype pc_t is std_logic_vector (pc_length - 1 downto 0);
 end constants;
