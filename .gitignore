@@ -22,6 +22,7 @@ greybox_tmp/
 # For ISE.
 
 # intermediate build files
+*.xise
 *.bgn
 *.bit
 *.bld
