@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -52,11 +53,11 @@ begin
 	from10to0<= i_inst(10 downto  0);
 	from4to0 <= i_inst(4  downto  0);
 	from4to2 <= i_inst(4  downto  2);
-	Output	<=	EXT(from7to0, Output'length)when first5 = "01101" -- LI
+	o_immExtend	<=	EXT(from7to0, o_immExtend'length)when first5 = "01101" -- LI
 											else
-				EXT(from4to2, Output'length)when first5 = "00110" -- SLL+SRA
+				EXT(from4to2, o_immExtend'length)when first5 = "00110" -- SLL+SRA
 											else
-				SXT(from7to0, Output'length)when first5 = "01001" -- ADDIU
+				SXT(from7to0, o_immExtend'length)when first5 = "01001" -- ADDIU
 											or first8 = "01100011" --ADDSP
 											or first8 = "01100000" -- BTEQZ
 											or first5 = "01011" -- SLUUI
@@ -65,11 +66,11 @@ begin
 											or first5 = "00100" -- BEQZ
 											or first5 = "00101" -- BNEZ
 											else
-				SXT(from3to0, Output'length)when first5 = "01000" -- ADDIU3
+				SXT(from3to0, o_immExtend'length)when first5 = "01000" -- ADDIU3
 											else
-				SXT(from10to0, Output'length)when first5 = "00010" -- B
+				SXT(from10to0, o_immExtend'length)when first5 = "00010" -- B
 											else
-				SXT(from4to0, Output'length)when first5 = "10011" -- LW
+				SXT(from4to0, o_immExtend'length)when first5 = "10011" -- LW
 											or first5 = "11011" -- SW
 											else
 				(others=>'0');

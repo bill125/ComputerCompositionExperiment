@@ -38,13 +38,10 @@ entity ForwardUnit is
 
         i_ALU1Res : in std_logic_vector(15 downto 0);
         i_ALU1Addr : in std_logic_vector(3 downto 0);
-        i_ALU1EN : in std_logic;
         i_ALU2Res : in std_logic_vector(15 downto 0);
         i_ALU2Addr : in std_logic_vector(3 downto 0);
-        i_ALU2EN : in std_logic;
         i_DMRes : in std_logic_vector(15 downto 0);
         i_DMAddr : in std_logic_vector(3 downto 0);
-        i_DMEN : in std_logic;
         
         o_OP0 : out std_logic_vector(15 downto 0);
         o_OP1 : out std_logic_vector(15 downto 0)
@@ -54,24 +51,14 @@ end ForwardUnit;
 architecture Behavioral of ForwardUnit is
 
 begin
-    if i_ALU1EN = '1' and i_OP0Addr = i_ALU1Addr then
-        o_OP0 <= i_ALU1Res;
-    elsif i_ALU2EN = '1' and i_OP0Addr = i_ALU2Addr then
-        o_OP0 <= i_ALU2Res;
-    elsif i_DMEN = '1' and i_OP0Addr = i_DMAddr then
-        o_OP0 <= i_DMRes;
-    else
-        o_OP0 <= i_OP0Data;
-    end if;
-    
-    if i_ALU1EN = '1' and i_OP1Addr = i_ALU1Addr then
-        o_OP1 <= i_ALU1Res;
-    elsif i_ALU2EN = '1' and i_OP1Addr = i_ALU2Addr then
-        o_OP1 <= i_ALU2Res;
-    elsif i_DMEN = '1' and i_OP1Addr = i_DMAddr then
-        o_OP1 <= i_DMRes;
-    else
-        o_OP1 <= i_OP1Data;
-    end if;
+    o_OP0 <= i_ALU1Res when i_OP0Addr /= "1111" and i_OP0Addr = i_ALU1Addr else
+             i_ALU2Res when i_OP0Addr /= "1111" and i_OP0Addr = i_ALU2Addr else
+             i_DMRes   when i_OP0Addr /= "1111" and i_OP0Addr = i_DMAddr else
+             i_OP0Data;
+             
+    o_OP1 <= i_ALU1Res when i_OP1Addr /= "1111" and i_OP1Addr = i_ALU1Addr else
+             i_ALU2Res when i_OP1Addr /= "1111" and i_OP1Addr = i_ALU2Addr else
+             i_DMRes   when i_OP1Addr /= "1111" and i_OP1Addr = i_DMAddr else
+             i_OP1Data;
 end Behavioral;
 

@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -29,8 +30,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Register is
-	port (
+entity myRegister is
+	Port (
         i_rxAddr : in std_logic_vector(2 downto 0);
         i_ryAddr : in std_logic_vector(2 downto 0);
         i_WE : in std_logic;
@@ -43,11 +44,11 @@ entity Register is
         o_IH : out std_logic_vector(15 downto 0);
         o_KB : out std_logic_vector(15 downto 0)
 	);
-end Register;
+end myRegister;
 
-architecture Behavioral of Register is
+architecture Behavioral of myRegister is
 	type Reg is array(0 to 15) of std_logic_vector(15 downto 0);
-    signal regs : RegFile;
+    signal regs : Reg;
 begin
     o_rxData <= regs(to_integer(unsigned(i_rxAddr)));
     o_rxData <= regs(to_integer(unsigned(i_ryAddr)));
@@ -56,8 +57,6 @@ begin
     o_IH <= regs(11);
     o_KB <= regs(12);
 
-    if i_WE = '1' then
-        regs(to_integer(unsigned(i_wbAddr))) <= i_wbData;
-    end if;
+    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_WE = '1';
 end Behavioral;
 
