@@ -102,3 +102,5 @@ xilinxsim.ini
 
 *.out
 *.sym
+
+ProjectCPU.xise
