@@ -1,0 +1,9 @@
+ALUOP
+000 res=op0+op1
+001 res=op0-op1
+010 res=op0&op1
+011 res=op0|op1
+100 res=!op0
+101 res=op0<op1   有符号数
+110 res=op0<<op1  无符号，op1==0时为8
+111 res=op0>>op1  无符号，op1==0时为8
