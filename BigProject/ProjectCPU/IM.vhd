@@ -20,6 +20,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+use work.constants.all;
+
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -30,12 +32,24 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity IM is
+    port
+    (
+        i_PC           : in pc_t;
+        o_inst         : out inst_t;
+
+        i_busReadReady : in std_logic;
+        i_busData      : in word_t;
+        o_busAddr      : out addr_t;
+
+        o_StallRequest : out std_logic
+    );   
 end IM;
 
 architecture Behavioral of IM is
 
 begin
-
-
+    o_inst <= i_busData;
+    o_StallRequest <= not i_busReadReady;
+    o_busAddr <= i_PC;
 end Behavioral;
 
