@@ -91,15 +91,15 @@ BEGIN
       -- insert stimulus here 
       i_nextPC <= "1010101010101010";
       i_stall <= '0';
-      wait for i_clock_period*1;
+      wait for i_clock_period*5;
 
       i_stall <= '1';
-      wait for i_clock_period*1;
+      i_nextPC <= (others => '1');    
+      wait for i_clock_period*5;
 
       i_stall <= '0';
-      wait for i_clock_period*1;
+      wait for i_clock_period*5;
 
-      i_nextPC <= (others => '1');    
 
       wait;
    end process;
