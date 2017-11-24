@@ -1,0 +1,9 @@
+OPType
+000 rx
+001 ry
+010 T
+011 PC
+100 IH
+101 KB
+110 SP
+111 invalid

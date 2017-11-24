@@ -30,12 +30,48 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity ImmExtend is
+    port (
+        i_inst : in  std_logic_vector (15 downto 0);
+        o_immExtend : out  std_logic_vector (15 downto 0)
+    );
 end ImmExtend;
 
 architecture Behavioral of ImmExtend is
-
+	signal from7to0: std_logic_vector(7 downto 0);
+	signal from3to0: std_logic_vector(3 downto 0);
+	signal from10to0: std_logic_vector(10 downto 0);
+	signal from4to0: std_logic_vector(4 downto 0);
+	signal from4to2: std_logic_vector(2 downto 0);
+	signal first5 : std_logic_vector(4 downto 0);
+	signal first8 : std_logic_vector(7 downto 0);
 begin
-
-
+	first5   <= i_inst(15 downto 11);
+	first8	 <= i_inst(15 downto  8);
+	from7to0 <= i_inst(7  downto  0);
+	from3to0 <= i_inst(3  downto  0);
+	from10to0<= i_inst(10 downto  0);
+	from4to0 <= i_inst(4  downto  0);
+	from4to2 <= i_inst(4  downto  2);
+	Output	<=	EXT(from7to0, Output'length)when first5 = "01101" -- LI
+											else
+				EXT(from4to2, Output'length)when first5 = "00110" -- SLL+SRA
+											else
+				SXT(from7to0, Output'length)when first5 = "01001" -- ADDIU
+											or first8 = "01100011" --ADDSP
+											or first8 = "01100000" -- BTEQZ
+											or first5 = "01011" -- SLUUI
+											or first5 = "10010" -- LW_SP
+											or first5 = "11010" -- SW_SP
+											or first5 = "00100" -- BEQZ
+											or first5 = "00101" -- BNEZ
+											else
+				SXT(from3to0, Output'length)when first5 = "01000" -- ADDIU3
+											else
+				SXT(from10to0, Output'length)when first5 = "00010" -- B
+											else
+				SXT(from4to0, Output'length)when first5 = "10011" -- LW
+											or first5 = "11011" -- SW
+											else
+				(others=>'0');
 end Behavioral;
 
