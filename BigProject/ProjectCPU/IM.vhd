@@ -34,12 +34,12 @@ use work.constants.all;
 entity IM is
     port
     (
-        i_PC           : in pc_t;
+        i_PC           : in bus_addr_t;
         o_inst         : out inst_t;
 
         i_busReadReady : in std_logic;
         i_busData      : in word_t;
-        o_busAddr      : out addr_t;
+        o_busAddr      : out bus_addr_t;
 
         o_StallRequest : out std_logic
     );   
