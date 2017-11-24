@@ -33,7 +33,6 @@ entity PC is
 	port (
         i_clock : in std_logic;
 		i_stall : in std_logic;
-		i_clear : in std_logic;
 		i_nextPC : in std_logic_vector(15 downto 0);
 		o_PC : out std_logic_vector(15 downto 0)
 	);
