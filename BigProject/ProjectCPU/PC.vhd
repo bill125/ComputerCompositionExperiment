@@ -49,6 +49,6 @@ begin
                 o_PC <= i_nextPC;
             end if;
         end if;
-    end process
+    end process;
 end Behavioral;
 
