@@ -1,4 +1,4 @@
---
+    --
 --	Package File Template
 --
 --	Purpose: This package defines supplemental types, subtypes, 
@@ -34,6 +34,12 @@ package constants is
     constant reg_addr_length: integer := 4;
     constant inst_length: integer := 16;
     constant pc_length: integer := 16;
+    constant stage_length: integer := 4;
+    constant stage_PC: integer := 0;
+    constant stage_IF_ID: integer := 1;
+    constant stage_ID_EX: integer := 2;
+    constant stage_EX_MEM: integer := 3;
+    constant stage_MEM_WB: integer := 4;
 
     type op_t is (op_B, op_BEQZ, op_BNEZ, op_BTEQZ,
                   op_ADDIU, op_ADDDIU3, op_ADDSP,
