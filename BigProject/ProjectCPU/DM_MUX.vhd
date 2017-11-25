@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    12:33:37 11/24/2017 
+-- Create Date:    16:44:02 11/25/2017 
 -- Design Name: 
--- Module Name:    MEM_WB - Behavioral 
+-- Module Name:    DM_MUX - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -20,9 +20,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use work.constants.all;
-use work.inst_const;
-use work.op_type_constants;
-use work.reg_addr;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -33,33 +30,17 @@ use work.reg_addr;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity MEM_WB is
-    port (
-        i_clock : in std_logic;
-        i_clear : in std_logic;
-        i_stall : in std_logic;
-        i_wbAddr : in reg_addr_t;
-        i_wbData : in word_t;
+entity DM_MUX is
+    Port ( i_DMRE : in  std_logic;
+           i_DMRes : in  word_t;
+           i_ALURes : in  word_t;
+           o_wbData : out  word_t);
+end DM_MUX;
 
-        o_wbAddr : out reg_addr_t;
-        o_wbData : out word_t
-    );
-end MEM_WB;
-
-architecture Behavioral of MEM_WB is
+architecture Behavioral of DM_MUX is
 
 begin
-    process (i_clock)
-    begin
-        if rising_edge(i_clock) then
-            if i_stall = '0' then
-                o_wbData <= i_wbData;
-                o_wbAddr <= i_wbAddr;
-            elsif i_clear = '1' then
-                o_wbAddr <= work.reg_addr.invalid;
-            end if;
-        end if;
-    end process;
+    o_wbData <= i_DMRes when i_DMRE = '1' else i_ALURes;
 
 end Behavioral;
 

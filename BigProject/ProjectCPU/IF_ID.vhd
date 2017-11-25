@@ -21,6 +21,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use work.constants.all;
 use work.op_type_constants;
+use work.reg_addr;
 use work.inst_const;
 
 -- Uncomment the following library declaration if using
@@ -52,18 +53,18 @@ begin
     process(i_clock)
     begin
         if rising_edge(i_clock) then
-            if i_clear = '1' then
-                -- o_OP <= work.inst_const.OP_NOP;
-                o_PC <= i_PC;
-                o_inst <= work.inst_const.INST_NOP;
-                o_rxAddr <= '1' & work.op_type_constants.invalid;
-                o_ryAddr <= '1' & work.op_type_constants.invalid;
-            elsif i_stall = '0' then
+            if i_stall = '0' then
                 -- o_OP <= i_inst(15 downto 11);
                 o_PC <= i_PC;
                 o_inst <= i_inst;
                 o_rxAddr <= '0' & i_inst(10 downto 8);
                 o_ryAddr <= '0' & i_inst(7 downto 5);
+            elsif i_clear = '1' then
+                -- o_OP <= work.inst_const.OP_NOP;
+                o_PC <= i_PC;
+                o_inst <= work.inst_const.INST_NOP;
+                o_rxAddr <= work.reg_addr.invalid;
+                o_ryAddr <= work.reg_addr.invalid;
             end if;
         end if;
     end process;

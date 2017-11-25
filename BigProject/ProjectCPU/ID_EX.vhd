@@ -22,6 +22,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.constants.all;
 use work.inst_const;
 use work.op_type_constants;
+use work.reg_addr;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -63,13 +64,7 @@ begin
     process(i_clock)
     begin
         if rising_edge(i_clock) then
-            if i_clear = '1' then
-                o_DMRE <= '0';
-                o_DMWR <= '0';
-                o_OP <= op_NOP;
-                -- o_WE <= '0';
-                o_wbAddr <= '1' & work.op_type_constants.invalid;
-            elsif i_stall = '0' then
+            if i_stall = '0' then
                 o_ALUOP <= i_ALUOP;
                 o_DMRE <= i_DMRE;
                 o_DMWR <= i_DMWR;
@@ -78,6 +73,12 @@ begin
                 o_OP1 <= i_OP1;
                 o_imm <= i_imm;
                 o_wbAddr <= i_wbAddr;
+            elsif i_clear = '1' then
+                o_DMRE <= '0';
+                o_DMWR <= '0';
+                o_OP <= op_NOP;
+                -- o_WE <= '0';
+                o_wbAddr <= work.reg_addr.invalid;
             end if;
         end if;
     end process;
