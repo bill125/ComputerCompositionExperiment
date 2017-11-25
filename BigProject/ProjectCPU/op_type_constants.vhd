@@ -33,7 +33,7 @@ package op_type_constants is
     constant T: std_logic_vector(2 downto 0) := "010";
     constant PC: std_logic_vector(2 downto 0) := "011";
     constant IH: std_logic_vector(2 downto 0) := "100";
-    constant KB: std_logic_vector(2 downto 0) := "101";
+    constant rz: std_logic_vector(2 downto 0) := "101";
     constant SP: std_logic_vector(2 downto 0) := "110";
     constant invalid: std_logic_vector(2 downto 0) := "111";
 end op_type_constants;
