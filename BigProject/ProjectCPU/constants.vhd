@@ -28,6 +28,8 @@ package constants is
 -- function <function_name>  (signal <signal_name> : in <type_declaration>) return <type_declaration>;
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
+    constant uart_wait_turns: integer := 16;
+
     constant word_length: integer := 16;
     constant addr_length: integer := 16;
     constant bus_addr_length: integer := 18;
@@ -65,4 +67,5 @@ package constants is
         data: word_t;
         stallRequest: std_logic;
     end record;
+
 end constants;
