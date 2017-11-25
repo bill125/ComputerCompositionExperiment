@@ -105,3 +105,4 @@ xilinxsim.ini
 *.sym
 
 ProjectCPU.xise
+BigProject/util/tmp.txt

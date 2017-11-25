@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    12:33:37 11/24/2017 
 -- Design Name: 
--- Module Name:    EXE_WB - Behavioral 
+-- Module Name:    MEM_WB - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -19,6 +19,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.constants.all;
+use work.inst_const;
+use work.op_type_constants;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -29,13 +32,33 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity EXE_WB is
-end EXE_WB;
+entity MEM_WB is
+    port (
+        i_clock : in std_logic;
+        i_clear : in std_logic;
+        i_stall : in std_logic;
+        i_wbAddr : in reg_addr_t;
+        i_wbData : in word_t;
 
-architecture Behavioral of EXE_WB is
+        o_wbAddr : out reg_addr_t;
+        o_wbData : out word_t
+    );
+end MEM_WB;
+
+architecture Behavioral of MEM_WB is
 
 begin
-
+    process (i_clock)
+    begin
+        if rising_edge(i_clock) then
+            if i_clear = '1' then
+                o_wbAddr <= '1' & work.op_type_constants.invalid;
+            elsif i_stall = '0' then
+                o_wbData <= i_wbData;
+                o_wbAddr <= i_wbAddr;
+            end if;
+        end if;
+    end process;
 
 end Behavioral;
 
