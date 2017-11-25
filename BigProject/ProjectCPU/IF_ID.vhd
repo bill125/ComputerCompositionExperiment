@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.constants.all;
 use work.op_type_constants;
 use work.inst_const;
 
@@ -34,12 +35,13 @@ use work.inst_const;
 entity IF_ID is
     port (
         i_clock : in std_logic;
-        i_inst : in std_logic_vector(15 downto 0);
-        i_PC : in std_logic_vector(15 downto 0);
+        i_inst : in word_t;
+        i_PC : in addr_t;
         i_stall : in std_logic;
         i_clear : in std_logic;
-        o_OP : out std_logic_vector(4 downto 0);
-        o_inst : out std_logic_vector(15 downto 0);
+        o_PC : out addr_t;
+        -- o_OP : out std_logic_vector(4 downto 0);
+        o_inst : out word_t;
         o_rxAddr : out std_logic_vector(3 downto 0);
         o_ryAddr : out std_logic_vector(3 downto 0)
     );
@@ -51,15 +53,17 @@ begin
     begin
         if rising_edge(i_clock) then
             if i_clear = '1' then
-                o_OP <= work.inst_const.OP_NOP;
+                -- o_OP <= work.inst_const.OP_NOP;
+                o_PC <= i_PC;
                 o_inst <= work.inst_const.INST_NOP;
                 o_rxAddr <= '1' & work.op_type_constants.invalid;
                 o_ryAddr <= '1' & work.op_type_constants.invalid;
             elsif i_stall = '0' then
-                o_OP <= i_inst(15 downto 11);
+                -- o_OP <= i_inst(15 downto 11);
+                o_PC <= i_PC;
                 o_inst <= i_inst;
                 o_rxAddr <= '0' & i_inst(10 downto 8);
-                o_ryAddr <= '0' & i_inst(10 downto 8);
+                o_ryAddr <= '0' & i_inst(7 downto 5);
             end if;
         end if;
     end process;
