@@ -33,35 +33,28 @@ use work.constants.all;
 entity DM is
     port 
     (
-        i_data          : in word_t;
-        i_addr          : in bus_addr_t;
-        o_DMRes         : out word_t;
+        i_data         : in word_t;
+        i_addr         : in addr_t;
+        o_DMRes        : out word_t;
 
-        i_DMRE          : in std_logic;
-        i_DMWR          : in std_logic;
+        i_DMRE         : in std_logic;
+        i_DMWR         : in std_logic;
+        o_stallRequest : out std_logic;
 
-        i_busReadReady  : in std_logic;
-        i_busWriteReady : in std_logic;
-        o_readRequest   : out std_logic;
-        o_writeRequest  : out std_logic;
-        io_busData      : inout word_t;
-        o_busAddr       : out bus_addr_t;
-        
-        o_stallRequest  : out std_logic
+        o_busRequest   : out bus_request_t;
+        i_busResponse  : in bus_response_t        
     );
 end DM;
 
 architecture Behavioral of DM is
 
 begin
-    o_busAddr <= i_addr;
-    io_busData <= i_data when i_DMWR = '1' else
-               (others => 'Z') when i_DMRE = '1';
-    o_readRequest <= i_DMRE;
-    o_writeRequest <= i_DMWR;
-    o_stallRequest <= not i_busWriteReady when i_DMWR = '1' else
-                      not i_busReadReady when i_DMRE = '1';
-    o_DMRes <= io_busData;
+    o_busRequest.addr <= "00" & i_addr;
+    o_busRequest.data <= i_data;
+    o_busRequest.writeRequest <= i_DMWR;
+    o_busRequest.readRequest <= i_DMRE;
 
+    o_stallRequest <= i_busResponse.stallRequest;
+    o_DMRes <= i_busResponse.data;
 end Behavioral;
 

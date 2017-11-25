@@ -34,22 +34,26 @@ use work.constants.all;
 entity IM is
     port
     (
-        i_PC           : in bus_addr_t;
+        i_PC           : in addr_t;
         o_inst         : out inst_t;
 
-        i_busReadReady : in std_logic;
-        i_busData      : in word_t;
-        o_busAddr      : out bus_addr_t;
+        i_busResponse  : in bus_response_t;
+        o_busRequest   : out bus_request_t;
 
-        o_StallRequest : out std_logic
+        o_stallRequest : out std_logic
     );   
 end IM;
 
 architecture Behavioral of IM is
 
 begin
-    o_inst <= i_busData;
-    o_StallRequest <= not i_busReadReady;
-    o_busAddr <= i_PC;
+    o_busRequest.addr <= "00" & i_PC;
+    o_busRequest.data <= (others => 'X');
+    o_busRequest.writeRequest <= '0';
+    o_busRequest.readRequest <= '1';
+
+    o_inst <= i_busResponse.data;
+
+    o_stallRequest <= not i_busResponse.stallRequest;
 end Behavioral;
 

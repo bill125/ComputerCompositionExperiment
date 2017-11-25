@@ -29,6 +29,7 @@ package constants is
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
     constant word_length: integer := 16;
+    constant addr_length: integer := 16;
     constant bus_addr_length: integer := 18;
     constant reg_addr_length: integer := 4;
     constant inst_length: integer := 16;
@@ -47,8 +48,21 @@ package constants is
                   alu_sll, alu_sra, alu_srl);
 
     subtype word_t is std_logic_vector (word_length - 1 downto 0);
+    subtype addr_t is std_logic_vector (addr_length - 1 downto 0);
     subtype bus_addr_t is std_logic_vector (bus_addr_length - 1 downto 0);
     subtype reg_addr_t is std_logic_vector (reg_addr_length - 1 downto 0);
     subtype inst_t is std_logic_vector (inst_length - 1 downto 0);
     subtype pc_t is std_logic_vector (pc_length - 1 downto 0);
+
+    type bus_request_t is record
+        data: word_t;
+        addr: bus_addr_t;
+        writeRequest: std_logic;
+        readRequest: std_logic;
+    end record;
+
+    type bus_response_t is record
+        data: word_t;
+        stallRequest: std_logic;
+    end record;
 end constants;
