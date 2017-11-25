@@ -34,7 +34,6 @@ entity myRegister is
 	Port (
         i_rxAddr : in std_logic_vector(2 downto 0);
         i_ryAddr : in std_logic_vector(2 downto 0);
-        i_WE : in std_logic;
         i_wbData : in std_logic_vector(15 downto 0);
         i_wbAddr : in std_logic_vector(3 downto 0); 
         o_rxData : out std_logic_vector(15 downto 0);
@@ -57,6 +56,6 @@ begin
     o_IH <= regs(11);
     o_KB <= regs(12);
 
-    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_WE = '1';
+    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_wbAddr /= "1111";
 end Behavioral;
 

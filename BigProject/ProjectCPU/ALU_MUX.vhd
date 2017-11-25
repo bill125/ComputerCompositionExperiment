@@ -19,6 +19,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.constants.all;
+use work.inst_const;
+use work.op_type_constants;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -30,12 +33,23 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity ALU_MUX is
+    Port(
+        i_ALURes : in word_t;
+        i_OP0 : in word_t;
+        i_OP1 : in word_t;
+        i_OP : in op_t;
+        o_addr : out addr_t;
+        o_data : out word_t;
+        o_ALURes : out word_t
+    );
 end ALU_MUX;
 
 architecture Behavioral of ALU_MUX is
 
 begin
-
-
+    o_addr <= i_ALURes;
+    o_ALURes <= i_ALURes;
+    o_data <= i_OP0 when i_OP = op_SW_SP else
+              i_OP1;
 end Behavioral;
 

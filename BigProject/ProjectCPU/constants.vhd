@@ -1,4 +1,4 @@
---
+    --
 --	Package File Template
 --
 --	Purpose: This package defines supplemental types, subtypes, 
@@ -36,6 +36,12 @@ package constants is
     constant reg_addr_length: integer := 4;
     constant inst_length: integer := 16;
     constant pc_length: integer := 16;
+    constant stage_length: integer := 4;
+    constant stage_PC: integer := 0;
+    constant stage_IF_ID: integer := 1;
+    constant stage_ID_EX: integer := 2;
+    constant stage_EX_MEM: integer := 3;
+    constant stage_MEM_WB: integer := 4;
 
     type op_t is (op_B, op_BEQZ, op_BNEZ, op_BTEQZ,
                   op_ADDIU, op_ADDDIU3, op_ADDSP,
@@ -44,10 +50,11 @@ package constants is
                   op_CMP, op_MFIH, op_MFPC, op_MOVE,
                   op_MTIH, op_MTSP, op_NEG, op_NOT, op_OR,
                   op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU);
-    type alu_op_t is (alu_nop, alu_cmp,
+    type alu_op_t is (alu_nop, alu_cmp, alu_less,
                   alu_addu, alu_subu,
-                  alu_or, alu_and, alu_xor, alu_nor,
+                  alu_or, alu_and, alu_xor, alu_nor, alu_not,
                   alu_sll, alu_sra, alu_srl);
+    type opSrc_t is(opSrc_op0, opSrc_op1, opSrc_imm, opSrc_zero);
 
     subtype word_t is std_logic_vector (word_length - 1 downto 0);
     subtype addr_t is std_logic_vector (addr_length - 1 downto 0);
