@@ -104,11 +104,13 @@ begin
                 o_nWE <= '1';
                 o_bus_addr <= i_busRequest.addr;
                 o_busResponse.data <= io_bus_data;
+                o_busResponse.stallRequest <= '0';
             elsif i_busRequest.writeRequest = '1' then
                 o_nOE <= '1';
                 o_nWE <= not i_clock;
                 o_bus_addr <= i_busRequest.addr;
                 io_bus_data <= i_busRequest.data;
+                o_busResponse.stallRequest <= '0';
             end if; 
         end if;
     end process;
