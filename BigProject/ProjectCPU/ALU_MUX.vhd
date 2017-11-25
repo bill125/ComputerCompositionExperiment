@@ -49,7 +49,6 @@ architecture Behavioral of ALU_MUX is
 begin
     o_addr <= i_ALURes;
     o_ALURes <= i_ALURes;
-    o_data <= i_OP0 when i_OP = op_SW_SP else
-              i_OP1;
+    o_data <= i_OP1;
 end Behavioral;
 

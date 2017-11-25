@@ -40,8 +40,7 @@ entity myRegister is
         o_ryData : out std_logic_vector(15 downto 0);
         o_T : out std_logic_vector(15 downto 0);
         o_SP : out std_logic_vector(15 downto 0);
-        o_IH : out std_logic_vector(15 downto 0);
-        o_KB : out std_logic_vector(15 downto 0)
+        o_IH : out std_logic_vector(15 downto 0)
 	);
 end myRegister;
 
@@ -54,7 +53,6 @@ begin
     o_T <= regs(8);
     o_SP <= regs(13);
     o_IH <= regs(11);
-    o_KB <= regs(12);
 
     regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_wbAddr /= "1111";
 end Behavioral;

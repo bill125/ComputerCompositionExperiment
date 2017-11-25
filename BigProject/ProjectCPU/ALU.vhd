@@ -89,8 +89,10 @@ begin
                 SraTmp when i_ALUOP = alu_sra else
                 "0000000000000001" when op0/=op1 and i_ALUOP = alu_cmp else
                 (others => '0') when op0=op1 and i_ALUOP = alu_cmp else
-                "0000000000000001" when op0<op1 and i_ALUOP = alu_less else
-                (others => '0') when op0>=op1 and i_ALUOP = alu_less else
+                "0000000000000001" when SIGNED(op0) < SIGNED(op1) and i_ALUOP = alu_less else
+                (others => '0') when SIGNED(op0) >= SIGNED(op1) and i_ALUOP = alu_less else
+                "0000000000000001" when UNSIGNED(op0) < UNSIGNED(op1) and i_ALUOP = alu_uless else
+                (others => '0') when UNSIGNED(op0) >= UNSIGNED(op1) and i_ALUOP = alu_uless else
                 (others => '0');
 end Behavioral;
 

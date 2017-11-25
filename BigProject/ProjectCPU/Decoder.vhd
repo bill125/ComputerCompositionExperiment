@@ -38,8 +38,8 @@ entity Decoder is
         i_rxData : in std_logic_vector(15 downto 0);
         i_ryAddr : in std_logic_vector(3 downto 0);
         i_ryData : in std_logic_vector(15 downto 0);
+        i_rzAddr : in std_logic_vector(3 downto 0);
         i_IH : in std_logic_vector(15 downto 0);
-        i_KB : in std_logic_vector(15 downto 0);
         i_SP : in std_logic_vector(15 downto 0);
         i_PC : in std_logic_vector(15 downto 0);
         i_T : in std_logic_vector(15 downto 0);
@@ -61,7 +61,6 @@ begin
                      "1000" when "010",
                      "1010" when "011",
                      "1011" when "100",
-                     "1100" when "101",
                      "1101" when "110",
                      "1111" when others;
     with i_OP0Type select
@@ -70,7 +69,6 @@ begin
                      i_T when "010",
                      i_PC when "011",
                      i_IH when "100",
-                     i_KB when "101",
                      i_SP when "110",
                      (others => '0') when others;
                      
@@ -80,7 +78,6 @@ begin
                      "1000" when "010",
                      "1010" when "011",
                      "1011" when "100",
-                     "1100" when "101",
                      "1101" when "110",
                      "1111" when others;
     with i_OP1Type select
@@ -89,17 +86,16 @@ begin
                      i_T when "010",
                      i_PC when "011",
                      i_IH when "100",
-                     i_KB when "101",
                      i_SP when "110",
                      (others => '0') when others;
 
     with i_wbType select
         o_wbAddr <=  i_rxAddr when "000",
                      i_ryAddr when "001",
+                     i_rzAddr when "101",
                      "1000" when "010",
                      "1010" when "011",
                      "1011" when "100",
-                     "1100" when "101",
                      "1101" when "110",
                      "1111" when others;
 end Behavioral;

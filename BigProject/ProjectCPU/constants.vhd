@@ -36,13 +36,13 @@ package constants is
     constant pc_length: integer := 16;
 
     type op_t is (op_B, op_BEQZ, op_BNEZ, op_BTEQZ,
-                  op_ADDIU, op_ADDDIU3, op_ADDSP,
+                  op_ADDIU, op_ADDIU3, op_ADDSP,
                   op_LI, op_LW, op_LW_SP, op_SW, op_SW_SP,
                   op_JR, op_NOP, op_ADDU, op_AND,
                   op_CMP, op_MFIH, op_MFPC, op_MOVE,
                   op_MTIH, op_MTSP, op_NEG, op_NOT, op_OR,
                   op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU);
-    type alu_op_t is (alu_nop, alu_cmp, alu_less,
+    type alu_op_t is (alu_nop, alu_cmp, alu_less, alu_uless,
                   alu_addu, alu_subu,
                   alu_or, alu_and, alu_xor, alu_nor, alu_not,
                   alu_sll, alu_sra, alu_srl);
