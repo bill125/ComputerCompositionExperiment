@@ -1,4 +1,4 @@
-with open('./instruction.csv') as fin:
+with open('../doc/instruction.csv') as fin:
     constants = ''
     insts = {}
     for i in fin.readlines()[1:]:
@@ -18,5 +18,5 @@ use IEEE.std_logic_1164.all;
 
 package inst_const is
 {constants}
-end;'''.format(constants=constants, funchead=funchead, funcbody=funcbody)
+end;'''.format(constants=constants)
     print(res)
