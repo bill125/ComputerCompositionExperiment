@@ -43,10 +43,8 @@ architecture Behavioral of PC is
 begin
     process(i_clock)
     begin
-        if rising_edge(i_clock) then
-            if i_stall = '0' then
-                o_PC <= i_nextPC;
-            end if;
+        if rising_edge(i_clock) and i_stall = '0' then
+            o_PC <= i_nextPC;
         end if;
     end process;
 end Behavioral;

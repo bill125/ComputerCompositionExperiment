@@ -51,12 +51,12 @@ architecture Behavioral of MEM_WB is
 begin
     process (i_clock)
     begin
-        if rising_edge(i_clock) then
-            if i_stall = '0' then
+        if rising_edge(i_clock) and i_stall = '0' then
+            if i_clear = '1' then
+                o_wbAddr <= work.reg_addr.invalid;
+            else
                 o_wbData <= i_wbData;
                 o_wbAddr <= i_wbAddr;
-            elsif i_clear = '1' then
-                o_wbAddr <= work.reg_addr.invalid;
             end if;
         end if;
     end process;

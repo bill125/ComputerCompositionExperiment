@@ -63,8 +63,14 @@ architecture Behavioral of ID_EX is
 begin
     process(i_clock)
     begin
-        if rising_edge(i_clock) then
-            if i_stall = '0' then
+        if rising_edge(i_clock) and i_stall = '0' then
+            if i_clear = '1' then
+                o_DMRE <= '0';
+                o_DMWR <= '0';
+                o_OP <= op_NOP;
+                -- o_WE <= '0';
+                o_wbAddr <= work.reg_addr.invalid;
+            else
                 o_ALUOP <= i_ALUOP;
                 o_DMRE <= i_DMRE;
                 o_DMWR <= i_DMWR;
@@ -73,12 +79,6 @@ begin
                 o_OP1 <= i_OP1;
                 o_imm <= i_imm;
                 o_wbAddr <= i_wbAddr;
-            elsif i_clear = '1' then
-                o_DMRE <= '0';
-                o_DMWR <= '0';
-                o_OP <= op_NOP;
-                -- o_WE <= '0';
-                o_wbAddr <= work.reg_addr.invalid;
             end if;
         end if;
     end process;

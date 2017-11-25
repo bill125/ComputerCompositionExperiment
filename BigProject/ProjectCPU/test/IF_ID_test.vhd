@@ -27,6 +27,7 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+use work.inst_const;
  
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -49,7 +50,8 @@ ARCHITECTURE behavior OF ifid IS
          o_PC : OUT  std_logic_vector(15 downto 0);
          o_inst : OUT  std_logic_vector(15 downto 0);
          o_rxAddr : OUT  std_logic_vector(3 downto 0);
-         o_ryAddr : OUT  std_logic_vector(3 downto 0)
+         o_ryAddr : OUT  std_logic_vector(3 downto 0);
+          o_rzAddr : out std_logic_vector(3 downto 0)
         );
     END COMPONENT;
     
@@ -66,6 +68,7 @@ ARCHITECTURE behavior OF ifid IS
    signal o_inst : std_logic_vector(15 downto 0);
    signal o_rxAddr : std_logic_vector(3 downto 0);
    signal o_ryAddr : std_logic_vector(3 downto 0);
+   signal o_rzAddr : std_logic_vector(3 downto 0);
 
    -- Clock period definitions
    constant i_clock_period : time := 10 ns;
@@ -82,7 +85,8 @@ BEGIN
           o_PC => o_PC,
           o_inst => o_inst,
           o_rxAddr => o_rxAddr,
-          o_ryAddr => o_ryAddr
+          o_ryAddr => o_ryAddr,
+          o_rzAddr => o_rzAddr
         );
 
    -- Clock process definitions
@@ -107,24 +111,42 @@ BEGIN
       i_PC <= x"fff0";
       
       wait for i_clock_period*10;
-
+      assert (o_inst = i_inst and o_PC = i_PC and o_rzAddr = "00UU")
+        report "E1"
+        severity ERROR;
+      
       i_stall <= '1';
-
       wait for i_clock_period*10;
+      assert (o_inst = i_inst and o_PC = i_PC)
+        report "E2"
+        severity ERROR;
       
       i_inst <= "01000XXXZZZ0UUUU";
       i_PC <= x"0ff0";
-
-      wait for i_clock_period*30;
+      wait for i_clock_period*10;
+      assert (o_inst = "01000XXXZZZ0UUUU" and o_PC = x"fff0")
+        report "E3"
+        severity ERROR;
 
       i_stall <= '0';
-
       wait for i_clock_period*10;
+      assert (o_inst = i_inst and o_PC = i_PC)
+        report "E4"
+        severity ERROR;
 
+      i_stall <= '1';
       i_clear <= '1';
+      wait for i_clock_period*10;
+      assert (o_inst = i_inst and o_PC = i_PC)
+        report "E5"
+        severity ERROR;
 
-      wait for i_clock_period*30;
-
+      i_stall <= '0';
+      i_clear <= '1';
+      wait for i_clock_period*10;
+      assert (o_inst = work.inst_const.INST_NOP)
+        report "E6"
+        severity ERROR;
 
       wait;
    end process;

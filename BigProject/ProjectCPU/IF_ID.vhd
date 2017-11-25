@@ -44,7 +44,8 @@ entity IF_ID is
         -- o_OP : out std_logic_vector(4 downto 0);
         o_inst : out word_t;
         o_rxAddr : out std_logic_vector(3 downto 0);
-        o_ryAddr : out std_logic_vector(3 downto 0)
+        o_ryAddr : out std_logic_vector(3 downto 0);
+        o_rzAddr : out std_logic_vector(3 downto 0)
     );
 end IF_ID;
 
@@ -52,19 +53,21 @@ architecture Behavioral of IF_ID is
 begin
     process(i_clock)
     begin
-        if rising_edge(i_clock) then
-            if i_stall = '0' then
-                -- o_OP <= i_inst(15 downto 11);
-                o_PC <= i_PC;
-                o_inst <= i_inst;
-                o_rxAddr <= '0' & i_inst(10 downto 8);
-                o_ryAddr <= '0' & i_inst(7 downto 5);
-            elsif i_clear = '1' then
+        if rising_edge(i_clock) and i_stall = '0' then
+            if i_clear = '1' then
                 -- o_OP <= work.inst_const.OP_NOP;
                 o_PC <= i_PC;
                 o_inst <= work.inst_const.INST_NOP;
                 o_rxAddr <= work.reg_addr.invalid;
                 o_ryAddr <= work.reg_addr.invalid;
+                o_rzAddr <= work.reg_addr.invalid;
+            else
+                -- o_OP <= i_inst(15 downto 11);
+                o_PC <= i_PC;
+                o_inst <= i_inst;
+                o_rxAddr <= '0' & i_inst(10 downto 8);
+                o_ryAddr <= '0' & i_inst(7 downto 5);
+                o_rzAddr <= '0' & i_inst(4 downto 2);
             end if;
         end if;
     end process;
