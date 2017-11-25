@@ -34,15 +34,15 @@ use work.constants.all;
 entity BusDispatcher is
     port
     (
-        i_busRequest : in bus_request_t;
-        o_busResponse : out bus_response_t;
+        i_busRequest     : in bus_request_t;
+        o_busResponse    : out bus_response_t;
 
-        o_sysBusRequest : out bus_request_t;
+        o_sysBusRequest  : out bus_request_t;
         i_sysBusResponse : in bus_response_t;
-        o_extBusRequest : out bus_request_t;
+        o_extBusRequest  : out bus_request_t;
         i_extBusResponse : in bus_response_t;
 
-        o_stallRequest : out std_logic
+        o_stallRequest   : out std_logic
     );
 end BusDispatcher;
 
@@ -64,6 +64,7 @@ begin
             o_extBusRequest.writeRequest <= '0';
             o_extBusRequest.readRequest <= '0';
         end if;
-    end process
+    end process;
+    
 end Behavioral;
 

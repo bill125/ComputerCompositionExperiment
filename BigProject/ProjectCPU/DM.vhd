@@ -35,7 +35,9 @@ entity DM is
     (
         i_data         : in word_t;
         i_addr         : in addr_t;
+        i_ALURes       : in word_t;
         o_DMRes        : out word_t;
+        o_wbData       : out word_t;
 
         i_DMRE         : in std_logic;
         i_DMWR         : in std_logic;
@@ -56,5 +58,7 @@ begin
 
     o_stallRequest <= i_busResponse.stallRequest;
     o_DMRes <= i_busResponse.data;
+    o_wbData <= i_DMRes when i_DMRE = '1' else
+                i_ALURes;
 end Behavioral;
 
