@@ -54,7 +54,7 @@ entity StallClearController is
 end StallClearController;
 
 architecture Behavioral of StallClearController is
-    signal clear, stall : std_logic_vector(0 to 4) := "00000";
+    signal clear, stall, EX_MEM_stall, IF_ID_stall, PC_stall : std_logic_vector(0 to 4) := "00000";
 begin
     -- clear
     -- o_clear(0) <= '0';
@@ -63,23 +63,17 @@ begin
     clear(1) <= not i_predSucc;
 
     -- stall
-    process (i_wbAddr, i_DMStallReq, i_IFStallReq, i_DMRE, i_OP0Addr, i_OP1Addr)
-    begin
-        if (i_DMStallReq = '1') then -- DM Stall request
-            stall(stage_PC to stage_EX_MEM) <= (others => '1');
-            stall(stage_MEM_WB) <= '0';
-        elsif (i_DMRE = '1' and (i_OP0Addr = i_wbAddr or i_OP1Addr = i_wbAddr) -- Read register after LW
-            and i_wbAddr /= ("1111")) then
-            stall(stage_PC to stage_IF_ID) <= (others => '1');
-            stall(stage_ID_EX to stage_MEM_WB) <= (others => '0');
-        elsif (i_IFStallReq = '1') then -- IF stall request
-            stall(stage_PC) <= '1';
-            stall(stage_IF_ID to stage_MEM_WB) <= (others => '0');
-        else -- No conflicts
-            o_stall <= (others => '0');
-        end if;
-    end process;
-    o_stall <= stall;
+    PC_stall     <= (0 to stage_PC     => '1', others => '0')  -- IF stall request
+        when i_IFStallReq = '1' else (others => '0'); 
+
+    IF_ID_stall  <= (0 to stage_IF_ID  => '1', others => '0')  -- Read register after LW
+        when (i_DMRE = '1' and (i_OP0Addr = i_wbAddr or i_OP1Addr = i_wbAddr) and i_wbAddr /= ("1111")) else (others => '0');
+
+    EX_MEM_stall <= (0 to stage_EX_MEM => '1', others => '0')  -- DM Stall request
+        when i_DMStallReq = '1' else (others => '0');
+
+    stall <= PC_stall or IF_ID_stall or EX_MEM_stall;
+    o_stall <= PC_stall or IF_ID_stall or EX_MEM_stall;
 
 end Behavioral;
 
