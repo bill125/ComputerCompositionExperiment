@@ -19,6 +19,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use work.constants.all;
 use work.inst_const;
 use work.op_type_constants;
