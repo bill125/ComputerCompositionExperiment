@@ -33,7 +33,7 @@ use ieee.std_logic_arith.all;
 entity ImmExtend is
     port (
         i_inst : in  std_logic_vector (15 downto 0);
-        o_immExtend : out  std_logic_vector (15 downto 0)
+        o_immExtend : out std_logic_vector (15 downto 0)
     );
 end ImmExtend;
 
