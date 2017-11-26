@@ -54,13 +54,13 @@ begin
 	from4to0 <= i_inst(4  downto  0);
 	from4to2 <= i_inst(4  downto  2);
 	o_immExtend	<=	EXT(from7to0, o_immExtend'length)when first5 = "01101" -- LI
+											or first5 = "01011" -- SLUUI
 											else
 				EXT(from4to2, o_immExtend'length)when first5 = "00110" -- SLL+SRA
 											else
 				SXT(from7to0, o_immExtend'length)when first5 = "01001" -- ADDIU
 											or first8 = "01100011" --ADDSP
 											or first8 = "01100000" -- BTEQZ
-											or first5 = "01011" -- SLUUI
 											or first5 = "10010" -- LW_SP
 											or first5 = "11010" -- SW_SP
 											or first5 = "00100" -- BEQZ
