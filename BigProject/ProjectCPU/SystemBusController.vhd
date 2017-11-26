@@ -69,7 +69,6 @@ begin
             o_nOE <= '1';
             o_nWE <= '1';
         elsif i_busRequest.addr = uart_control_addr then -- UART control
-            io_bus_data <= (others => '0');
             if i_busRequest.readRequest = '1' then
                 o_busResponse.data <= (0 => i_UART_writeReady, 
                                        1 => i_UART_readReady, 

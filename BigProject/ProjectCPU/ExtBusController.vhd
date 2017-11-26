@@ -57,16 +57,22 @@ begin
     begin
         if i_DM_busRequest.readRequest = '1' or i_DM_busRequest.writeRequest = '1' then
             busRequest <= i_DM_busRequest;
-            o_IM_busResponse.stallRequest <= '1';
+            if i_IM_busRequest.readRequest = '1' or i_IM_busRequest.writeRequest = '1' then
+                o_IM_busResponse.stallRequest <= '1';
+            else
+                o_IM_busResponse.stallRequest <= '0';
+            end if;
             o_DM_busResponse <= busResponse;
         else
             busRequest <= i_IM_busRequest;
             o_IM_busResponse <= busResponse;
+            o_DM_busResponse.stallRequest <= '0';
         end if ;
     end process;
 
     process (busRequest, io_bus_data, i_clock)
-    begin      
+    begin
+        io_bus_data <= (others => 'Z');
         if busRequest.writeRequest = '1' or busRequest.readRequest = '1' then
             o_nCE <= '0';
             if busRequest.readRequest = '1' then
