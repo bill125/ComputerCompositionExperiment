@@ -70,13 +70,15 @@ begin
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else
+                io_sysBus_data <= (others => 'Z');
                 case r_RX_State is
                     when t_RX_0 => -- wait for data
                         o_readReady <= '0';
-                        o_readDone <= '0';
+                        o_readDone <= '1';
                         o_rdn <= '1';
                         if i_data_ready = '1' then
                             o_readReady <= '1';
+                            o_readDone <= '0';
                             r_RX_State <= t_RX_1;
                         else
                             r_RX_State <= t_RX_0;
@@ -109,6 +111,7 @@ begin
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else 
+                io_sysBus_data <= (others => 'Z');
                 case r_TX_State is
                     when t_TX_0 =>
                         o_wrn <= '1';
