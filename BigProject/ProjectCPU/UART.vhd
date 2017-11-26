@@ -112,6 +112,7 @@ begin
                 case r_TX_State is
                     when t_TX_0 =>
                         o_wrn <= '1';
+                        o_writeReady <= '1';
                         if i_writeBegin = '1' then
                             o_writeReady <= '0';
                             o_writeDone <= '0';

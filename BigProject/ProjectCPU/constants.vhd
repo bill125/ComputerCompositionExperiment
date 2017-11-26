@@ -29,6 +29,8 @@ package constants is
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
     constant uart_wait_turns: integer := 16;
+    constant uart_control_addr: std_logic_vector (17 downto 0) := "001011111100000001";
+    constant uart_data_addr: std_logic_vector (17 downto 0) := "001011111100000000";
 
     constant word_length: integer := 16;
     constant addr_length: integer := 16;
