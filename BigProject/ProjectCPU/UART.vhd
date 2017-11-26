@@ -65,7 +65,7 @@ begin
     -- Read UART
     Receive_Data : process(i_clock)
         variable wait_turns : integer range 0 to 31 := 0;
-    begin
+    begin 
         if rising_edge(i_clock) then
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
