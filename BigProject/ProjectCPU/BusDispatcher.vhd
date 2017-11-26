@@ -19,7 +19,6 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
 use work.constants.all;
 
 -- Uncomment the following library declaration if using
@@ -40,9 +39,7 @@ entity BusDispatcher is
         o_sysBusRequest  : out bus_request_t;
         i_sysBusResponse : in bus_response_t;
         o_extBusRequest  : out bus_request_t;
-        i_extBusResponse : in bus_response_t;
-
-        o_stallRequest   : out std_logic
+        i_extBusResponse : in bus_response_t
     );
 end BusDispatcher;
 
