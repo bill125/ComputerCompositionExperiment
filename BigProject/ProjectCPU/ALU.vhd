@@ -54,11 +54,11 @@ signal SraTmp : std_logic_vector (15 downto 0);
 begin
     op0 <= i_OP0 when i_OP0Src = opSrc_op0 else
            i_OP1 when i_OP0Src = opSrc_op1 else
-           i_imm when i_OP0Src = opSrc_op1 else
+           i_imm when i_OP0Src = opSrc_imm else
            (others => '0');
     op1 <= i_OP0 when i_OP1Src = opSrc_op0 else
            i_OP1 when i_OP1Src = opSrc_op1 else
-           i_imm when i_OP1Src = opSrc_op1 else
+           i_imm when i_OP1Src = opSrc_imm else
            (others => '0');
     
 	SllTmp <= op0(14 downto 0) & '0' when op1 (2 downto 0) = "001" else
@@ -84,7 +84,6 @@ begin
                 op0 or op1 when i_ALUOP = alu_or else
                 op0 and op1 when i_ALUOP = alu_and else
                 op0 xor op1 when i_ALUOP = alu_xor else
-                op0 nor op1 when i_ALUOP = alu_nor else
                 SllTmp when i_ALUOP = alu_sll else
                 SraTmp when i_ALUOP = alu_sra else
                 "0000000000000001" when op0/=op1 and i_ALUOP = alu_cmp else

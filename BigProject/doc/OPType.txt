@@ -4,6 +4,6 @@ OPType
 010 T
 011 PC
 100 IH
-101 KB
+101 rz
 110 SP
 111 invalid
