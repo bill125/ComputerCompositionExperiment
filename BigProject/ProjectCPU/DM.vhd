@@ -58,7 +58,7 @@ begin
 
     o_stallRequest <= i_busResponse.stallRequest;
     o_DMRes <= i_busResponse.data;
-    o_wbData <= i_DMRes when i_DMRE = '1' else
+    o_wbData <= i_busResponse.data when i_DMRE = '1' else
                 i_ALURes;
 end Behavioral;
 
