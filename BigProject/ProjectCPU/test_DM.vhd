@@ -27,7 +27,8 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
+use work.constants.all;
+
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
@@ -49,8 +50,8 @@ ARCHITECTURE behavior OF test_DM IS
          i_DMRE : IN  std_logic;
          i_DMWR : IN  std_logic;
          o_stallRequest : OUT  std_logic;
-         o_busRequest : OUT  std_logic;
-         i_busResponse : IN  std_logic
+         o_busRequest : OUT  bus_request_t;
+         i_busResponse : IN  bus_response_t
         );
     END COMPONENT;
     
@@ -61,13 +62,13 @@ ARCHITECTURE behavior OF test_DM IS
    signal i_ALURes : std_logic_vector(15 downto 0) := (others => '0');
    signal i_DMRE : std_logic := '0';
    signal i_DMWR : std_logic := '0';
-   signal i_busResponse : std_logic := '0';
+   signal i_busResponse : bus_response_t;
 
  	--Outputs
    signal o_DMRes : std_logic_vector(15 downto 0);
    signal o_wbData : std_logic_vector(15 downto 0);
    signal o_stallRequest : std_logic;
-   signal o_busRequest : std_logic;
+   signal o_busRequest : bus_request_t;
    -- No clocks detected in port list. Replace <clock> below with 
    -- appropriate port name 
  
@@ -99,6 +100,47 @@ BEGIN
       -- wait for <clock>_period*10;
 
       -- insert stimulus here 
+
+      -- READ
+      i_DMRE <= '1';
+      i_DMWR <= '0';
+      i_addr <= "0000101001000001";
+      i_ALURes <= (others => '1');
+
+      wait for 10 ns;
+      assert o_busRequest.writeRequest = '0' and
+             o_busRequest.readRequest = '1' and
+             o_busRequest.addr = "000000101001000001"
+          report "E1"
+          severity ERROR;
+      i_busResponse.stallRequest <= '0';
+      i_busResponse.data <= "0001000100010000";
+      wait for 10 ns;
+      assert o_DMRes = "0001000100010000" and
+             o_wbData = "0001000100010000" and
+             o_stallRequest = '0'
+          report "E2"
+          severity ERROR;
+
+      -- WRITE 
+      i_DMRE <= '0';
+      i_DMWR <= '1';
+      i_addr <= "0000101001000101";
+      i_data <= "0000000100000100";
+      
+      wait for 10 ns;
+      assert o_busRequest.writeRequest = '1' and
+             o_busRequest.readRequest = '0' and
+             o_busRequest.addr = "000000101001000101" and
+             o_busRequest.data = "0000000100000100"
+          report "E3"
+          severity ERROR;
+      i_busResponse.stallRequest <= '0';
+      wait for 10 ns;
+      assert o_wbData = "1111111111111111" and
+             o_stallRequest = '0'
+          report "E4"
+          severity ERROR;
 
       wait;
    end process;
