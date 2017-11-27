@@ -335,6 +335,8 @@ ARCHITECTURE behavior OF CpuCore IS
     signal StallClearController_o_stall : std_logic_vector(0 to 4);
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic;
+    signal i_breakPC : addr_t := (others => '0');
+    signal i_breakEN : std_logic := '0';
 
 begin
     PC_inst: PC port map (
