@@ -20,6 +20,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use work.reg_addr.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -49,11 +51,11 @@ architecture Behavioral of myRegister is
     signal regs : Reg;
 begin
     o_rxData <= regs(to_integer(unsigned(i_rxAddr)));
-    o_rxData <= regs(to_integer(unsigned(i_ryAddr)));
-    o_T <= regs(8);
-    o_SP <= regs(13);
-    o_IH <= regs(11);
+    o_ryData <= regs(to_integer(unsigned(i_ryAddr)));
+    o_T <= regs(conv_integer(T));
+    o_IH <= regs(conv_integer(IH));
+    o_SP <= regs(conv_integer(SP));
 
-    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_wbAddr /= "1111";
+    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_wbAddr /= invalid;
 end Behavioral;
 
