@@ -270,6 +270,18 @@ ARCHITECTURE behavior OF CpuCore IS
             o_predSucc : out std_logic
         );
     end component;
+    component BusDpatcher is
+        port
+        (
+            i_busRequest     : in bus_request_t;
+            o_busResponse    : out bus_response_t;
+    
+            o_sysBusRequest  : out bus_request_t;
+            i_sysBusResponse : in bus_response_t;
+            o_extBusRequest  : out bus_request_t;
+            i_extBusResponse : in bus_response_t
+        );
+    end component;
 
     signal PC_o_PC : std_logic_vector(15 downto 0);
     signal IM_o_inst         : inst_t;
@@ -335,6 +347,12 @@ ARCHITECTURE behavior OF CpuCore IS
     signal StallClearController_o_stall : std_logic_vector(0 to 4);
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic;
+    signal BusDispatcher_IM_o_busResponse    : bus_response_t;
+    signal BusDispatcher_IM_o_sysBusRequest  : bus_request_t;
+    signal BusDispatcher_IM_o_extBusRequest  : bus_request_t;
+    signal BusDispatcher_DM_o_busResponse    : bus_response_t;
+    signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
+    signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
     signal i_breakPC : addr_t := (others => '0');
     signal i_breakEN : std_logic := '0';
 
@@ -348,7 +366,7 @@ begin
     IM_inst: IM port map (
         i_PC => PC_o_PC,
         o_inst => IM_o_inst,
-        i_busResponse => ,
+        i_busResponse => BusDispatcher_IM_o_busResponse,
         o_busRequest => IM_o_busRequest,
         o_stallRequest => IM_o_stallRequest
     );
@@ -496,14 +514,14 @@ begin
     DM_inst: DM port map (
         i_data => EX_MEM_o_addr,
         i_addr => EX_MEM_o_addr,
-        i_ALURes => ,
+        i_ALURes => ALU_o_ALURes,
         o_DMRes => DM_o_DMRes,
         o_wbData => DM_o_wbData,
-        i_DMRE => ,
-        i_DMWR => ,
+        i_DMRE => Control_o_DMRE,
+        i_DMWR => Control_o_DMWR,
         o_stallRequest => DM_o_stallRequest,
         o_busRequest => DM_o_busRequest,
-        i_busResponse => 
+        i_busResponse => BusDispatcher_DM_o_busResponse
     );
     MEM_WB_inst: MEM_WB port map (
         i_clock => i_clock,
@@ -542,6 +560,22 @@ begin
         i_jumpTarget => JumpAndBranch_o_jumpTarget,
         i_predPC => PC_o_PC,
         o_predSucc => BTB_o_predSucc
+    );
+    BusDispatcher_IM_inst: BusDispatcher port map (
+        i_busRequest => IM_o_busRequest,
+        o_busResponse => BusDispatcher_IM_o_busResponse,
+        o_sysBusRequest => BusDispatcher_IM_o_sysBusRequest, -- should be disabled.
+        i_sysBusResponse => i_sysBusResponse,                -- should be disabled.
+        o_extBusRequest => BusDispatcher_IM_o_extBusRequest,
+        i_extBusResponse => i_IM_extBusResponse
+    );
+    BusDispatcher_DM_inst: BusDispatcher port map (
+        i_busRequest => DM_o_busRequest,
+        o_busResponse => BusDispatcher_DM_o_busResponse,
+        o_sysBusRequest => BusDispatcher_DM_o_sysBusRequest,
+        i_sysBusResponse => i_sysBusResponse,
+        o_extBusRequest => BusDispatcher_DM_o_extBusRequest,
+        i_extBusResponse => i_DM_extBusResponse
     );
 
 end;
