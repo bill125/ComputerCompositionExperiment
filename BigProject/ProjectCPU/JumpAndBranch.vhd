@@ -41,7 +41,7 @@ entity JumpAndBranch is
         i_imm : in word_t;
         i_OP : in op_t;
 
-        o_jumpEN : out std_logic;
+        o_jumpEN : out std_logic := '0';
         o_jumpTarget : out word_t
     );
 end JumpAndBranch;

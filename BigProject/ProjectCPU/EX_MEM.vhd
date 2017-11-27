@@ -47,11 +47,11 @@ entity EX_MEM is
         i_wbAddr : in reg_addr_t;
 
         o_ALURes : out word_t;
-        o_DMRE : out std_logic;
-        o_DMWR : out std_logic;
+        o_DMRE : out std_logic := '0';
+        o_DMWR : out std_logic := '0';
         o_addr : out word_t;
         o_data : out word_t;
-        o_wbAddr : out reg_addr_t
+        o_wbAddr : out reg_addr_t := work.reg_addr.invalid
     );
 end EX_MEM;
 
