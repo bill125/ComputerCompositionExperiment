@@ -42,7 +42,7 @@ ARCHITECTURE behavior OF test_IM IS
  
     COMPONENT IM
     PORT(
-         i_PC : IN addr_t;
+         i_PC : IN word_t;
          o_inst : OUT inst_t;
          i_busResponse : IN  bus_response_t;
          o_busRequest : OUT  bus_request_t;
@@ -52,7 +52,7 @@ ARCHITECTURE behavior OF test_IM IS
     
 
    --Inputs
-   signal i_PC : addr_t := (others => '0');
+   signal i_PC : word_t := (others => '0');
    signal i_busResponse : bus_response_t;
 
  	--Outputs

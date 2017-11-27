@@ -33,7 +33,7 @@ use work.constants.all;
 entity IM is
     port
     (
-        i_PC           : in addr_t;
+        i_PC           : in word_t;
         o_inst         : out inst_t;
 
         i_busResponse  : in bus_response_t;

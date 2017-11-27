@@ -26,14 +26,14 @@ ARCHITECTURE behavior OF CpuCore IS
             i_clock : in std_logic;
             i_clear : in std_logic;
     		i_stall : in std_logic;
-    		i_nextPC : in std_logic_vector(15 downto 0);
-    		o_PC : out std_logic_vector(15 downto 0)
+    		i_nextPC : in word_t;
+    		o_PC : out word_t
     	);
     end component;
     component IM 
         port
         (
-            i_PC           : in addr_t;
+            i_PC           : in word_t;
             o_inst         : out inst_t;
     
             i_busResponse  : in bus_response_t;
@@ -46,10 +46,10 @@ ARCHITECTURE behavior OF CpuCore IS
         port (
             i_clock : in std_logic;
             i_inst : in word_t;
-            i_PC : in addr_t;
+            i_PC : in word_t;
             i_stall : in std_logic;
             i_clear : in std_logic;
-            o_PC : out addr_t;
+            o_PC : out word_t;
             o_inst : out word_t;
             o_rxAddr : out std_logic_vector(3 downto 0);
             o_ryAddr : out std_logic_vector(3 downto 0);
@@ -245,11 +245,11 @@ ARCHITECTURE behavior OF CpuCore IS
             -- clear
             i_nReset : in std_logic;
             i_breakEN : in std_logic;
-            i_breakPC : in addr_t;
-            i_jumpTarget : in addr_t;
-            i_predPC : in addr_t;
+            i_breakPC : in word_t;
+            i_jumpTarget : in word_t;
+            i_predPC : in word_t;
             i_predSucc : in std_logic;
-            o_nextPC : out addr_t;
+            o_nextPC : out word_t;
             o_clear : out std_logic_vector(0 to 4);
             
             -- stall
@@ -289,11 +289,11 @@ ARCHITECTURE behavior OF CpuCore IS
         );
     end component;
 
-    signal PC_o_PC : std_logic_vector(15 downto 0);
+    signal PC_o_PC : word_t;
     signal IM_o_inst         : inst_t;
     signal IM_o_busRequest   : bus_request_t;
     signal IM_o_stallRequest : std_logic;
-    signal IF_ID_o_PC : addr_t;
+    signal IF_ID_o_PC : word_t;
     signal IF_ID_o_inst : word_t;
     signal IF_ID_o_rxAddr : std_logic_vector(3 downto 0);
     signal IF_ID_o_ryAddr : std_logic_vector(3 downto 0);
@@ -348,7 +348,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal DM_o_busRequest   : bus_request_t;
     signal MEM_WB_o_wbAddr : reg_addr_t;
     signal MEM_WB_o_wbData : word_t;
-    signal StallClearController_o_nextPC : addr_t;
+    signal StallClearController_o_nextPC : word_t;
     signal StallClearController_o_clear : std_logic_vector(0 to 4);
     signal StallClearController_o_stall : std_logic_vector(0 to 4);
     signal BTB_o_predPC : word_t;
@@ -359,7 +359,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-    signal i_breakPC : addr_t := (others => '0');
+    signal i_breakPC : word_t := (others => '0');
     signal i_breakEN : std_logic := '0';
 
 begin

@@ -37,10 +37,10 @@ entity IF_ID is
     port (
         i_clock : in std_logic;
         i_inst : in word_t;
-        i_PC : in addr_t;
+        i_PC : in word_t;
         i_stall : in std_logic;
         i_clear : in std_logic;
-        o_PC : out addr_t := (others => '0');
+        o_PC : out word_t := (others => '0');
         o_inst : out word_t := work.inst_const.INST_NOP;
         o_rxAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
         o_ryAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;

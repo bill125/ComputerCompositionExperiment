@@ -62,6 +62,7 @@ begin
                     o_jumpTarget <= i_OP1 + i_imm;
                 else
                     o_jumpEN <= '0';
+                    o_jumpTarget <= (others => '-');
                 end if;
             when op_BNEZ => -- if rx /= 0 then PC = PC + imm
                 if i_OP0 /= x"0000" then
@@ -69,11 +70,14 @@ begin
                     o_jumpTarget <= i_OP1 + i_imm;
                 else
                     o_jumpEN <= '0';
+                    o_jumpTarget <= (others => '-');
                 end if;
             when op_JR =>
                 o_jumpEN <= '1';
                 o_jumpTarget <= i_OP0;
             when others =>
+                o_jumpEN <= '0';
+                o_jumpTarget <= (others => '-');
         end case;
     end process;
 
