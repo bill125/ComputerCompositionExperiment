@@ -53,6 +53,6 @@ begin
 
     o_inst <= i_busResponse.data;
 
-    o_stallRequest <= not i_busResponse.stallRequest;
+    o_stallRequest <= i_busResponse.stallRequest;
 end Behavioral;
 

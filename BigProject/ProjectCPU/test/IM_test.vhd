@@ -109,7 +109,7 @@ BEGIN
       i_busResponse.stallRequest <= '1';
       wait for 50 ns;
       assert o_inst = "1111000100000000" and 
-             o_stallRequest = '0'
+             o_stallRequest = '1'
           report "E2"
           severity ERROR;
 
