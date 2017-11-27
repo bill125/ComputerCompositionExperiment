@@ -34,6 +34,7 @@ entity CPUOverall is
     port
     (
         i_clock : in std_logic;  -- high clock (100MHz?)
+        i_nReset : in std_logic;
         -- o_clock : std_logic;  -- CPU clock
 
         i_sysBusRequest : in bus_request_t;   
@@ -75,6 +76,7 @@ architecture Behavioral of CPUOverall is
         port
         (
             i_clock : std_logic; 
+            i_nReset : std_logic;
 
             o_sysBusRequest : bus_request_t;  
             i_sysBusResponse : bus_response_t; 
@@ -184,6 +186,7 @@ begin
 
     CPUCore_inst: CPUCore port map (
         i_clock => clock_50m,
+        i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
         i_sysBusResponse => SystemBusController_busResponse, 

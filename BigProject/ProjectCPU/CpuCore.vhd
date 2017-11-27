@@ -7,7 +7,8 @@ use work.inst_const;
 
 entity CpuCore is
     port (
-        i_clock : std_logic;  -- CPU主频时钟
+        i_clock : in std_logic;  -- CPU主频时钟
+        i_nReset : in std_logic;
 
         o_sysBusRequest : out  bus_request_t;   -- 系统总线
         i_sysBusResponse:  in  bus_response_t; 
@@ -22,6 +23,7 @@ ARCHITECTURE behavior OF CpuCore IS
     component PC 
     	port (
             i_clock : in std_logic;
+            i_clear : in std_logic;
     		i_stall : in std_logic;
     		i_nextPC : in std_logic_vector(15 downto 0);
     		o_PC : out std_logic_vector(15 downto 0)
@@ -240,6 +242,7 @@ ARCHITECTURE behavior OF CpuCore IS
     component StallClearController 
         port (
             -- clear
+            i_nReset : in std_logic;
             i_breakEN : in std_logic;
             i_breakPC : in addr_t;
             i_jumpTarget : in addr_t;
@@ -345,8 +348,8 @@ ARCHITECTURE behavior OF CpuCore IS
     signal MEM_WB_o_wbAddr : reg_addr_t := work.reg_addr.invalid;
     signal MEM_WB_o_wbData : word_t;
     signal StallClearController_o_nextPC : addr_t := (others => '0');
-    signal StallClearController_o_clear : std_logic_vector(0 to 4);
-    signal StallClearController_o_stall : std_logic_vector(0 to 4);
+    signal StallClearController_o_clear : std_logic_vector(0 to 4) := (others => '0');
+    signal StallClearController_o_stall : std_logic_vector(0 to 4) := (others => '0');
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic := '1';
     signal BusDispatcher_IM_o_busResponse    : bus_response_t;
@@ -362,6 +365,7 @@ begin
     PC_inst: PC port map (
         i_clock => i_clock,
         i_stall => StallClearController_o_stall(stage_PC) ,
+        i_clear => StallClearController_o_clear(stage_PC) ,
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
@@ -535,6 +539,7 @@ begin
         o_wbData => MEM_WB_o_wbData
     );
     StallClearController_inst: StallClearController port map (
+        i_nReset => i_nReset,
         -- clea => ,
         i_breakEN => i_breakEN,
         i_breakPC => i_breakPC,

@@ -33,6 +33,7 @@ entity PC is
 	port (
         i_clock : in std_logic;
 		i_stall : in std_logic;
+        i_clear : in std_logic;
 		i_nextPC : in std_logic_vector(15 downto 0);
 		o_PC : out std_logic_vector(15 downto 0)
 	);
@@ -44,7 +45,11 @@ begin
     process(i_clock)
     begin
         if rising_edge(i_clock) and i_stall = '0' then
-            o_PC <= i_nextPC;
+            if i_clear = '1' then
+                o_PC <= (others => '0');
+            else
+                o_PC <= i_nextPC;
+            end if;
         end if;
     end process;
 end Behavioral;
