@@ -1,0 +1,32 @@
+CPU_Core
+    i_clock : std_logic;  -- CPU主频时钟
+
+    o_sysBusRequest : bus_request_t;   -- 系统总线
+    i_sysBusResponse : bus_response_t; 
+    o_IM_extBusRequest : bus_request_t;   -- 拓展总线
+    i_IM_extBusResponse : bus_response_t  
+    o_DM_extBusRequest : bus_request_t;
+    o_IM_extBusResponse : bus_response_t;
+
+
+CPU_Overall
+    i_clock : std_logic;  -- 高频时钟 (100MHz?)
+    o_clock : std_logic;  -- CPU主频时钟
+
+    i_sysBusRequest : bus_request_t;   -- 系统总线
+    o_sysBusResponse : bus_response_t; 
+    i_IM_extBusRequest : bus_request_t;   -- 拓展总线
+    o_IM_extBusResponse : bus_response_t  
+    i_DM_extBusRequest : bus_request_t;
+    o_IM_extBusResponse : bus_response_t;
+
+    -- CPLD 交互接口
+    i_tbre         : in std_logic;
+    i_tsre         : in std_logic;
+    o_wrn          : out std_logic;
+    i_data_ready   : in std_logic;
+    o_rdn          : out std_logic;
+
+    -- TODO: VGA 交互接口
+
+    -- TODO: PS/2 交互接口
