@@ -42,6 +42,8 @@ entity ID_EX is
         i_OP : in op_t;
         i_OP0 : in word_t;
         i_OP1 : in word_t;
+        i_OP0Src : in opSrc_t;
+        i_OP1Src : in opSrc_t;
         i_clear : in std_logic;
         i_imm : in word_t;
         i_stall : in std_logic;
@@ -53,6 +55,8 @@ entity ID_EX is
         o_OP : out op_t;
         o_OP0 : out word_t;
         o_OP1 : out word_t;
+        o_OP0Src : out opSrc_t;
+        o_OP1Src : out opSrc_t;
         o_imm : out word_t;
         o_wbAddr : out reg_addr_t
     );
@@ -77,6 +81,8 @@ begin
                 o_OP <= i_OP;
                 o_OP0 <= i_OP0;
                 o_OP1 <= i_OP1;
+                o_OP0Src <= i_OP0Src;
+                o_OP1Src <= i_OP1Src;
                 o_imm <= i_imm;
                 o_wbAddr <= i_wbAddr;
             end if;

@@ -144,6 +144,8 @@ ARCHITECTURE behavior OF CpuCore IS
             i_OP : in op_t;
             i_OP0 : in word_t;
             i_OP1 : in word_t;
+            i_OP0Src : in opSrc_t;
+            i_OP1Src : in opSrc_t;
             i_clear : in std_logic;
             i_imm : in word_t;
             i_stall : in std_logic;
@@ -155,6 +157,8 @@ ARCHITECTURE behavior OF CpuCore IS
             o_OP : out op_t;
             o_OP0 : out word_t;
             o_OP1 : out word_t;
+            o_OP0Src : out opSrc_t;
+            o_OP1Src : out opSrc_t;
             o_imm : out word_t;
             o_wbAddr : out reg_addr_t
         );
@@ -306,6 +310,8 @@ ARCHITECTURE behavior OF CpuCore IS
     signal ID_EX_o_OP : op_t;
     signal ID_EX_o_OP0 : word_t;
     signal ID_EX_o_OP1 : word_t;
+    signal ID_EX_o_OP0Src : opSrc_t;
+    signal ID_EX_o_OP1Src : opSrc_t;
     signal ID_EX_o_imm : word_t;
     signal ID_EX_o_wbAddr : reg_addr_t;
     signal ALU_MUX_o_addr : addr_t;
@@ -432,6 +438,8 @@ begin
         i_OP => Control_o_OP,
         i_OP0 => ForwardUnit_o_OP0,
         i_OP1 => ForwardUnit_o_OP1,
+        i_OP0Src => Control_o_OP0Src,
+        i_OP1Src => Control_o_OP1Src,
         i_clear => StallClearController_o_clear(stage_ID_EX),
         i_imm => ImmExtend_o_immExtend,
         i_stall => StallClearController_o_stall(stage_ID_EX),
@@ -442,6 +450,8 @@ begin
         o_OP => ID_EX_o_OP,
         o_OP0 => ID_EX_o_OP0,
         o_OP1 => ID_EX_o_OP1,
+        o_OP0Src => ID_EX_o_OP0Src,
+        o_OP1Src => ID_EX_o_OP1Src,
         o_imm => ID_EX_o_imm,
         o_wbAddr => ID_EX_o_wbAddr
     );
@@ -494,41 +504,41 @@ begin
         i_busResponse => 
     );
     MEM_WB_inst: MEM_WB port map (
-        i_clock => ,
-        i_clear => ,
-        i_stall => ,
-        i_wbAddr => ,
-        i_wbData => ,
+        i_clock => i_clock,
+        i_clear => StallClearController_o_clear(stage_MEM_WB),
+        i_stall => StallClearController_o_stall(stage_MEM_WB),
+        i_wbAddr => EX_MEM_o_wbAddr,
+        i_wbData => DM_o_wbData,
         o_wbAddr => MEM_WB_o_wbAddr,
         o_wbData => MEM_WB_o_wbData
     );
     StallClearController_inst: StallClearController port map (
         -- clea => ,
-        i_breakEN => ,
-        i_breakPC => ,
-        i_jumpTarget => ,
-        i_predPC => ,
-        i_predSucc => ,
+        i_breakEN => i_breakEN,
+        i_breakPC => i_breakPC,
+        i_jumpTarget => JumpAndBranch_o_jumpTarget,
+        i_predPC => BTB_o_predPC,
+        i_predSucc => BTB_o_predSucc,
         o_nextPC => StallClearController_o_nextPC,
         o_clear => StallClearController_o_clear,
         -- stal => ,
-        i_wbAddr => ,
-        i_DMStallReq => ,
-        i_IFStallReq => ,
-        i_DMRE => ,
-        i_OP0Addr => ,
-        i_OP1Addr => ,
+        i_wbAddr => ID_EX_o_wbAddr,
+        i_DMStallReq => DM_o_stallRequest,
+        i_IFStallReq => IM_o_stallRequest,
+        i_DMRE => ID_EX_o_DMRE,
+        i_OP0Addr => Decoder_o_OP0Addr,
+        i_OP1Addr => Decoder_o_OP1Addr,
         o_stall => StallClearController_o_stall
     );
     BTB_inst: BTB port map (
         -- BTBRea => ,
-        i_IMPC => ,
+        i_IMPC => PC_o_PC,
         o_predPC => BTB_o_predPC,
         -- BTBWrit => ,
-        i_REGPC => ,
-        i_jumpEN => ,
-        i_jumpTarget => ,
-        i_predPC => ,
+        i_REGPC => IF_ID_o_PC,
+        i_jumpEN => JumpAndBranch_o_jumpEN,
+        i_jumpTarget => JumpAndBranch_o_jumpTarget,
+        i_predPC => PC_o_PC,
         o_predSucc => BTB_o_predSucc
     );
 
