@@ -51,7 +51,7 @@ ARCHITECTURE behavior OF CpuCore IS
             o_rzAddr : out std_logic_vector(3 downto 0)
         );
     end component;
-    component myRegter is
+    component myRegister
     	Port (
             i_rxAddr : in std_logic_vector(2 downto 0);
             i_ryAddr : in std_logic_vector(2 downto 0);
