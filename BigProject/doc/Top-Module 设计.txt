@@ -20,12 +20,26 @@ CPU_Overall
     i_DM_extBusRequest : bus_request_t;
     o_IM_extBusResponse : bus_response_t;
 
-    -- CPLD 交互接口
-    i_tbre         : in std_logic;
-    i_tsre         : in std_logic;
-    o_wrn          : out std_logic;
-    i_data_ready   : in std_logic;
-    o_rdn          : out std_logic;
+    -- 系统总线交互
+    io_sysBus_data : inout word_t;
+    o_sysBus_addr : out bus_addr_t;
+    o_RAM1_nWE : out std_logic;
+    o_RAM1_nOE : out std_logic;
+    o_RAM1_nCE : out std_logic;
+
+    -- 拓展总线交互
+    io_extBus_data : inout word_t;
+    o_extBus_addr : bus_addr_t;
+    o_RAM2_nWE : out std_logic;
+    o_RAM2_nOE : out std_logic;
+    o_RAM2_nCE : out std_logic;
+
+    -- UART 交互接口
+    i_UART_tbre         : in std_logic;
+    i_UART_tsre         : in std_logic;
+    o_UART_wrn          : out std_logic;
+    i_UART_data_ready   : in std_logic;
+    o_UART_rdn          : out std_logic;
 
     -- TODO: VGA 交互接口
 
