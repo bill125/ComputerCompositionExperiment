@@ -44,11 +44,11 @@ entity Decoder is
         i_PC : in std_logic_vector(15 downto 0);
         i_T : in std_logic_vector(15 downto 0);
 
-        o_OP0Addr : out std_logic_vector(3 downto 0);
+        o_OP0Addr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
         o_OP0Data : out std_logic_vector(15 downto 0);
-        o_OP1Addr : out std_logic_vector(3 downto 0);
+        o_OP1Addr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
         o_OP1Data : out std_logic_vector(15 downto 0);
-        o_wbAddr : out std_logic_vector(3 downto 0)
+        o_wbAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid
     );
 end Decoder;
 

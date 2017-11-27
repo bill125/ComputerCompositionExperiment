@@ -40,9 +40,9 @@ entity Control is
         o_wbType : out std_logic_vector (2 downto 0);
         o_OP0Src : out opSrc_t;
         o_OP1Src : out opSrc_t;
-        o_DMRE : out std_logic;
-        o_DMWR : out std_logic;
-        o_OP : out op_t
+        o_DMRE : out std_logic := '0';
+        o_DMWR : out std_logic := '0';
+        o_OP : out op_t := op_NOP
     );
 end Control;
 

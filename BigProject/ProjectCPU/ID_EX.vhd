@@ -50,15 +50,15 @@ entity ID_EX is
         i_wbAddr : in reg_addr_t;
 
         o_ALUOP : out alu_op_t;
-        o_DMRE : out std_logic;
-        o_DMWR : out std_logic;
-        o_OP : out op_t;
+        o_DMRE : out std_logic := '0';
+        o_DMWR : out std_logic := '0';
+        o_OP : out op_t := op_NOP;
         o_OP0 : out word_t;
         o_OP1 : out word_t;
         o_OP0Src : out opSrc_t;
         o_OP1Src : out opSrc_t;
         o_imm : out word_t;
-        o_wbAddr : out reg_addr_t
+        o_wbAddr : out reg_addr_t := work.reg_addr.invalid
     );
 end ID_EX;
 

@@ -39,7 +39,7 @@ entity IM is
         i_busResponse  : in bus_response_t;
         o_busRequest   : out bus_request_t;
 
-        o_stallRequest : out std_logic
+        o_stallRequest : out std_logic := '0'
     );   
 end IM;
 
