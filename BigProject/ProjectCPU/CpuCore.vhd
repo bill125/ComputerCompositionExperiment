@@ -1,4 +1,22 @@
-ARCHITECTURE behavior OF <name> IS
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use work.op_type_constants;
+use work.constants.All;
+
+entity CpuCore is
+    port (
+        i_clock : std_logic;  -- CPU主频时钟
+
+        o_sysBusRequest : bus_request_t;   -- 系统总线
+        i_sysBusResponse : bus_response_t; 
+        o_IM_extBusRequest : bus_request_t;   -- 拓展总线
+        i_IM_extBusResponse : bus_response_t;
+        o_DM_extBusRequest : bus_request_t;
+        o_IM_extBusResponse : bus_response_t
+    );
+end entity;
+
+ARCHITECTURE behavior OF CpuCore IS
     component PC 
     	port (
             i_clock : in std_logic;
@@ -51,7 +69,7 @@ ARCHITECTURE behavior OF <name> IS
             i_inst : in  std_logic_vector (15 downto 0);
             o_immExtend : out std_logic_vector (15 downto 0)
         );
-    end ImmExtend component;
+    end component;
     component Control 
         Port(
             i_inst : in inst_t;
