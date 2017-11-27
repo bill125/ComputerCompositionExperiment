@@ -10,7 +10,7 @@ def indent(s):
 
 file_list = ['PC', 'IM', 'IF_ID', 'Register', 'ImmExtend', 'Control','Decoder', 'ForwardUnit', 'JumpAndBranch', 'ID_EX', 'ALU_MUX', 'ALU', 'EX_MEM', 'DM', 'MEM_WB', 'StallClearController', 'BTB']
 
-file_list = ['SystemBusController', 'ExtBusController', 'UART']
+#file_list = ['SystemBusController', 'ExtBusController', 'UART']
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_dir', type=str, required=True)
@@ -59,7 +59,7 @@ for file_name in file_list:
                 signal += ';'
             signal = name + '_' + signal
             port_map += name + '_' + signal_name
-            out_signals.append(signal)
+            out_signals.append('signal ' + re.sub(r':\s*out', ':', signal, flags=re.IGNORECASE))
         port_map += ',\n'
     port_map = port_map[:-2] + '\n);'
     print('port_map=')
