@@ -187,7 +187,7 @@ begin
     -- TODO: Add clock Frequency Divider
     clock_50m <= i_clock;
     clock_25m <= i_clock;
-    o_Led <= CPUCore_o_PC;
+    o_Led <= (others => '1');--CPUCore_o_PC;
 
     CPUCore_inst: CPUCore port map (
         i_clock => clock_50m,
