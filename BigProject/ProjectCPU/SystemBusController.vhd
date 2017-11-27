@@ -58,8 +58,8 @@ end SystemBusController;
 architecture Behavioral of SystemBusController is
 begin
     
-    process (i_clock, i_busRequest, i_UART_readDone, i_UART_writeDone
-             i_UART_data, io_bus_data)
+    process (i_clock, i_busRequest, i_UART_readDone, i_UART_writeDone,
+             i_UART_data, io_bus_data, i_UART_readReady, i_UART_writeReady)
     begin
         o_busResponse.stallRequest <= '0';
         o_UART_writeBegin <= '0';
