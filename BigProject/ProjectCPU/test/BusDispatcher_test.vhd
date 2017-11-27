@@ -102,9 +102,9 @@ BEGIN
 
       i_busRequest.writeRequest <= '0';
       i_busRequest.readRequest <= '1';
-      i_busRequest.addr <= "001000000000000000";
+      i_busRequest.addr <= "000000000000000000";
       wait for 10 ns;
-      assert o_sysBusRequest.addr = "001000000000000000" and
+      assert o_sysBusRequest.addr = "000000000000000000" and
              o_sysBusRequest.readRequest = '1' and 
              o_sysBusRequest.writeRequest = '0' and
              o_extBusRequest.writeRequest = '0' and
@@ -125,9 +125,9 @@ BEGIN
 
       i_busRequest.writeRequest <= '1';
       i_busRequest.readRequest <= '0';
-      i_busRequest.addr <= "000000000000000010";
+      i_busRequest.addr <= "001000000000000010";
       wait for 10 ns;
-      assert o_extBusRequest.addr = "000000000000000010" and
+      assert o_extBusRequest.addr = "001000000000000010" and
              o_extBusRequest.readRequest = '0' and
              o_extBusRequest.writeRequest = '1' and
              o_sysBusRequest.writeRequest = '0' and
