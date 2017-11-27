@@ -363,10 +363,10 @@ begin
         o_rzAddr => IF_ID_o_rzAddr
     );
     myRegister_inst: myRegister port map (
-        i_rxAddr => ,
-        i_ryAddr => ,
-        i_wbData => ,
-        i_wbAddr => ,
+        i_rxAddr => IF_ID_o_rxAddr,
+        i_ryAddr => IF_ID_o_ryAddr,
+        i_wbData => MEM_WB_o_wbData,
+        i_wbAddr => MEM_WB_o_wbAddr,
         o_rxData => myRegister_o_rxData,
         o_ryData => myRegister_o_ryData,
         o_T => myRegister_o_T,
@@ -374,11 +374,11 @@ begin
         o_IH => myRegister_o_IH
     );
     ImmExtend_inst: ImmExtend port map (
-        i_inst => ,
+        i_inst => IF_ID_o_inst,
         o_immExtend => ImmExtend_o_immExtend
     );
     Control_inst: Control port map (
-        i_inst => ,
+        i_inst => IF_ID_o_inst,
         o_ALUOP => Control_o_ALUOP,
         o_OP0Type => Control_o_OP0Type,
         o_OP1Type => Control_o_OP1Type,
@@ -390,18 +390,18 @@ begin
         o_OP => Control_o_OP
     );
     Decoder_inst: Decoder port map (
-        i_OP0Type => ,
-        i_OP1Type => ,
-        i_wbType => ,
-        i_rxAddr => ,
-        i_rxData => ,
-        i_ryAddr => ,
-        i_ryData => ,
-        i_rzAddr => ,
-        i_IH => ,
-        i_SP => ,
-        i_PC => ,
-        i_T => ,
+        i_OP0Type => Control_o_OP0Type,
+        i_OP1Type => Control_o_OP0Type,
+        i_wbType => Control_o_wbType,
+        i_rxAddr => IF_ID_o_rxAddr,
+        i_rxData => myRegister_o_rxData,
+        i_ryAddr => IF_ID_o_ryAddr,
+        i_ryData => myRegister_o_ryData,
+        i_rzAddr => IF_ID_o_rzAddr,
+        i_IH => myRegister_o_IH,
+        i_SP => myRegister_o_SP,
+        i_PC => IF_ID_o_PC,
+        i_T => myRegister_o_T,
         o_OP0Addr => Decoder_o_OP0Addr,
         o_OP0Data => Decoder_o_OP0Data,
         o_OP1Addr => Decoder_o_OP1Addr,
@@ -409,16 +409,16 @@ begin
         o_wbAddr => Decoder_o_wbAddr
     );
     ForwardUnit_inst: ForwardUnit port map (
-        i_OP0Data => ,
-        i_OP1Data => ,
-        i_OP0Addr => ,
-        i_OP1Addr => ,
-        i_ALU1Res => ,
-        i_ALU1Addr => ,
-        i_ALU2Res => ,
-        i_ALU2Addr => ,
-        i_DMRes => ,
-        i_DMAddr => ,
+        i_OP0Data => Decoder_o_OP0Data,
+        i_OP1Data => Decoder_o_OP1Data,
+        i_OP0Addr => Decoder_o_OP0Addr,
+        i_OP1Addr => Decoder_o_OP1Addr,
+        i_ALU1Res => ALU_o_ALURes,
+        i_ALU1Addr => ID_EX_o_wbAddr,
+        i_ALU2Res => EX_MEM_o_ALURes,
+        i_ALU2Addr => EX_MEM_o_wbAddr,
+        i_DMRes => DM_o_DMRes,
+        i_DMAddr => EX_MEM_o_wbAddr,
         o_OP0 => ForwardUnit_o_OP0,
         o_OP1 => ForwardUnit_o_OP1
     );
@@ -456,21 +456,21 @@ begin
         o_wbAddr => ID_EX_o_wbAddr
     );
     ALU_MUX_inst: ALU_MUX port map (
-        i_ALURes => ,
-        i_OP0 => ,
-        i_OP1 => ,
-        i_OP => ,
+        i_ALURes => ALU_o_ALURes,
+        i_OP0 => ID_EX_o_OP0,
+        i_OP1 => ID_EX_o_OP1,
+        i_OP => ID_EX_o_OP,
         o_addr => ALU_MUX_o_addr,
         o_data => ALU_MUX_o_data,
         o_ALURes => ALU_MUX_o_ALURes
     );
     ALU_inst: ALU port map (
-        i_OP0 => ,
-        i_OP1 => ,
-        i_imm => ,
-        i_OP0Src => ,
-        i_OP1Src => ,
-        i_ALUOP => ,
+        i_OP0 => ID_EX_o_OP0,
+        i_OP1 => ID_EX_o_OP1,
+        i_imm => ID_EX_o_imm,
+        i_OP0Src => ID_EX_o_OP0Src,
+        i_OP1Src => ID_EX_o_OP1Src,
+        i_ALUOP => ID_EX_o_ALUOP,
         o_ALURes => ALU_o_ALURes
     );
     EX_MEM_inst: EX_MEM port map (
