@@ -6,7 +6,7 @@ CPU_Core
     o_IM_extBusRequest : bus_request_t;   -- 拓展总线
     i_IM_extBusResponse : bus_response_t  
     o_DM_extBusRequest : bus_request_t;
-    o_IM_extBusResponse : bus_response_t;
+    i_DM_extBusResponse : bus_response_t;
 
 
 CPU_Overall

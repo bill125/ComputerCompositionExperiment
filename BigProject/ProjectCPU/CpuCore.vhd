@@ -51,7 +51,7 @@ ARCHITECTURE behavior OF CpuCore IS
             o_rzAddr : out std_logic_vector(3 downto 0)
         );
     end component;
-    component myRegter is
+    component myRegister
     	Port (
             i_rxAddr : in std_logic_vector(2 downto 0);
             i_ryAddr : in std_logic_vector(2 downto 0);
@@ -332,24 +332,24 @@ ARCHITECTURE behavior OF CpuCore IS
 
 begin
     PC_inst: PC port map (
-        i_clock => ,
-        i_stall => ,
-        i_nextPC => ,
+        i_clock => i_clock,
+        i_stall => StallClearController_o_stall(stage_PC) ,
+        i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
     IM_inst: IM port map (
-        i_PC => ,
+        i_PC => PC_o_PC,
         o_inst => IM_o_inst,
         i_busResponse => ,
         o_busRequest => IM_o_busRequest,
         o_stallRequest => IM_o_stallRequest
     );
     IF_ID_inst: IF_ID port map (
-        i_clock => ,
-        i_inst => ,
-        i_PC => ,
-        i_stall => ,
-        i_clear => ,
+        i_clock => i_clock,
+        i_inst => IM_o_inst,
+        i_PC => PC_o_PC,
+        i_stall => StallClearController_o_stall(stage_IF_ID),
+        i_clear => StallClearController_o_clear(stage_IF_ID),
         o_PC => IF_ID_o_PC,
         o_inst => IF_ID_o_inst,
         o_rxAddr => IF_ID_o_rxAddr,
@@ -417,25 +417,25 @@ begin
         o_OP1 => ForwardUnit_o_OP1
     );
     JumpAndBranch_inst: JumpAndBranch port map (
-        i_OP0 => ,
-        i_OP1 => ,
-        i_imm => ,
-        i_OP => ,
+        i_OP0 => ForwardUnit_o_OP1,
+        i_OP1 => ForwardUnit_o_OP1,
+        i_imm => ImmExtend_o_immExtend,
+        i_OP => Control_o_OP,
         o_jumpEN => JumpAndBranch_o_jumpEN,
         o_jumpTarget => JumpAndBranch_o_jumpTarget
     );
     ID_EX_inst: ID_EX port map (
-        i_clock => ,
-        i_ALUOP => ,
-        i_DMRE => ,
-        i_DMWR => ,
-        i_OP => ,
-        i_OP0 => ,
-        i_OP1 => ,
-        i_clear => ,
-        i_imm => ,
-        i_stall => ,
-        i_wbAddr => ,
+        i_clock => i_clock,
+        i_ALUOP => Control_o_ALUOP,
+        i_DMRE => Control_o_DMRE,
+        i_DMWR => Control_o_DMWR,
+        i_OP => Control_o_OP,
+        i_OP0 => ForwardUnit_o_OP0,
+        i_OP1 => ForwardUnit_o_OP1,
+        i_clear => StallClearController_o_clear(stage_ID_EX),
+        i_imm => ImmExtend_o_immExtend,
+        i_stall => StallClearController_o_stall(stage_ID_EX),
+        i_wbAddr => Decoder_o_wbAddr,
         o_ALUOP => ID_EX_o_ALUOP,
         o_DMRE => ID_EX_o_DMRE,
         o_DMWR => ID_EX_o_DMWR,
@@ -464,16 +464,16 @@ begin
         o_ALURes => ALU_o_ALURes
     );
     EX_MEM_inst: EX_MEM port map (
-        i_clock => ,
-        i_ALURes => ,
-        i_DMRE => ,
-        i_DMWR => ,
+        i_clock => i_clock,
+        i_ALURes => ALU_MUX_o_ALURes,
+        i_DMRE => ID_EX_o_DMRE,
+        i_DMWR => ID_EX_o_DMWR,
         -- i_OP1 => ,
-        i_addr => ,
-        i_clear => ,
-        i_data => ,
-        i_stall => ,
-        i_wbAddr => ,
+        i_addr => ALU_MUX_o_addr, --TODO
+        i_clear => StallClearController_o_clear(stage_EX_MEM),
+        i_data => ALU_MUX_o_data,
+        i_stall => StallClearController_o_stall(stage_EX_MEM),
+        i_wbAddr => ID_EX_o_wbAddr,
         o_ALURes => EX_MEM_o_ALURes,
         o_DMRE => EX_MEM_o_DMRE,
         o_DMWR => EX_MEM_o_DMWR,
@@ -482,8 +482,8 @@ begin
         o_wbAddr => EX_MEM_o_wbAddr
     );
     DM_inst: DM port map (
-        i_data => ,
-        i_addr => ,
+        i_data => EX_MEM_o_addr,
+        i_addr => EX_MEM_o_addr,
         i_ALURes => ,
         o_DMRes => DM_o_DMRes,
         o_wbData => DM_o_wbData,
