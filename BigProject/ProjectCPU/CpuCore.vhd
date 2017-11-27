@@ -15,7 +15,8 @@ entity CpuCore is
         o_IM_extBusRequest : out  bus_request_t;   -- 拓展总线
         i_IM_extBusResponse:  in  bus_response_t;
         o_DM_extBusRequest : out  bus_request_t;
-        i_DM_extBusResponse:  in  bus_response_t
+        i_DM_extBusResponse:  in  bus_response_t;
+        o_PC : out word_t
     );
 end entity;
 
@@ -369,6 +370,7 @@ begin
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
+    o_PC <= PC_o_PC;
     IM_inst: IM port map (
         i_PC => PC_o_PC,
         o_inst => IM_o_inst,

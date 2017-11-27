@@ -37,6 +37,8 @@ entity CPUOverall is
         i_nReset : in std_logic;
         -- o_clock : std_logic;  -- CPU clock
 
+        o_Led : out word_t;
+
         i_sysBusRequest : in bus_request_t;   
         o_sysBusResponse : out bus_response_t; 
         i_IM_extBusRequest : in bus_request_t;
@@ -83,7 +85,8 @@ architecture Behavioral of CPUOverall is
             o_IM_extBusRequest : bus_request_t;  
             i_IM_extBusResponse : bus_response_t;
             o_DM_extBusRequest : bus_request_t;
-            i_DM_extBusResponse : bus_response_t
+            i_DM_extBusResponse : bus_response_t;
+            o_PC : out word_t
         );
     end component;
     component SystemBusController 
@@ -155,6 +158,7 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_sysBusRequest : bus_request_t;
     signal CPUCore_IM_extBusRequest : bus_request_t;
     signal CPUCore_DM_extBusRequest : bus_request_t;
+	 signal CPUCore_o_PC : word_t;
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_data : word_t;
     signal SystemBusController_UART_readBegin : std_logic;
@@ -183,6 +187,7 @@ begin
     -- TODO: Add clock Frequency Divider
     clock_50m <= i_clock;
     clock_25m <= i_clock;
+    o_Led <= CPUCore_o_PC;
 
     CPUCore_inst: CPUCore port map (
         i_clock => clock_50m,
@@ -193,7 +198,9 @@ begin
         o_IM_extBusRequest => CPUCore_IM_extBusRequest,  
         i_IM_extBusResponse => ExtBusController_IM_busResponse,  
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
-        i_DM_extBusResponse => ExtBusController_DM_busResponse
+        i_DM_extBusResponse => ExtBusController_DM_busResponse,
+		  
+		  o_PC => CPUCore_o_PC
     );
 
     SystemBusController_inst: SystemBusController port map (
