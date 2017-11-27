@@ -270,7 +270,7 @@ ARCHITECTURE behavior OF CpuCore IS
             o_predSucc : out std_logic
         );
     end component;
-    component BusDpatcher is
+    component BusDispatcher
         port
         (
             i_busRequest     : in bus_request_t;
@@ -383,8 +383,8 @@ begin
         o_rzAddr => IF_ID_o_rzAddr
     );
     myRegister_inst: myRegister port map (
-        i_rxAddr => IF_ID_o_rxAddr,
-        i_ryAddr => IF_ID_o_ryAddr,
+        i_rxAddr => IF_ID_o_rxAddr(2 downto 0),
+        i_ryAddr => IF_ID_o_ryAddr(2 downto 0),
         i_wbData => MEM_WB_o_wbData,
         i_wbAddr => MEM_WB_o_wbAddr,
         o_rxData => myRegister_o_rxData,
