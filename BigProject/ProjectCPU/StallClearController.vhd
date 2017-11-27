@@ -33,6 +33,7 @@ use work.op_type_constants;
 
 entity StallClearController is
     port (
+        i_nReset : in std_logic;
         -- clear
         i_breakEN : in std_logic;
         i_breakPC : in addr_t;
@@ -60,7 +61,9 @@ begin
     -- o_clear(0) <= '0';
     o_clear(1 to 4) <= clear(1 to 4) or ((not stall(1 to 4)) and stall(0 to 3)); -- clear when needing stall
     o_nextPC <= i_breakPC when i_breakEN = '1' else i_jumpTarget;
-    clear(1) <= not i_predSucc;
+    clear(1) <= ((not i_nReset) or (not i_predSucc));
+    clear(0) <= not i_nReset;
+    clear(2 to 4) <= (others => not i_nReset);
 
     -- stall
     PC_stall     <= (0 to stage_PC     => '1', others => '0')  -- IF stall request
