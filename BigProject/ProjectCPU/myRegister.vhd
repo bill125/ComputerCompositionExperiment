@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    12:16:04 11/24/2017 
 -- Design Name: 
--- Module Name:    Register - Behavioral 
+-- Module Name:    myRegister - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 

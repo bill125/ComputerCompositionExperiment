@@ -1,4 +1,22 @@
-ARCHITECTURE behavior OF <name> IS
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use work.op_type_constants;
+use work.constants.All;
+
+entity CpuCore is
+    port (
+        i_clock : std_logic;  -- CPU主频时钟
+
+        o_sysBusRequest : out  bus_request_t;   -- 系统总线
+        i_sysBusResponse:  in  bus_response_t; 
+        o_IM_extBusRequest : out  bus_request_t;   -- 拓展总线
+        i_IM_extBusResponse:  in  bus_response_t;
+        o_DM_extBusRequest : out  bus_request_t;
+        i_DM_extBusResponse:  in  bus_response_t
+    );
+end entity;
+
+ARCHITECTURE behavior OF CpuCore IS
     component PC 
     	port (
             i_clock : in std_logic;
@@ -51,7 +69,7 @@ ARCHITECTURE behavior OF <name> IS
             i_inst : in  std_logic_vector (15 downto 0);
             o_immExtend : out std_logic_vector (15 downto 0)
         );
-    end ImmExtend component;
+    end component;
     component Control 
         Port(
             i_inst : in inst_t;
@@ -313,20 +331,20 @@ ARCHITECTURE behavior OF <name> IS
     signal BTB_o_predSucc : std_logic;
 
 begin
-    PC_inst: port map (
+    PC_inst: PC port map (
         i_clock => ,
         i_stall => ,
         i_nextPC => ,
         o_PC => PC_o_PC
     );
-    IM_inst: port map (
+    IM_inst: IM port map (
         i_PC => ,
         o_inst => IM_o_inst,
         i_busResponse => ,
         o_busRequest => IM_o_busRequest,
         o_stallRequest => IM_o_stallRequest
     );
-    IF_ID_inst: port map (
+    IF_ID_inst: IF_ID port map (
         i_clock => ,
         i_inst => ,
         i_PC => ,
@@ -338,7 +356,7 @@ begin
         o_ryAddr => IF_ID_o_ryAddr,
         o_rzAddr => IF_ID_o_rzAddr
     );
-    myRegister_inst: port map (
+    myRegister_inst: myRegister port map (
         i_rxAddr => ,
         i_ryAddr => ,
         i_wbData => ,
@@ -349,11 +367,11 @@ begin
         o_SP => myRegister_o_SP,
         o_IH => myRegister_o_IH
     );
-    ImmExtend_inst: port map (
+    ImmExtend_inst: ImmExtend port map (
         i_inst => ,
         o_immExtend => ImmExtend_o_immExtend
     );
-    Control_inst: port map (
+    Control_inst: Control port map (
         i_inst => ,
         o_ALUOP => Control_o_ALUOP,
         o_OP0Type => Control_o_OP0Type,
@@ -365,7 +383,7 @@ begin
         o_DMWR => Control_o_DMWR,
         o_OP => Control_o_OP
     );
-    Decoder_inst: port map (
+    Decoder_inst: Decoder port map (
         i_OP0Type => ,
         i_OP1Type => ,
         i_wbType => ,
@@ -384,7 +402,7 @@ begin
         o_OP1Data => Decoder_o_OP1Data,
         o_wbAddr => Decoder_o_wbAddr
     );
-    ForwardUnit_inst: port map (
+    ForwardUnit_inst: ForwardUnit port map (
         i_OP0Data => ,
         i_OP1Data => ,
         i_OP0Addr => ,
@@ -398,7 +416,7 @@ begin
         o_OP0 => ForwardUnit_o_OP0,
         o_OP1 => ForwardUnit_o_OP1
     );
-    JumpAndBranch_inst: port map (
+    JumpAndBranch_inst: JumpAndBranch port map (
         i_OP0 => ,
         i_OP1 => ,
         i_imm => ,
@@ -406,7 +424,7 @@ begin
         o_jumpEN => JumpAndBranch_o_jumpEN,
         o_jumpTarget => JumpAndBranch_o_jumpTarget
     );
-    ID_EX_inst: port map (
+    ID_EX_inst: ID_EX port map (
         i_clock => ,
         i_ALUOP => ,
         i_DMRE => ,
@@ -427,7 +445,7 @@ begin
         o_imm => ID_EX_o_imm,
         o_wbAddr => ID_EX_o_wbAddr
     );
-    ALU_MUX_inst: port map (
+    ALU_MUX_inst: ALU_MUX port map (
         i_ALURes => ,
         i_OP0 => ,
         i_OP1 => ,
@@ -436,7 +454,7 @@ begin
         o_data => ALU_MUX_o_data,
         o_ALURes => ALU_MUX_o_ALURes
     );
-    ALU_inst: port map (
+    ALU_inst: ALU port map (
         i_OP0 => ,
         i_OP1 => ,
         i_imm => ,
@@ -445,7 +463,7 @@ begin
         i_ALUOP => ,
         o_ALURes => ALU_o_ALURes
     );
-    EX_MEM_inst: port map (
+    EX_MEM_inst: EX_MEM port map (
         i_clock => ,
         i_ALURes => ,
         i_DMRE => ,
@@ -463,7 +481,7 @@ begin
         o_data => EX_MEM_o_data,
         o_wbAddr => EX_MEM_o_wbAddr
     );
-    DM_inst: port map (
+    DM_inst: DM port map (
         i_data => ,
         i_addr => ,
         i_ALURes => ,
@@ -475,7 +493,7 @@ begin
         o_busRequest => DM_o_busRequest,
         i_busResponse => 
     );
-    MEM_WB_inst: port map (
+    MEM_WB_inst: MEM_WB port map (
         i_clock => ,
         i_clear => ,
         i_stall => ,
@@ -484,7 +502,7 @@ begin
         o_wbAddr => MEM_WB_o_wbAddr,
         o_wbData => MEM_WB_o_wbData
     );
-    StallClearController_inst: port map (
+    StallClearController_inst: StallClearController port map (
         -- clea => ,
         i_breakEN => ,
         i_breakPC => ,
@@ -502,7 +520,7 @@ begin
         i_OP1Addr => ,
         o_stall => StallClearController_o_stall
     );
-    BTB_inst: port map (
+    BTB_inst: BTB port map (
         -- BTBRea => ,
         i_IMPC => ,
         o_predPC => BTB_o_predPC,
