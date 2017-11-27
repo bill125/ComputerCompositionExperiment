@@ -41,7 +41,6 @@ entity IF_ID is
         i_stall : in std_logic;
         i_clear : in std_logic;
         o_PC : out addr_t;
-        -- o_OP : out std_logic_vector(4 downto 0);
         o_inst : out word_t;
         o_rxAddr : out std_logic_vector(3 downto 0);
         o_ryAddr : out std_logic_vector(3 downto 0);
