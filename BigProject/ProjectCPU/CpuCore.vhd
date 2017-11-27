@@ -3,6 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.op_type_constants;
 use work.constants.All;
 use work.reg_addr;
+use work.inst_const;
 
 entity CpuCore is
     port (
@@ -289,7 +290,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal IM_o_busRequest   : bus_request_t;
     signal IM_o_stallRequest : std_logic := '0';
     signal IF_ID_o_PC : addr_t := (others => '0');
-    signal IF_ID_o_inst : word_t := op_NOP;
+    signal IF_ID_o_inst : word_t := work.inst_const.INST_NOP;
     signal IF_ID_o_rxAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
     signal IF_ID_o_ryAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
     signal IF_ID_o_rzAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
@@ -299,7 +300,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal myRegister_o_SP : std_logic_vector(15 downto 0);
     signal myRegister_o_IH : std_logic_vector(15 downto 0);
     signal ImmExtend_o_immExtend : std_logic_vector (15 downto 0);
-    signal Control_o_ALUOP : alu_op_t := alu_op_nop;
+    signal Control_o_ALUOP : alu_op_t := alu_nop;
     signal Control_o_OP0Type : std_logic_vector (2 downto 0);
     signal Control_o_OP1Type : std_logic_vector (2 downto 0);
     signal Control_o_wbType : std_logic_vector (2 downto 0);
@@ -317,7 +318,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal ForwardUnit_o_OP1 : std_logic_vector(15 downto 0);
     signal JumpAndBranch_o_jumpEN : std_logic := '0';
     signal JumpAndBranch_o_jumpTarget : word_t;
-    signal ID_EX_o_ALUOP : alu_op_t := alu_op_nop;
+    signal ID_EX_o_ALUOP : alu_op_t := alu_nop;
     signal ID_EX_o_DMRE : std_logic := '0';
     signal ID_EX_o_DMWR : std_logic := '0';
     signal ID_EX_o_OP : op_t;
