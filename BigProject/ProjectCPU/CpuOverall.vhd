@@ -36,6 +36,8 @@ entity CPUOverall is
         i_clock : in std_logic;  -- high clock (100MHz?)
         -- o_clock : std_logic;  -- CPU clock
 
+        o_Led : out word_t;
+
         i_sysBusRequest : in bus_request_t;   
         o_sysBusResponse : out bus_response_t; 
         i_IM_extBusRequest : in bus_request_t;
@@ -81,7 +83,8 @@ architecture Behavioral of CPUOverall is
             o_IM_extBusRequest : bus_request_t;  
             i_IM_extBusResponse : bus_response_t;
             o_DM_extBusRequest : bus_request_t;
-            i_DM_extBusResponse : bus_response_t
+            i_DM_extBusResponse : bus_response_t;
+            o_PC : out word_t
         );
     end component;
     component SystemBusController 
@@ -181,6 +184,7 @@ begin
     -- TODO: Add clock Frequency Divider
     clock_50m <= i_clock;
     clock_25m <= i_clock;
+    o_Led <= o_PC;
 
     CPUCore_inst: CPUCore port map (
         i_clock => clock_50m,

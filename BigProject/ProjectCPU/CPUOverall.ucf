@@ -3,6 +3,23 @@
 
 # NET "i_Click" LOC = U9;
 NET "i_Clock" LOC = B8;
+NET "i_nReset" LOC = U10;
+NET "o_Led[0]" LOC = D10;
+NET "o_Led[1]" LOC = E10;
+NET "o_Led[2]" LOC = A11;
+NET "o_Led[3]" LOC = B11;
+NET "o_Led[4]" LOC = C11;
+NET "o_Led[5]" LOC = D11;
+NET "o_Led[6]" LOC = E11;
+NET "o_Led[7]" LOC = F11;
+NET "o_Led[8]" LOC = A12;
+NET "o_Led[9]" LOC = E12;
+NET "o_Led[10]" LOC = F12;
+NET "o_Led[11]" LOC = A13;
+NET "o_Led[12]" LOC = B13;
+NET "o_Led[13]" LOC = D13;
+NET "o_Led[14]" LOC = E13;
+NET "o_Led[15]" LOC = A14;
 
 NET "o_sysBus_addr[0]" LOC = C17;
 NET "o_sysBus_addr[1]" LOC = C18;
