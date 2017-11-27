@@ -32,7 +32,7 @@ for file_name in file_list:
     search_res = regex.search(src)
     entity = search_res.group()
     name = search_res.group(1)
-    port_map = name + '_inst: port map (\n'
+    port_map = name + '_inst: {name} port map (\n'.format(name=name)
     component = re.sub(r'entity(\s*?\S*?\s*?)is(.*)end.*', r'component\1\2end component;', entity, flags=re.DOTALL|re.IGNORECASE)
     components.append(component)
     
