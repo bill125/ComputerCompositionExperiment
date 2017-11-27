@@ -289,7 +289,7 @@ ARCHITECTURE behavior OF CpuCore IS
         );
     end component;
 
-    signal PC_o_PC : std_logic_vector(15 downto 0) := (others => '0');
+    signal PC_o_PC : std_logic_vector(15 downto 0) := (0 => '1', others => '0');
     signal IM_o_inst         : inst_t;
     signal IM_o_busRequest   : bus_request_t;
     signal IM_o_stallRequest : std_logic := '0';
