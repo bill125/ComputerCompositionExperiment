@@ -41,7 +41,7 @@ entity MEM_WB is
         i_wbAddr : in reg_addr_t;
         i_wbData : in word_t;
 
-        o_wbAddr : out reg_addr_t;
+        o_wbAddr : out reg_addr_t := work.reg_addr.invalid;
         o_wbData : out word_t
     );
 end MEM_WB;

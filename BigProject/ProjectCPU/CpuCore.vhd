@@ -16,7 +16,9 @@ entity CpuCore is
         i_IM_extBusResponse:  in  bus_response_t;
         o_DM_extBusRequest : out  bus_request_t;
         i_DM_extBusResponse:  in  bus_response_t;
-        o_PC : out word_t
+        o_TEST_word : out word_t;
+        o_TEST_addr : out bus_addr_t;
+        o_TEST_EN : out std_logic
     );
 end entity;
 
@@ -26,14 +28,14 @@ ARCHITECTURE behavior OF CpuCore IS
             i_clock : in std_logic;
             i_clear : in std_logic;
     		i_stall : in std_logic;
-    		i_nextPC : in std_logic_vector(15 downto 0);
-    		o_PC : out std_logic_vector(15 downto 0)
+    		i_nextPC : in word_t;
+    		o_PC : out word_t
     	);
     end component;
     component IM 
         port
         (
-            i_PC           : in addr_t;
+            i_PC           : in word_t;
             o_inst         : out inst_t;
     
             i_busResponse  : in bus_response_t;
@@ -46,10 +48,10 @@ ARCHITECTURE behavior OF CpuCore IS
         port (
             i_clock : in std_logic;
             i_inst : in word_t;
-            i_PC : in addr_t;
+            i_PC : in word_t;
             i_stall : in std_logic;
             i_clear : in std_logic;
-            o_PC : out addr_t;
+            o_PC : out word_t;
             o_inst : out word_t;
             o_rxAddr : out std_logic_vector(3 downto 0);
             o_ryAddr : out std_logic_vector(3 downto 0);
@@ -245,11 +247,11 @@ ARCHITECTURE behavior OF CpuCore IS
             -- clear
             i_nReset : in std_logic;
             i_breakEN : in std_logic;
-            i_breakPC : in addr_t;
-            i_jumpTarget : in addr_t;
-            i_predPC : in addr_t;
+            i_breakPC : in word_t;
+            i_jumpTarget : in word_t;
+            i_predPC : in word_t;
             i_predSucc : in std_logic;
-            o_nextPC : out addr_t;
+            o_nextPC : out word_t;
             o_clear : out std_logic_vector(0 to 4);
             
             -- stall
@@ -289,77 +291,77 @@ ARCHITECTURE behavior OF CpuCore IS
         );
     end component;
 
-    signal PC_o_PC : std_logic_vector(15 downto 0) := (0 => '1', others => '0');
+    signal PC_o_PC : word_t;
     signal IM_o_inst         : inst_t;
     signal IM_o_busRequest   : bus_request_t;
-    signal IM_o_stallRequest : std_logic := '0';
-    signal IF_ID_o_PC : addr_t := (others => '0');
-    signal IF_ID_o_inst : word_t := work.inst_const.INST_NOP;
-    signal IF_ID_o_rxAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
-    signal IF_ID_o_ryAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
-    signal IF_ID_o_rzAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
+    signal IM_o_stallRequest : std_logic;
+    signal IF_ID_o_PC : word_t;
+    signal IF_ID_o_inst : word_t;
+    signal IF_ID_o_rxAddr : std_logic_vector(3 downto 0);
+    signal IF_ID_o_ryAddr : std_logic_vector(3 downto 0);
+    signal IF_ID_o_rzAddr : std_logic_vector(3 downto 0);
     signal myRegister_o_rxData : std_logic_vector(15 downto 0);
     signal myRegister_o_ryData : std_logic_vector(15 downto 0);
     signal myRegister_o_T : std_logic_vector(15 downto 0);
     signal myRegister_o_SP : std_logic_vector(15 downto 0);
     signal myRegister_o_IH : std_logic_vector(15 downto 0);
     signal ImmExtend_o_immExtend : std_logic_vector (15 downto 0);
-    signal Control_o_ALUOP : alu_op_t := alu_nop;
+    signal Control_o_ALUOP : alu_op_t;
     signal Control_o_OP0Type : std_logic_vector (2 downto 0);
     signal Control_o_OP1Type : std_logic_vector (2 downto 0);
     signal Control_o_wbType : std_logic_vector (2 downto 0);
     signal Control_o_OP0Src : opSrc_t;
     signal Control_o_OP1Src : opSrc_t;
-    signal Control_o_DMRE : std_logic := '0';
-    signal Control_o_DMWR : std_logic := '0';
-    signal Control_o_OP : op_t := op_NOP;
-    signal Decoder_o_OP0Addr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
+    signal Control_o_DMRE : std_logic;
+    signal Control_o_DMWR : std_logic;
+    signal Control_o_OP : op_t;
+    signal Decoder_o_OP0Addr : std_logic_vector(3 downto 0);
     signal Decoder_o_OP0Data : std_logic_vector(15 downto 0);
-    signal Decoder_o_OP1Addr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
+    signal Decoder_o_OP1Addr : std_logic_vector(3 downto 0);
     signal Decoder_o_OP1Data : std_logic_vector(15 downto 0);
-    signal Decoder_o_wbAddr : std_logic_vector(3 downto 0) := work.reg_addr.invalid;
+    signal Decoder_o_wbAddr : std_logic_vector(3 downto 0);
     signal ForwardUnit_o_OP0 : std_logic_vector(15 downto 0);
     signal ForwardUnit_o_OP1 : std_logic_vector(15 downto 0);
-    signal JumpAndBranch_o_jumpEN : std_logic := '0';
+    signal JumpAndBranch_o_jumpEN : std_logic;
     signal JumpAndBranch_o_jumpTarget : word_t;
-    signal ID_EX_o_ALUOP : alu_op_t := alu_nop;
-    signal ID_EX_o_DMRE : std_logic := '0';
-    signal ID_EX_o_DMWR : std_logic := '0';
+    signal ID_EX_o_ALUOP : alu_op_t;
+    signal ID_EX_o_DMRE : std_logic;
+    signal ID_EX_o_DMWR : std_logic;
     signal ID_EX_o_OP : op_t;
     signal ID_EX_o_OP0 : word_t;
     signal ID_EX_o_OP1 : word_t;
     signal ID_EX_o_OP0Src : opSrc_t;
     signal ID_EX_o_OP1Src : opSrc_t;
     signal ID_EX_o_imm : word_t;
-    signal ID_EX_o_wbAddr : reg_addr_t := work.reg_addr.invalid;
+    signal ID_EX_o_wbAddr : reg_addr_t;
     signal ALU_MUX_o_addr : addr_t;
     signal ALU_MUX_o_data : word_t;
     signal ALU_MUX_o_ALURes : word_t;
     signal ALU_o_ALURes : word_t;
     signal EX_MEM_o_ALURes : word_t;
-    signal EX_MEM_o_DMRE : std_logic := '0';
-    signal EX_MEM_o_DMWR : std_logic := '0';
+    signal EX_MEM_o_DMRE : std_logic;
+    signal EX_MEM_o_DMWR : std_logic;
     signal EX_MEM_o_addr : word_t;
     signal EX_MEM_o_data : word_t;
-    signal EX_MEM_o_wbAddr : reg_addr_t := work.reg_addr.invalid;
+    signal EX_MEM_o_wbAddr : reg_addr_t;
     signal DM_o_DMRes        : word_t;
     signal DM_o_wbData       : word_t;
     signal DM_o_stallRequest : std_logic;
     signal DM_o_busRequest   : bus_request_t;
-    signal MEM_WB_o_wbAddr : reg_addr_t := work.reg_addr.invalid;
+    signal MEM_WB_o_wbAddr : reg_addr_t;
     signal MEM_WB_o_wbData : word_t;
-    signal StallClearController_o_nextPC : addr_t := (others => '0');
-    signal StallClearController_o_clear : std_logic_vector(0 to 4) := (others => '0');
-    signal StallClearController_o_stall : std_logic_vector(0 to 4) := (others => '0');
+    signal StallClearController_o_nextPC : word_t;
+    signal StallClearController_o_clear : std_logic_vector(0 to 4);
+    signal StallClearController_o_stall : std_logic_vector(0 to 4);
     signal BTB_o_predPC : word_t;
-    signal BTB_o_predSucc : std_logic := '1';
+    signal BTB_o_predSucc : std_logic ;
     signal BusDispatcher_IM_o_busResponse    : bus_response_t;
     signal BusDispatcher_IM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_IM_o_extBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-    signal i_breakPC : addr_t := (others => '0');
+    signal i_breakPC : word_t := (others => '0');
     signal i_breakEN : std_logic := '0';
 
 begin
@@ -370,7 +372,7 @@ begin
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
-    o_PC <= PC_o_PC;
+    o_TEST_word <= PC_o_PC;
     IM_inst: IM port map (
         i_PC => PC_o_PC,
         o_inst => IM_o_inst,
@@ -578,6 +580,7 @@ begin
         o_extBusRequest => BusDispatcher_IM_o_extBusRequest,
         i_extBusResponse => i_IM_extBusResponse
     );
+    o_IM_extBusRequest <= BusDispatcher_IM_o_extBusRequest;
     BusDispatcher_DM_inst: BusDispatcher port map (
         i_busRequest => DM_o_busRequest,
         o_busResponse => BusDispatcher_DM_o_busResponse,
@@ -586,5 +589,7 @@ begin
         o_extBusRequest => BusDispatcher_DM_o_extBusRequest,
         i_extBusResponse => i_DM_extBusResponse
     );
+    o_sysBusRequest <= DM_o_busRequest;
+    o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
 
 end;

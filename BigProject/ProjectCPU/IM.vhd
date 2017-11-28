@@ -33,13 +33,13 @@ use work.constants.all;
 entity IM is
     port
     (
-        i_PC           : in addr_t;
+        i_PC           : in word_t;
         o_inst         : out inst_t;
 
         i_busResponse  : in bus_response_t;
         o_busRequest   : out bus_request_t;
 
-        o_stallRequest : out std_logic
+        o_stallRequest : out std_logic := '0'
     );   
 end IM;
 
@@ -53,6 +53,6 @@ begin
 
     o_inst <= i_busResponse.data;
 
-    o_stallRequest <= not i_busResponse.stallRequest;
+    o_stallRequest <= i_busResponse.stallRequest;
 end Behavioral;
 

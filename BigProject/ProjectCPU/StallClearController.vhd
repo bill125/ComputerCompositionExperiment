@@ -40,8 +40,8 @@ entity StallClearController is
         i_jumpTarget : in addr_t;
         i_predPC : in addr_t;
         i_predSucc : in std_logic;
-        o_nextPC : out addr_t;
-        o_clear : out std_logic_vector(0 to 4);
+        o_nextPC : out addr_t := (others => '0');
+        o_clear : out std_logic_vector(0 to 4) := (others => '0');
         
         -- stall
         i_wbAddr : in reg_addr_t;
@@ -50,7 +50,7 @@ entity StallClearController is
         i_DMRE : in std_logic;
         i_OP0Addr : in reg_addr_t;
         i_OP1Addr : in reg_addr_t;
-        o_stall : out std_logic_vector(0 to 4)
+        o_stall : out std_logic_vector(0 to 4) := (others => '0')
     );
 end StallClearController;
 

@@ -86,7 +86,9 @@ architecture Behavioral of CPUOverall is
             i_IM_extBusResponse : bus_response_t;
             o_DM_extBusRequest : bus_request_t;
             i_DM_extBusResponse : bus_response_t;
-            o_PC : out word_t
+            o_TEST_word : out word_t;
+            o_TEST_addr : out bus_addr_t;
+            o_TEST_EN : out std_logic
         );
     end component;
     component SystemBusController 
@@ -158,7 +160,9 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_sysBusRequest : bus_request_t;
     signal CPUCore_IM_extBusRequest : bus_request_t;
     signal CPUCore_DM_extBusRequest : bus_request_t;
-	 signal CPUCore_o_PC : word_t;
+	signal CPUCore_o_TEST_word : word_t;
+    signal CPUCore_o_TEST_addr : bus_addr_t;
+    signal CPUCore_o_TEST_EN : std_logic;
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_data : word_t;
     signal SystemBusController_UART_readBegin : std_logic;
@@ -187,7 +191,11 @@ begin
     -- TODO: Add clock Frequency Divider
     clock_50m <= i_clock;
     clock_25m <= i_clock;
+<<<<<<< HEAD
     o_Led <= CPUCore_o_PC;
+=======
+    o_Led <= CPUCore_o_TEST_word;
+>>>>>>> 20ff9d1b6cd74b5c4eda80da11ccd999ff58fa43
 
     CPUCore_inst: CPUCore port map (
         i_clock => clock_50m,
@@ -199,8 +207,10 @@ begin
         i_IM_extBusResponse => ExtBusController_IM_busResponse,  
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
         i_DM_extBusResponse => ExtBusController_DM_busResponse,
-		  
-		  o_PC => CPUCore_o_PC
+		
+        o_TEST_word => CPUCore_o_TEST_word;
+		o_TEST_addr => CPUCore_o_TEST_addr;
+        o_TEST_EN => CPUCore_o_TEST_EN
     );
 
     SystemBusController_inst: SystemBusController port map (
