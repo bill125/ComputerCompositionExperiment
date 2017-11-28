@@ -21,6 +21,22 @@ NET "o_Led[13]" LOC = D13;
 NET "o_Led[14]" LOC = E13;
 NET "o_Led[15]" LOC = A14;
 
+NET "o_Dig1[0]" LOC = C7;
+NET "o_Dig1[1]" LOC = D7;
+NET "o_Dig1[2]" LOC = E7;
+NET "o_Dig1[3]" LOC = F7;
+NET "o_Dig1[4]" LOC = A8;
+NET "o_Dig1[5]" LOC = E8;
+NET "o_Dig1[6]" LOC = F8;
+
+NET "o_Dig2[0]" LOC = C9;
+NET "o_Dig2[1]" LOC = D9;
+NET "o_Dig2[2]" LOC = E9;
+NET "o_Dig2[3]" LOC = F9;
+NET "o_Dig2[4]" LOC = G9;
+NET "o_Dig2[5]" LOC = A10;
+NET "o_Dig2[6]" LOC = B10;
+
 NET "o_sysBus_addr[0]" LOC = C17;
 NET "o_sysBus_addr[1]" LOC = C18;
 NET "o_sysBus_addr[2]" LOC = D16;

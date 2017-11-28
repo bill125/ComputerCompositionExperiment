@@ -38,6 +38,8 @@ entity CPUOverall is
         -- o_clock : std_logic;  -- CPU clock
 
         o_Led : out word_t;
+        o_Dig1 : out std_logic_vector(6 downto 0);
+        o_Dig2 : out std_logic_vector(6 downto 0);
 
         -- i_sysBusRequest : in bus_request_t;   
         -- o_sysBusResponse : out bus_response_t; 
@@ -88,7 +90,9 @@ architecture Behavioral of CPUOverall is
             i_DM_extBusResponse : bus_response_t;
             o_TEST_word : out word_t;
             o_TEST_addr : out bus_addr_t;
-            o_TEST_EN : out std_logic
+            o_TEST_EN : out std_logic;
+            o_Dig1 : out std_logic_vector(6 downto 0);
+            o_Dig2 : out std_logic_vector(6 downto 0)
         );
     end component;
     component SystemBusController 
@@ -210,7 +214,7 @@ begin
     o_Led <= CPUCore_o_TEST_word;
 
     CPUCore_inst: CPUCore port map (
-        i_clock => clock_50m,
+        i_clock => not clock_50m,
         i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
@@ -222,7 +226,9 @@ begin
 		
         o_TEST_word => CPUCore_o_TEST_word,
 		o_TEST_addr => CPUCore_o_TEST_addr,
-        o_TEST_EN => CPUCore_o_TEST_EN
+        o_TEST_EN => CPUCore_o_TEST_EN,
+        o_Dig1 => o_Dig1,
+        o_Dig2 => o_Dig2
     );
 
     SystemBusController_inst: SystemBusController port map (

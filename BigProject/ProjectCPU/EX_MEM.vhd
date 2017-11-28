@@ -64,6 +64,8 @@ begin
             if i_clear = '1' then
                 o_DMRE <= '0';
                 o_DMWR <= '0';
+                o_addr <= (others => '-');
+                o_data <= (others => '-');
                 o_wbAddr <= work.reg_addr.invalid;
             else
                 o_ALURes <= i_ALURes;

@@ -36,7 +36,7 @@ entity PC is
 		i_stall : in std_logic;
         i_clear : in std_logic;
 		i_nextPC : in word_t;
-		o_PC : out word_t := (0 => '1', others => '0')
+		o_PC : out word_t := (others => '0')
 	);
 end PC;
 

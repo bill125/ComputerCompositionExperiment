@@ -58,9 +58,11 @@ architecture Behavioral of StallClearController is
     signal clear, stall, EX_MEM_stall, IF_ID_stall, PC_stall : std_logic_vector(0 to 4) := "00000";
 begin
     -- clear
-    -- o_clear(0) <= '0';
+    o_clear(0) <= clear(0);
     o_clear(1 to 4) <= clear(1 to 4) or ((not stall(1 to 4)) and stall(0 to 3)); -- clear when needing stall
-    o_nextPC <= i_breakPC when i_breakEN = '1' else i_jumpTarget;
+    o_nextPC <= i_breakPC when i_breakEN = '1' else 
+                i_predPC when i_predSucc = '1' else
+                i_jumpTarget;
     clear(1) <= ((not i_nReset) or (not i_predSucc));
     clear(0) <= not i_nReset;
     clear(2 to 4) <= (others => not i_nReset);

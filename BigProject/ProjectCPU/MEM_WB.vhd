@@ -53,6 +53,7 @@ begin
     begin
         if rising_edge(i_clock) and i_stall = '0' then
             if i_clear = '1' then
+                o_wbData <= (others => '-');
                 o_wbAddr <= work.reg_addr.invalid;
             else
                 o_wbData <= i_wbData;
