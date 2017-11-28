@@ -19,6 +19,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use work.constants.all;
 
 -- Uncomment the following library declaration if using
@@ -35,6 +37,7 @@ entity CPUOverall is
     (
         i_clock : in std_logic;  -- high clock (100MHz?)
         i_nReset : in std_logic;
+        i_sw   : in  STD_LOGIC_VECTOR (15 downto 0);
         -- o_clock : std_logic;  -- CPU clock
 
         o_Led : out word_t;
@@ -91,6 +94,10 @@ architecture Behavioral of CPUOverall is
             o_TEST_word : out word_t;
             o_TEST_addr : out bus_addr_t;
             o_TEST_EN : out std_logic;
+            o_registers : out Reg;
+            o_PC_o_PC : out word_t;
+            o_StallClearController_o_nextPC : out word_t;
+            o_IM_o_inst : out inst_t;
             o_Dig1 : out std_logic_vector(6 downto 0);
             o_Dig2 : out std_logic_vector(6 downto 0)
         );
@@ -176,6 +183,11 @@ architecture Behavioral of CPUOverall is
 	signal CPUCore_o_TEST_word : word_t;
     signal CPUCore_o_TEST_addr : bus_addr_t;
     signal CPUCore_o_TEST_EN : std_logic;
+    signal CPUCore_o_registers : Reg;
+    signal CPUCore_o_PC_o_PC : word_t;
+    signal CPUCore_o_IM_o_inst : inst_t;
+    signal CPUCore_o_i_StallClearController_o_nextPC : word_t;
+
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_bus_data : word_t;
     signal SystemBusController_UART_data : word_t;
@@ -211,7 +223,21 @@ begin
     -- TODO: Add clock Frequency Divider
     clock_50m <= i_clock;
     clock_25m <= i_clock;
-    o_Led <= CPUCore_o_TEST_word;
+    process (i_sw)
+    begin
+        if i_sw(15 downto 4) = "100000000000" then
+            o_Led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
+        elsif i_sw(15 downto 4) = "110000000000" then
+            case i_sw(3 downto 0) is
+                when "0000" => o_Led <= CPUCore_o_PC_o_PC;
+                when "0001" => o_Led <= CPUCore_o_i_StallClearController_o_nextPC;
+                when "0010" => o_Led <= CPUCore_o_IM_o_inst;
+                when others => o_Led <= (others => '0');
+            end case;
+        else
+            o_Led <= CPUCore_o_TEST_word; 
+        end if;
+    end process;
 
     CPUCore_inst: CPUCore port map (
         i_clock => not clock_50m,
@@ -228,7 +254,11 @@ begin
 		o_TEST_addr => CPUCore_o_TEST_addr,
         o_TEST_EN => CPUCore_o_TEST_EN,
         o_Dig1 => o_Dig1,
-        o_Dig2 => o_Dig2
+        o_Dig2 => o_Dig2,
+        o_registers => CPUCore_o_registers,
+        o_PC_o_PC => CPUCore_o_PC_o_PC,
+        o_StallClearController_o_nextPC => CPUCore_o_i_StallClearController_o_nextPC,
+        o_IM_o_inst => CPUCore_o_IM_o_inst
     );
 
     SystemBusController_inst: SystemBusController port map (
