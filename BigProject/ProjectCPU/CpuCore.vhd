@@ -174,9 +174,7 @@ ARCHITECTURE behavior OF CpuCore IS
     component ALU_MUX 
         Port(
             i_ALURes : in word_t;
-            i_OP0 : in word_t;
             i_OP1 : in word_t;
-            i_OP : in op_t;
             o_addr : out addr_t;
             o_data : out word_t;
             o_ALURes : out word_t
@@ -366,6 +364,16 @@ ARCHITECTURE behavior OF CpuCore IS
     signal i_breakEN : std_logic := '0';
 
 begin
+    o_TEST_word <= StallClearController_o_stall -- 5
+        & StallClearController_o_clear(0 to 2) -- 3
+        & StallClearController_o_nextPC(2 downto 0) -- 3
+        & i_nReset -- 1
+        & PC_o_PC(3 downto 0); -- 4
+    o_TEST_addr <= StallClearController_o_stall -- 5 useless
+        & StallClearController_o_clear -- 5
+        & StallClearController_o_nextPC(7 downto 0); -- 8
+    o_TEST_EN <= i_nReset; -- useless
+
     PC_inst: PC port map (
         i_clock => i_clock,
         i_stall => StallClearController_o_stall(stage_PC) ,
@@ -373,7 +381,6 @@ begin
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
-    o_TEST_word <= PC_o_PC;
     IM_inst: IM port map (
         i_PC => PC_o_PC,
         o_inst => IM_o_inst,
@@ -423,7 +430,7 @@ begin
     );
     Decoder_inst: Decoder port map (
         i_OP0Type => Control_o_OP0Type,
-        i_OP1Type => Control_o_OP0Type,
+        i_OP1Type => Control_o_OP1Type,
         i_wbType => Control_o_wbType,
         i_rxAddr => IF_ID_o_rxAddr,
         i_rxData => myRegister_o_rxData,
@@ -489,9 +496,9 @@ begin
     );
     ALU_MUX_inst: ALU_MUX port map (
         i_ALURes => ALU_o_ALURes,
-        i_OP0 => ID_EX_o_OP0,
+        -- i_OP0 => ID_EX_o_OP0,
         i_OP1 => ID_EX_o_OP1,
-        i_OP => ID_EX_o_OP,
+        -- i_OP => ID_EX_o_OP,
         o_addr => ALU_MUX_o_addr,
         o_data => ALU_MUX_o_data,
         o_ALURes => ALU_MUX_o_ALURes

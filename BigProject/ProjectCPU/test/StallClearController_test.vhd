@@ -41,6 +41,7 @@ ARCHITECTURE behavior OF StallClearController_test IS
  
     COMPONENT StallClearController
     PORT(
+         i_nReset : IN std_logic;
          i_breakEN : IN  std_logic;
          i_breakPC : IN  std_logic_vector(15 downto 0);
          i_jumpTarget : IN  std_logic_vector(15 downto 0);
@@ -86,6 +87,7 @@ BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: StallClearController PORT MAP (
+          i_nReset => '1',
           i_breakEN => i_breakEN,
           i_breakPC => i_breakPC,
           i_jumpTarget => i_jumpTarget,
@@ -127,7 +129,7 @@ BEGIN
 
       i_DMRE <= '1';
       wait for clk_period*10;
-      assert (o_stall = "11000" and o_clear = "U0100")
+      assert (o_stall = "11000" and o_clear = "00100")
         report "E1"
         severity ERROR;
       i_wbAddr <= "1111";
@@ -137,7 +139,7 @@ BEGIN
       i_DMStallReq <= '0';
       i_IFStallReq <= '1';
       wait for clk_period*10;
-      assert (o_stall = "10000" and o_clear = "U1000")
+      assert (o_stall = "10000" and o_clear = "01000")
         report "E2"
         severity ERROR;
 
@@ -145,7 +147,7 @@ BEGIN
       i_DMStallReq <= '1';
       i_IFStallReq <= '0';
       wait for clk_period*10;
-      assert (o_stall = "11110" and o_clear = "U0001")
+      assert (o_stall = "11110" and o_clear = "00001")
         report "E3"
         severity ERROR;
 
@@ -153,7 +155,7 @@ BEGIN
       i_DMStallReq <= '1';
       i_IFStallReq <= '1';
       wait for clk_period*10;
-      assert (o_stall = "11110" and o_clear = "U0001")
+      assert (o_stall = "11110" and o_clear = "00001")
         report "E4"
         severity ERROR;
       
@@ -166,7 +168,7 @@ BEGIN
       i_predPC <= x"F0F0";
       i_wbAddr <= "1111";
       wait for clk_period*10;
-      assert (o_stall = "00000" and o_clear = "U1000")
+      assert (o_stall = "00000" and o_clear = "01000" and o_nextPC = i_jumpTarget)
         report "E5"
         severity ERROR;
 
@@ -174,7 +176,7 @@ BEGIN
       i_DMRE <= '1';
       i_wbAddr <= "0000";
       wait for clk_period*10;
-      assert (o_stall = "11000" and o_clear = "U1100")
+      assert (o_stall = "11000" and o_clear = "01100")
         report "E6"
         severity ERROR;
       i_DMRE <= '0';
@@ -184,7 +186,7 @@ BEGIN
       i_DMStallReq <= '0';
       i_IFStallReq <= '1';
       wait for clk_period*10;
-      assert (o_stall = "10000" and o_clear = "U1000")
+      assert (o_stall = "10000" and o_clear = "01000")
         report "E7"
         severity ERROR;
 
@@ -192,7 +194,7 @@ BEGIN
       i_DMStallReq <= '1';
       i_IFStallReq <= '0';
       wait for clk_period*10;
-      assert (o_stall = "11110" and o_clear = "U1001")
+      assert (o_stall = "11110" and o_clear = "01001")
         report "E8"
         severity ERROR;
 
@@ -200,7 +202,7 @@ BEGIN
       i_DMStallReq <= '1';
       i_IFStallReq <= '1';
       wait for clk_period*10;
-      assert (o_stall = "11110" and o_clear = "U1001")
+      assert (o_stall = "11110" and o_clear = "01001")
         report "E9"
         severity ERROR;
 
@@ -208,10 +210,23 @@ BEGIN
       i_breakEN <= '1';
       i_breakPC <= x"8888";
       wait for clk_period*10;
-      assert (o_stall = "11110" and o_clear = "U1001" and o_nextPC = i_breakPC)
+      assert (o_stall = "11110" and o_clear = "01001" and o_nextPC = i_breakPC)
         report "E10"
         severity ERROR;
 
+      -- correct prediction
+      i_breakEN <= '0';
+      i_breakPC <= x"8888";
+      i_predSucc <= '1';
+      i_DMStallReq <= '0';
+      i_IFStallReq <= '0';
+      i_jumpTarget <= x"0F0F";
+      i_predPC <= x"F0F0";
+      i_wbAddr <= "1111";
+      wait for clk_period*10;
+      assert (o_stall = "00000" and o_clear = "00000" and o_nextPC = i_predPC)
+        report "E11"
+        severity ERROR;
       wait;
    end process;
 

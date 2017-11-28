@@ -69,10 +69,14 @@ begin
     begin
         if rising_edge(i_clock) and i_stall = '0' then
             if i_clear = '1' then
+                o_ALUOP <= alu_nop;
                 o_DMRE <= '0';
                 o_DMWR <= '0';
                 o_OP <= op_NOP;
-                -- o_WE <= '0';
+                o_OP0 <= (others => '-');
+                o_OP1 <= (others => '-');
+                o_OP0Src <= opSrc_zero;
+                o_OP1Src <= opSrc_zero;
                 o_wbAddr <= work.reg_addr.invalid;
             else
                 o_ALUOP <= i_ALUOP;

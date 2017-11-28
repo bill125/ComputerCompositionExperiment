@@ -35,9 +35,9 @@ use work.op_type_constants;
 entity ALU_MUX is
     Port(
         i_ALURes : in word_t;
-        i_OP0 : in word_t;
+        -- i_OP0 : in word_t;
         i_OP1 : in word_t;
-        i_OP : in op_t;
+        -- i_OP : in op_t;
         o_addr : out addr_t;
         o_data : out word_t;
         o_ALURes : out word_t
