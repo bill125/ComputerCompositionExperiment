@@ -60,6 +60,7 @@ ARCHITECTURE behavior OF CpuCore IS
     end component;
     component myRegister
     	Port (
+            i_clock : in std_logic;
             i_rxAddr : in std_logic_vector(2 downto 0);
             i_ryAddr : in std_logic_vector(2 downto 0);
             i_wbData : in std_logic_vector(15 downto 0);
@@ -393,6 +394,7 @@ begin
         o_rzAddr => IF_ID_o_rzAddr
     );
     myRegister_inst: myRegister port map (
+        i_clock => not i_clock,
         i_rxAddr => IF_ID_o_rxAddr(2 downto 0),
         i_ryAddr => IF_ID_o_ryAddr(2 downto 0),
         i_wbData => MEM_WB_o_wbData,

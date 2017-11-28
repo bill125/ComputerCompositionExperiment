@@ -34,6 +34,7 @@ use work.reg_addr.all;
 
 entity myRegister is
 	Port (
+        i_clock : in std_logic;
         i_rxAddr : in std_logic_vector(2 downto 0);
         i_ryAddr : in std_logic_vector(2 downto 0);
         i_wbData : in std_logic_vector(15 downto 0);
@@ -55,7 +56,12 @@ begin
     o_T <= regs(conv_integer(T));
     o_IH <= regs(conv_integer(IH));
     o_SP <= regs(conv_integer(SP));
-
-    regs(to_integer(unsigned(i_wbAddr))) <= i_wbData when i_wbAddr /= invalid;
+    
+    process(i_clock)
+    begin
+        if rising_edge(i_clock) and i_wbAddr /= invalid then
+            regs(to_integer(unsigned(i_wbAddr))) <= i_wbData;
+        end if;
+    end process;
 end Behavioral;
 
