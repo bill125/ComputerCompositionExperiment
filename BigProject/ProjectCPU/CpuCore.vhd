@@ -564,7 +564,7 @@ begin
     DM_inst: DM port map (
         i_data => EX_MEM_o_data,
         i_addr => EX_MEM_o_addr,
-        i_ALURes => ALU_o_ALURes,
+        i_ALURes => EX_MEM_o_ALURes,
         o_DMRes => DM_o_DMRes,
         o_wbData => DM_o_wbData,
         i_DMRE => EX_MEM_o_DMRE,
