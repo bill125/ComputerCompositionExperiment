@@ -524,13 +524,13 @@ begin
         o_wbAddr => EX_MEM_o_wbAddr
     );
     DM_inst: DM port map (
-        i_data => EX_MEM_o_addr,
+        i_data => EX_MEM_o_data,
         i_addr => EX_MEM_o_addr,
         i_ALURes => ALU_o_ALURes,
         o_DMRes => DM_o_DMRes,
         o_wbData => DM_o_wbData,
-        i_DMRE => Control_o_DMRE,
-        i_DMWR => Control_o_DMWR,
+        i_DMRE => EX_MEM_o_DMRE,
+        i_DMWR => EX_MEM_o_DMWR,
         o_stallRequest => DM_o_stallRequest,
         o_busRequest => DM_o_busRequest,
         i_busResponse => BusDispatcher_DM_o_busResponse
