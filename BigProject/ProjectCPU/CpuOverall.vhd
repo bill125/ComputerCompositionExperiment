@@ -39,12 +39,12 @@ entity CPUOverall is
 
         o_Led : out word_t;
 
-        i_sysBusRequest : in bus_request_t;   
-        o_sysBusResponse : out bus_response_t; 
-        i_IM_extBusRequest : in bus_request_t;
-        o_IM_extBusResponse : out bus_response_t;
-        i_DM_extBusRequest : in bus_request_t;
-        o_DM_extBusResponse : out bus_response_t;
+        -- i_sysBusRequest : in bus_request_t;   
+        -- o_sysBusResponse : out bus_response_t; 
+        -- i_IM_extBusRequest : in bus_request_t;
+        -- o_IM_extBusResponse : out bus_response_t;
+        -- i_DM_extBusRequest : in bus_request_t;
+        -- o_DM_extBusResponse : out bus_response_t;
 
         -- SysBus Interface
         io_sysBus_data : inout word_t;

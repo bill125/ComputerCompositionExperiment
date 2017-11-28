@@ -591,7 +591,7 @@ begin
         o_extBusRequest => BusDispatcher_DM_o_extBusRequest,
         i_extBusResponse => i_DM_extBusResponse
     );
-    o_sysBusRequest <= DM_o_busRequest;
+    o_sysBusRequest <= BusDispatcher_DM_o_sysBusRequest;
     o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
 
 end;
