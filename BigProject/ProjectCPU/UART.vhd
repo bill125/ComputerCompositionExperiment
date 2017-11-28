@@ -35,7 +35,9 @@ entity UART is
     (
         i_clock        : in std_logic; -- fast clock
 
-        io_sysBus_data : inout word_t;
+        i_bus_data     : in word_t;
+        o_bus_data     : out word_t;
+        o_bus_EN       : out std_logic;
 
         i_data         : in word_t;
         i_writeBegin   : in std_logic;
@@ -70,7 +72,6 @@ begin
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else
-                io_sysBus_data <= (others => 'Z');
                 case r_RX_State is
                     when t_RX_0 => -- wait for data
                         o_readReady <= '0';
@@ -87,7 +88,7 @@ begin
                     when t_RX_1 => -- receive data
                         if i_readBegin = '1' then
                             o_rdn <= '0';
-                            o_data <= io_sysBus_data;
+                            o_data <= i_bus_data;
                             o_readReady <= '0';
                             wait_turns := uart_wait_turns;
                             r_RX_State <= t_RX_2;
@@ -111,7 +112,7 @@ begin
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else 
-                io_sysBus_data <= (others => 'Z');
+                o_bus_EN <= '0';
                 case r_TX_State is
                     when t_TX_0 =>
                         o_wrn <= '1';
@@ -119,13 +120,15 @@ begin
                         if i_writeBegin = '1' then
                             o_writeReady <= '0';
                             o_writeDone <= '0';
+                            o_bus_EN <= '1';
                             r_TX_State <= t_TX_1;
                         else
                             r_TX_State <= t_TX_0;
                         end if;
 
                     when t_TX_1 =>
-                        io_sysBus_data <= i_data;
+                        o_bus_EN <= '1';
+                        o_bus_data <= i_data;
                         o_wrn <= '0';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_2;

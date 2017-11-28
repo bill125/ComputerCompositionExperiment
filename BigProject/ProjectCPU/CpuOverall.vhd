@@ -95,7 +95,7 @@ architecture Behavioral of CPUOverall is
         port
         (
             i_clock : in std_logic;
-    
+
             i_busRequest : in bus_request_t;
             o_busResponse : out bus_response_t;
             
@@ -103,15 +103,20 @@ architecture Behavioral of CPUOverall is
             i_UART_readDone : in std_logic;
             i_UART_writeReady : in std_logic;
             i_UART_writeDone : in std_logic;
+            i_UART_bus_EN : in std_logic;
+            i_UART_bus_data : in word_t;
+            o_UART_bus_data : out word_t;
             i_UART_data : in word_t;
             o_UART_data : out word_t;
             o_UART_readBegin : out std_logic;
             o_UART_writeBegin : out std_logic;
-    
+
             o_nOE : out std_logic;
             o_nWE : out std_logic;
             o_nCE : out std_logic;
-            io_bus_data : inout word_t;
+            o_bus_EN : out std_logic;
+            i_bus_data : in word_t;
+            o_bus_data : out word_t; 
             o_bus_addr : out bus_addr_t
         );
     end component;
@@ -124,8 +129,10 @@ architecture Behavioral of CPUOverall is
             i_DM_busRequest : in bus_request_t;
             o_IM_busResponse : out bus_response_t;
             o_DM_busResponse : out bus_response_t;
-    
-            io_bus_data : inout word_t;
+
+            o_bus_en : out std_logic;
+            i_bus_data : in word_t;
+            o_bus_data : out word_t;
             o_bus_addr : out bus_addr_t;
             o_nCE : out std_logic;
             o_nOE : out std_logic;
@@ -136,14 +143,16 @@ architecture Behavioral of CPUOverall is
         port
         (
             i_clock        : in std_logic; -- fast clock
-    
-            io_sysBus_data : inout word_t;
-    
+
+            i_bus_data  : in word_t;
+            o_bus_data  : out word_t;
+            o_bus_EN    : out std_logic;
+
             i_data         : in word_t;
             i_writeBegin   : in std_logic;
             o_writeReady   : out std_logic;
             o_writeDone    : out std_logic;
-    
+
             o_data         : out word_t;
             i_readBegin    : in std_logic;
             o_readReady    : out std_logic;
@@ -164,15 +173,20 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_TEST_addr : bus_addr_t;
     signal CPUCore_o_TEST_EN : std_logic;
     signal SystemBusController_busResponse : bus_response_t;
+    signal SystemBusController_UART_bus_data : word_t;
     signal SystemBusController_UART_data : word_t;
     signal SystemBusController_UART_readBegin : std_logic;
     signal SystemBusController_UART_writeBegin : std_logic;
     signal SystemBusController_nOE : std_logic;
     signal SystemBusController_nWE : std_logic;
     signal SystemBusController_nCE : std_logic;
+    signal SystemBusController_bus_EN : std_logic;
+    signal SystemBusController_bus_data : word_t;
     signal SystemBusController_bus_addr : bus_addr_t;
     signal ExtBusController_IM_busResponse : bus_response_t;
     signal ExtBusController_DM_busResponse : bus_response_t;
+    signal ExtBusController_bus_EN : std_logic;
+    signal ExtBusController_bus_data : word_t;
     signal ExtBusController_bus_addr : bus_addr_t;
     signal ExtBusController_nCE : std_logic;
     signal ExtBusController_nOE : std_logic;
@@ -180,6 +194,8 @@ architecture Behavioral of CPUOverall is
     signal UART_writeReady   : std_logic;
     signal UART_writeDone    : std_logic;
     signal UART_data         : word_t;
+    signal UART_bus_data     : word_t;
+    signal UART_bus_EN       : std_logic;
     signal UART_readReady    : std_logic;
     signal UART_readDone     : std_logic;
     signal UART_wrn          : std_logic;
@@ -217,6 +233,9 @@ begin
         i_UART_readDone => UART_readDone,
         i_UART_writeReady => UART_writeReady,
         i_UART_writeDone => UART_writeDone,
+        i_UART_bus_EN => UART_bus_EN,
+        i_UART_bus_data => UART_bus_data,
+        o_UART_bus_data => SystemBusController_UART_bus_data,
         i_UART_data => UART_data,
         o_UART_data => SystemBusController_UART_data,
         o_UART_readBegin => SystemBusController_UART_readBegin,
@@ -224,9 +243,13 @@ begin
         o_nOE => SystemBusController_nOE,
         o_nWE => SystemBusController_nWE,
         o_nCE => SystemBusController_nCE,
-        io_bus_data => io_sysBus_data,
+        o_bus_EN => SystemBusController_bus_EN,
+        i_bus_data => io_sysBus_data,
+        o_bus_data => SystemBusController_bus_data,
         o_bus_addr => SystemBusController_bus_addr
     );
+    io_sysBus_data <= SystemBusController_bus_data when SystemBusController_bus_EN = '1' else
+                      (others => 'Z');
     o_sysBus_addr <= SystemBusController_bus_addr;
     o_RAM1_nCE <= SystemBusController_nCE;
     o_RAM1_nWE <= SystemBusController_nWE;
@@ -238,12 +261,16 @@ begin
         i_DM_busRequest => CPUCore_DM_extBusRequest,
         o_IM_busResponse => ExtBusController_IM_busResponse,
         o_DM_busResponse => ExtBusController_DM_busResponse,
-        io_bus_data => io_extBus_data,
+        i_bus_data => io_extBus_data,
+        o_bus_data => ExtBusController_bus_data,
         o_bus_addr => ExtBusController_bus_addr,
+        o_bus_EN => ExtBusController_bus_EN,
         o_nCE => ExtBusController_nCE,
         o_nOE => ExtBusController_nOE,
         o_nWE => ExtBusController_nWE
     );
+    io_extBus_data <= ExtBusController_bus_data when ExtBusController_bus_EN = '1' else
+                      (others => 'Z');
     o_extBus_addr <= ExtBusController_bus_addr;
     o_RAM2_nCE <= ExtBusController_nCE;
     o_RAM2_nWE <= ExtBusController_nWE;
@@ -251,7 +278,9 @@ begin
 
     UART_inst: UART port map (
         i_clock => clock_50m,
-        io_sysBus_data => io_sysBus_data,
+        i_bus_data => SystemBusController_UART_bus_data,
+        o_bus_data => UART_bus_data,
+        o_bus_EN => UART_bus_EN,
         i_data => SystemBusController_UART_data,
         i_writeBegin => SystemBusController_UART_writeBegin,
         o_writeReady => UART_writeReady,

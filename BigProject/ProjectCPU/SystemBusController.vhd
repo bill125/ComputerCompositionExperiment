@@ -42,6 +42,9 @@ entity SystemBusController is
         i_UART_readDone : in std_logic;
         i_UART_writeReady : in std_logic;
         i_UART_writeDone : in std_logic;
+        i_UART_bus_EN : in std_logic;
+        i_UART_bus_data : in word_t;
+        o_UART_bus_data : out word_t;
         i_UART_data : in word_t;
         o_UART_data : out word_t;
         o_UART_readBegin : out std_logic;
@@ -50,21 +53,28 @@ entity SystemBusController is
         o_nOE : out std_logic;
         o_nWE : out std_logic;
         o_nCE : out std_logic;
-        io_bus_data : inout word_t;
+        o_bus_EN : out std_logic;
+        i_bus_data : in word_t;
+        o_bus_data : out word_t; 
         o_bus_addr : out bus_addr_t
     );
 end SystemBusController;
 
 architecture Behavioral of SystemBusController is
 begin
-    
-    process (i_clock, i_busRequest, io_bus_data)
+    o_UART_bus_data <= i_bus_data;
+
+    process (i_clock, i_busRequest, i_bus_data,
+             i_UART_readReady, i_UART_readDone,
+             i_UART_writeReady, i_UART_writeDone,
+             i_UART_data, i_UART_bus_EN, i_UART_bus_data)
     begin
         if i_busRequest.addr = uart_control_addr then -- UART control
             o_nCE <= '1';
             o_nOE <= '0';
             o_nWE <= '0';
-            io_bus_data <= (others => 'Z');
+            o_bus_EN <= '0';
+            o_bus_data <= (others => '-');
             o_bus_addr <= (others => '-');
             o_UART_data <= (others => '-');
             o_UART_readBegin <= '0';
@@ -82,7 +92,8 @@ begin
             o_nCE <= '1';
             o_nOE <= '0';
             o_nWE <= '0';
-            io_bus_data <= (others => 'Z');
+            o_bus_EN <= i_UART_bus_EN;
+            o_bus_data <= i_UART_bus_data;
             o_bus_addr <= (others => '-');
             if i_busRequest.readRequest = '1' then
                 o_UART_readBegin <= '1';
@@ -113,23 +124,26 @@ begin
                 o_nOE <= '0';
                 o_nWE <= '1';
                 o_bus_addr <= i_busRequest.addr;
-                io_bus_data <= (others => 'Z');
-                o_busResponse.data <= io_bus_data;
+                o_bus_data <= (others => '-');
+                o_bus_EN <= '0';
+                o_busResponse.data <= i_bus_data;
                 o_busResponse.stallRequest <= '0';
             elsif i_busRequest.writeRequest = '1' then
                 o_nCE <= '0';
                 o_nOE <= '1';
                 o_nWE <= not i_clock;
                 o_bus_addr <= i_busRequest.addr;
-                io_bus_data <= i_busRequest.data;
+                o_bus_data <= i_busRequest.data;
+                o_bus_EN <= '1';
                 o_busResponse.data <= (others => '-');
                 o_busResponse.stallRequest <= '0';
             else -- no request
                 o_nCE <= '1';
                 o_nOE <= '0';
                 o_nWE <= '0';
-                io_bus_data <= (others => 'Z');
+                o_bus_data <= (others => '-');
                 o_bus_addr <= (others => '-');
+                o_bus_EN <= '0';
                 o_UART_data <= (others => '-');
                 o_busResponse.data <= (others => '-');
                 o_busResponse.stallRequest <= '0';
