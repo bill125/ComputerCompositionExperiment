@@ -18,11 +18,19 @@ entity CpuCore is
         i_DM_extBusResponse:  in  bus_response_t;
         o_TEST_word : out word_t;
         o_TEST_addr : out bus_addr_t;
-        o_TEST_EN : out std_logic
+        o_TEST_EN : out std_logic;
+        o_Dig1 : out std_logic_vector(6 downto 0);
+        o_Dig2 : out std_logic_vector(6 downto 0)
     );
 end entity;
 
 ARCHITECTURE behavior OF CpuCore IS
+    component seg7 is
+        port(
+            code: in std_logic_vector(3 downto 0);
+            seg_out : out std_logic_vector(6 downto 0)
+        );
+    end component seg7;
     component PC 
     	port (
             i_clock : in std_logic;
@@ -364,11 +372,22 @@ ARCHITECTURE behavior OF CpuCore IS
     signal i_breakEN : std_logic := '0';
 
 begin
+    Seg7_Inst1 : Seg7
+    port map
+    (
+        code => PC_o_PC(3 downto 0),
+        seg_out => o_Dig1
+    );
+    Seg7_Inst2 : Seg7
+    port map
+    (
+        code => StallClearController_o_nextPC(3 downto 0),
+        seg_out => o_Dig2
+    );
     o_TEST_word <= StallClearController_o_stall -- 5
         & StallClearController_o_clear(0 to 2) -- 3
-        & StallClearController_o_nextPC(2 downto 0) -- 3
         & i_nReset -- 1
-        & PC_o_PC(3 downto 0); -- 4
+        & IM_o_inst(6 downto 0); -- 7
     o_TEST_addr <= StallClearController_o_stall -- 5 useless
         & StallClearController_o_clear -- 5
         & StallClearController_o_nextPC(7 downto 0); -- 8
