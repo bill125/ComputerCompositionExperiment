@@ -124,6 +124,15 @@ begin
                         o_DMWR <= '0';
                         o_OP <= op_MTSP;
                     when others =>
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_NOP;
                 end case;
             when "01001" => -- addiu
                 o_ALUOP <= alu_addu;
@@ -168,6 +177,15 @@ begin
                         o_DMWR <= '0';
                         o_OP <= op_SUBU;
                     when others =>
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_NOP;
                 end case;
             when "01101" => -- li
                 o_ALUOP <= alu_addu;
@@ -212,6 +230,15 @@ begin
                         o_DMWR <= '0';
                         o_OP <= op_SRA;
                     when others =>
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_NOP;
                 end case;
             when "11101" =>
                 case i_inst(4 downto 0) is
@@ -298,8 +325,26 @@ begin
                                 o_DMWR <= '0';
                                 o_OP <= op_MFPC;
                             when others =>
+                                o_ALUOP <= alu_nop;
+                                o_OP0Type <= work.op_type_constants.invalid;
+                                o_OP1Type <= work.op_type_constants.invalid;
+                                o_wbType <= work.op_type_constants.invalid;
+                                o_OP0Src <= opSrc_zero;
+                                o_OP1Src <= opSrc_zero;
+                                o_DMRE <= '0';
+                                o_DMWR <= '0';
+                                o_OP <= op_NOP;
                         end case;                        
                     when others =>
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_NOP;
                 end case;
             when "01011" => -- sltui
                 o_ALUOP <= alu_uless;
@@ -334,6 +379,15 @@ begin
                         o_DMWR <= '0';
                         o_OP <= op_MTIH;
                     when others =>
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_NOP;
                 end case;
             when "10011" => -- lw
                 o_ALUOP <= alu_addu;
@@ -376,6 +430,15 @@ begin
                 o_DMWR <= '1';
                 o_OP <= op_SW_SP;
             when others =>
+                o_ALUOP <= alu_nop;
+                o_OP0Type <= work.op_type_constants.invalid;
+                o_OP1Type <= work.op_type_constants.invalid;
+                o_wbType <= work.op_type_constants.invalid;
+                o_OP0Src <= opSrc_zero;
+                o_OP1Src <= opSrc_zero;
+                o_DMRE <= '0';
+                o_DMWR <= '0';
+                o_OP <= op_NOP;
         end case;                
     end process;
 end Behavioral;
