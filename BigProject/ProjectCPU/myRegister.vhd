@@ -49,10 +49,10 @@ end myRegister;
 
 architecture Behavioral of myRegister is
 	type Reg is array(0 to 15) of std_logic_vector(15 downto 0);
-    signal regs : Reg;
+    signal regs : Reg:=(others => (others => '0'));
 begin
-    o_rxData <= regs(to_integer(unsigned(i_rxAddr)));
-    o_ryData <= regs(to_integer(unsigned(i_ryAddr)));
+    o_rxData <= regs(conv_integer(i_rxAddr));
+    o_ryData <= regs(conv_integer(i_ryAddr));
     o_T <= regs(conv_integer(T));
     o_IH <= regs(conv_integer(IH));
     o_SP <= regs(conv_integer(SP));
@@ -60,7 +60,21 @@ begin
     process(i_clock)
     begin
         if rising_edge(i_clock) and i_wbAddr /= invalid then
-            regs(to_integer(unsigned(i_wbAddr))) <= i_wbData;
+            case i_wbAddr is
+                when "0000" => regs(0) <= i_wbData;
+                when "0001" => regs(1) <= i_wbData;
+                when "0010" => regs(2) <= i_wbData;
+                when "0011" => regs(3) <= i_wbData;
+                when "0100" => regs(4) <= i_wbData;
+                when "0101" => regs(5) <= i_wbData;
+                when "0110" => regs(6) <= i_wbData;
+                when "0111" => regs(7) <= i_wbData;
+                when T => regs(8) <= i_wbData;
+                when IH => regs(11) <= i_wbData;
+                when SP => regs(13) <= i_wbData;
+                when others =>;
+            end case;
+            -- regs(to_integer(unsigned(i_wbAddr))) <= i_wbData;
         end if;
     end process;
 end Behavioral;
