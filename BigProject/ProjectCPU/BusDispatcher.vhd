@@ -48,8 +48,8 @@ architecture Behavioral of BusDispatcher is
 begin
     sel <= i_busRequest.addr(15);
 
-    process (sel, i_busRequest, i_sysBusResponse, 
-             i_extBusResponse)
+    process (sel, i_busRequest, 
+             i_sysBusResponse, i_extBusResponse)
     begin
         o_sysBusRequest <= i_busRequest;
         o_extBusRequest <= i_busRequest;

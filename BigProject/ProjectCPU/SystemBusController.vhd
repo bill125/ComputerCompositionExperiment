@@ -67,6 +67,8 @@ begin
             io_bus_data <= (others => 'Z');
             o_bus_addr <= (others => '-');
             o_UART_data <= (others => '-');
+            o_UART_readBegin <= '0';
+            o_UART_writeBegin <= '0';
             o_busResponse.stallRequest <= '0';
             if i_busRequest.readRequest = '1' then
                 o_busResponse.data <= (0 => i_UART_writeReady, 
@@ -75,21 +77,31 @@ begin
             else
                 o_busResponse.data <= (others => '-');
             end if;
+
         elsif i_busRequest.addr = uart_data_addr then -- UART data
+            o_nCE <= '1';
             o_nOE <= '0';
             o_nWE <= '0';
             io_bus_data <= (others => 'Z');
             o_bus_addr <= (others => '-');
             if i_busRequest.readRequest = '1' then
-                o_nCE <= '1';
                 o_UART_readBegin <= '1';
+                o_UART_writeBegin <= '0';
+                o_UART_data <= (others => '-');
                 o_busResponse.data <= i_UART_data;
                 o_busResponse.stallRequest <= not i_UART_readDone;
             elsif i_busRequest.writeRequest = '1' then
-                o_nCE <= '1';
+                o_UART_readBegin <= '0';
                 o_UART_writeBegin <= '1';
                 o_UART_data <= i_busRequest.data;
+                o_busResponse.data <= (others => '-');
                 o_busResponse.stallRequest <= not i_UART_writeDone;
+            else
+                o_UART_readBegin <= '0';
+                o_UART_writeBegin <= '0';
+                o_UART_data <= (others => '-');
+                o_busResponse.data <= (others => '-');
+                o_busResponse.stallRequest <= '0';
             end if;
             
         else -- SRAM

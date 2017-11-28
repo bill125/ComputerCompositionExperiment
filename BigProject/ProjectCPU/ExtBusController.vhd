@@ -57,6 +57,7 @@ begin
     begin
         if i_DM_busRequest.readRequest = '1' or i_DM_busRequest.writeRequest = '1' then
             busRequest <= i_DM_busRequest;
+            o_IM_busResponse.data <= (others => '-');
             if i_IM_busRequest.readRequest = '1' or i_IM_busRequest.writeRequest = '1' then
                 o_IM_busResponse.stallRequest <= '1';
             else
@@ -66,17 +67,18 @@ begin
         else
             busRequest <= i_IM_busRequest;
             o_IM_busResponse <= busResponse;
+            o_DM_busResponse.data <= (others => '-');
             o_DM_busResponse.stallRequest <= '0';
         end if ;
     end process;
 
     process (busRequest, io_bus_data, i_clock)
     begin
-        io_bus_data <= (others => 'Z');
         if busRequest.writeRequest = '1' or busRequest.readRequest = '1' then
             o_nCE <= '0';
             if busRequest.readRequest = '1' then
                 o_bus_addr <= busRequest.addr;
+                io_bus_data <= (others => 'Z');
                 busResponse.data <= io_bus_data;
                 busResponse.stallRequest <= '0';
                 o_nOE <= '0';
@@ -84,14 +86,19 @@ begin
             else
                 o_bus_addr <= busRequest.addr;
                 io_bus_data <= busRequest.data;
+                busResponse.data <= (others => '-');
                 busResponse.stallRequest <= '0';
                 o_nOE <= '1';
                 o_nWE <= not i_clock;
             end if;
         else
-            o_nCE <= '0';
-            o_nOE <= '1';
-            o_nWE <= '1';
+            o_nCE <= '1';
+            o_nOE <= '0';
+            o_nWE <= '0';
+            o_bus_addr <= (others => '-');
+            io_bus_data <= (others => 'Z');
+            busResponse.data <= (others => '-');
+            busResponse.stallRequest <= '0';
         end if;
     end process;
 
