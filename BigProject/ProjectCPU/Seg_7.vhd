@@ -28,26 +28,26 @@ begin
 		when "0101" =>
 		seg_out<="1101101";		
 		when "0110" =>
-		seg_out <="1111110";
+		seg_out <="1111101";
 		when "0111" =>
 		seg_out <="0000111";
 		when "1000" =>
 		seg_out <="1111111";		
 		when "1001" =>
-		seg_out <="1011111";
+		seg_out <="1101111";
 		--here
 		when "1010" =>
 		seg_out <="1110111";
 		when "1011" =>
-		seg_out <="1111010";
-		when "1100" =>
-		seg_out <="0111100";
-		when "1101" =>
-		seg_out <="1101011";
-		when "1110" =>
 		seg_out <="1111100";
+		when "1100" =>
+		seg_out <="0111001";
+		when "1101" =>
+		seg_out <="1011110";
+		when "1110" =>
+		seg_out <="1111001";
 		when "1111" =>
-		seg_out <="1110100";
+		seg_out <="1110001";
 		when others =>seg_out<="0000000";
 
 		end case;

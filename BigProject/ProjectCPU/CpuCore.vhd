@@ -387,7 +387,8 @@ begin
     o_TEST_word <= StallClearController_o_stall -- 5
         & StallClearController_o_clear(0 to 2) -- 3
         & i_nReset -- 1
-        & IM_o_inst(6 downto 0); -- 7
+        & i_jumpEN -- 1
+        & IM_o_inst(15 downto 10); -- 6
     o_TEST_addr <= StallClearController_o_stall -- 5 useless
         & StallClearController_o_clear -- 5
         & StallClearController_o_nextPC(7 downto 0); -- 8
