@@ -58,27 +58,28 @@ end SystemBusController;
 architecture Behavioral of SystemBusController is
 begin
     
-    process (i_clock, i_busRequest, i_UART_readDone, i_UART_writeDone,
-             i_UART_data, io_bus_data, i_UART_readReady, i_UART_writeReady)
+    process (i_clock, i_busRequest, io_bus_data)
     begin
-        o_busResponse.stallRequest <= '0';
-        o_UART_writeBegin <= '0';
-        o_UART_readBegin <= '0';
-        io_bus_data <= (others => 'Z');
-        if i_busRequest.readRequest = '0' and i_busRequest.writeRequest = '0' then
-            o_nCE <= '0';
-            o_nOE <= '1';
-            o_nWE <= '1';
-        elsif i_busRequest.addr = uart_control_addr then -- UART control
+        if i_busRequest.addr = uart_control_addr then -- UART control
+            o_nCE <= '1';
+            o_nOE <= '0';
+            o_nWE <= '0';
+            io_bus_data <= (others => 'Z');
+            o_bus_addr <= (others => '-');
+            o_UART_data <= (others => '-');
+            o_busResponse.stallRequest <= '0';
             if i_busRequest.readRequest = '1' then
                 o_busResponse.data <= (0 => i_UART_writeReady, 
                                        1 => i_UART_readReady, 
                                        others => '0');
             else
-                -- ???
+                o_busResponse.data <= (others => '-');
             end if;
-
         elsif i_busRequest.addr = uart_data_addr then -- UART data
+            o_nOE <= '0';
+            o_nWE <= '0';
+            io_bus_data <= (others => 'Z');
+            o_bus_addr <= (others => '-');
             if i_busRequest.readRequest = '1' then
                 o_nCE <= '1';
                 o_UART_readBegin <= '1';
@@ -92,11 +93,15 @@ begin
             end if;
             
         else -- SRAM
+            o_UART_data <= (others => '-');
+            o_UART_readBegin <= '0';
+            o_UART_writeBegin <= '0';
             if i_busRequest.readRequest = '1' then
                 o_nCE <= '0';
                 o_nOE <= '0';
                 o_nWE <= '1';
                 o_bus_addr <= i_busRequest.addr;
+                io_bus_data <= (others => 'Z');
                 o_busResponse.data <= io_bus_data;
                 o_busResponse.stallRequest <= '0';
             elsif i_busRequest.writeRequest = '1' then
@@ -105,6 +110,16 @@ begin
                 o_nWE <= not i_clock;
                 o_bus_addr <= i_busRequest.addr;
                 io_bus_data <= i_busRequest.data;
+                o_busResponse.data <= (others => '-');
+                o_busResponse.stallRequest <= '0';
+            else -- no request
+                o_nCE <= '1';
+                o_nOE <= '0';
+                o_nWE <= '0';
+                io_bus_data <= (others => 'Z');
+                o_bus_addr <= (others => '-');
+                o_UART_data <= (others => '-');
+                o_busResponse.data <= (others => '-');
                 o_busResponse.stallRequest <= '0';
             end if; 
         end if;
