@@ -22,6 +22,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use work.reg_addr.all;
+use work.constants.Reg;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -43,14 +44,15 @@ entity myRegister is
         o_ryData : out std_logic_vector(15 downto 0);
         o_T : out std_logic_vector(15 downto 0);
         o_SP : out std_logic_vector(15 downto 0);
-        o_IH : out std_logic_vector(15 downto 0)
+        o_IH : out std_logic_vector(15 downto 0);
+        o_registers : out Reg
 	);
 end myRegister;
 
 architecture Behavioral of myRegister is
-	type Reg is array(0 to 15) of std_logic_vector(15 downto 0);
     signal regs : Reg:=(others => (others => '0'));
 begin
+    o_registers <= regs;
     o_rxData <= regs(conv_integer(i_rxAddr));
     o_ryData <= regs(conv_integer(i_ryAddr));
     o_T <= regs(conv_integer(T));

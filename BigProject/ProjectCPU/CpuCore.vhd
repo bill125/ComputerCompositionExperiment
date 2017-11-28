@@ -19,6 +19,10 @@ entity CpuCore is
         o_TEST_word : out word_t;
         o_TEST_addr : out bus_addr_t;
         o_TEST_EN : out std_logic;
+        o_registers : out Reg;
+        o_PC_o_PC : out word_t;
+        o_IM_o_inst : out inst_t;
+        o_StallClearController_o_nextPC : out word_t;
         o_Dig1 : out std_logic_vector(6 downto 0);
         o_Dig2 : out std_logic_vector(6 downto 0)
     );
@@ -77,7 +81,8 @@ ARCHITECTURE behavior OF CpuCore IS
             o_ryData : out std_logic_vector(15 downto 0);
             o_T : out std_logic_vector(15 downto 0);
             o_SP : out std_logic_vector(15 downto 0);
-            o_IH : out std_logic_vector(15 downto 0)
+            o_IH : out std_logic_vector(15 downto 0);
+            o_registers : out Reg
     	);
     end component;
     component ImmExtend 
@@ -312,6 +317,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal myRegister_o_T : std_logic_vector(15 downto 0);
     signal myRegister_o_SP : std_logic_vector(15 downto 0);
     signal myRegister_o_IH : std_logic_vector(15 downto 0);
+    signal myRegister_o_registers : Reg;
     signal ImmExtend_o_immExtend : std_logic_vector (15 downto 0);
     signal Control_o_ALUOP : alu_op_t;
     signal Control_o_OP0Type : std_logic_vector (2 downto 0);
@@ -384,6 +390,10 @@ begin
         code => StallClearController_o_nextPC(3 downto 0),
         seg_out => o_Dig2
     );
+    o_registers <= myRegister_o_registers;
+    o_PC_o_PC  <= PC_o_PC;
+    o_StallClearController_o_nextPC <= StallClearController_o_nextPC;
+    o_IM_o_inst <= IM_o_inst;
     o_TEST_word <= StallClearController_o_stall -- 5
         & StallClearController_o_clear(0 to 2) -- 3
         & i_nReset -- 1
@@ -430,7 +440,8 @@ begin
         o_ryData => myRegister_o_ryData,
         o_T => myRegister_o_T,
         o_SP => myRegister_o_SP,
-        o_IH => myRegister_o_IH
+        o_IH => myRegister_o_IH,
+        o_registers => myRegister_o_registers
     );
     ImmExtend_inst: ImmExtend port map (
         i_inst => IF_ID_o_inst,

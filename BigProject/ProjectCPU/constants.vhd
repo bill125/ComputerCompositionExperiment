@@ -64,6 +64,7 @@ package constants is
     subtype reg_addr_t is std_logic_vector (reg_addr_length - 1 downto 0);
     subtype inst_t is std_logic_vector (inst_length - 1 downto 0);
     subtype pc_t is std_logic_vector (pc_length - 1 downto 0);
+    type Reg is array(0 to 15) of std_logic_vector(15 downto 0);
 
     type bus_request_t is record
         data: word_t;
