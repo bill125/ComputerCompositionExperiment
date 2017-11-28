@@ -41,13 +41,6 @@ entity CPUOverall is
         o_Dig1 : out std_logic_vector(6 downto 0);
         o_Dig2 : out std_logic_vector(6 downto 0);
 
-        -- i_sysBusRequest : in bus_request_t;   
-        -- o_sysBusResponse : out bus_response_t; 
-        -- i_IM_extBusRequest : in bus_request_t;
-        -- o_IM_extBusResponse : out bus_response_t;
-        -- i_DM_extBusRequest : in bus_request_t;
-        -- o_DM_extBusResponse : out bus_response_t;
-
         -- SysBus Interface
         io_sysBus_data : inout word_t;
         o_sysBus_addr : out bus_addr_t;

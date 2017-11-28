@@ -72,7 +72,7 @@ begin
                 when T => regs(8) <= i_wbData;
                 when IH => regs(11) <= i_wbData;
                 when SP => regs(13) <= i_wbData;
-                when others =>;
+                when others =>
             end case;
             -- regs(to_integer(unsigned(i_wbAddr))) <= i_wbData;
         end if;
