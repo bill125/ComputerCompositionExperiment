@@ -204,8 +204,8 @@ begin
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
         i_DM_extBusResponse => ExtBusController_DM_busResponse,
 		
-        o_TEST_word => CPUCore_o_TEST_word;
-		o_TEST_addr => CPUCore_o_TEST_addr;
+        o_TEST_word => CPUCore_o_TEST_word,
+		  o_TEST_addr => CPUCore_o_TEST_addr,
         o_TEST_EN => CPUCore_o_TEST_EN
     );
 
