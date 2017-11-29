@@ -74,11 +74,10 @@ begin
             else
                 case r_RX_State is
                     when t_RX_0 => -- wait for data
-                        o_readReady <= '0';
                         o_readDone <= '1';
                         o_rdn <= '1';
+                        o_readReady <= i_data_ready;
                         if i_data_ready = '1' then
-                            o_readReady <= '1';
                             r_RX_State <= t_RX_1;
                         else
                             r_RX_State <= t_RX_0;
@@ -86,7 +85,6 @@ begin
 
                     when t_RX_1 => -- receive data
                         if i_readBegin = '1' then
-                            o_bus_EN <= '0';
                             o_rdn <= '0';
                             o_data <= i_bus_data;
                             o_readReady <= '0';
