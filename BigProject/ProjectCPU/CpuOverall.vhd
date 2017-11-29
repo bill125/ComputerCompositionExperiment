@@ -119,9 +119,7 @@ architecture Behavioral of CPUOverall is
             o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
             o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
             o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
-            o_Dig1 : out std_logic_vector(6 downto 0);
-            o_Dig2 : out std_logic_vector(6 downto 0)
+            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0)
         );
     end component;
     component SystemBusController 
@@ -329,8 +327,6 @@ begin
         o_TEST_word => CPUCore_o_TEST_word,
 		o_TEST_addr => CPUCore_o_TEST_addr,
         o_TEST_EN => CPUCore_o_TEST_EN,
-        o_Dig1 => o_Dig1,
-        o_Dig2 => o_Dig2,
         o_registers => CPUCore_o_registers,
         o_PC_o_PC => CPUCore_o_PC_o_PC,
         o_StallClearController_o_nextPC => CPUCore_o_i_StallClearController_o_nextPC,
@@ -398,7 +394,7 @@ begin
     o_RAM2_nOE <= ExtBusController_nOE;
 
     UART_inst: UART port map (
-        i_clock => clock_11m,
+        i_clock => clock_50m,
         i_bus_data => SystemBusController_UART_bus_data,
         o_bus_data => UART_bus_data,
         o_bus_EN => UART_bus_EN,
