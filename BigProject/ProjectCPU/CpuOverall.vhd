@@ -72,6 +72,19 @@ entity CPUOverall is
 end CPUOverall;
 
 architecture Behavioral of CPUOverall is
+    component FreqDiv is
+        generic
+        (
+            div : integer := 50;
+            half : integer := 25 
+        );
+        port
+        (
+            CLK: in std_logic;
+            RST: in std_logic;
+            O: out std_logic
+        );
+    end component FreqDiv;
     component CPUCore
         port
         (
@@ -232,8 +245,21 @@ architecture Behavioral of CPUOverall is
 
 begin
     -- TODO: Add clock Frequency Divider
-    clock_50m <= i_clock;
-    clock_25m <= i_clock;
+     FD_Inst : FreqDiv
+    generic map
+    (
+        div => 1000,
+        half => 500
+    )
+    port map
+    (
+        CLK => i_clock,
+        RST => '0', 
+        O => clock_50m
+    );
+
+    --clock_50m <= i_clock;
+    --clock_25m <= i_clock;
     process (i_sw)
     begin
         if i_sw(15 downto 4) = "100000000000" then
