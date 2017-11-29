@@ -36,6 +36,7 @@ entity CPUOverall is
     port
     (
         i_clock : in std_logic;  -- high clock (100MHz?)
+        i_click : in std_logic;  -- high clock (0MHz?)
         i_nReset : in std_logic;
         i_sw   : in  STD_LOGIC_VECTOR (15 downto 0);
         -- o_clock : std_logic;  -- CPU clock
@@ -72,6 +73,12 @@ entity CPUOverall is
 end CPUOverall;
 
 architecture Behavioral of CPUOverall is
+    component seg7 is
+        port(
+            code: in std_logic_vector(3 downto 0);
+            seg_out : out std_logic_vector(6 downto 0)
+        );
+    end component seg7;
     component FreqDiv is
         generic
         (
@@ -242,9 +249,24 @@ architecture Behavioral of CPUOverall is
     signal UART_rdn          : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
+    signal clock_11m : std_logic;
+    -- debug
+    signal led : word_t;
 
 begin
     -- TODO: Add clock Frequency Divider
+    Seg7_Inst1 : Seg7
+    port map
+    (
+        code => led(7 downto 4),
+        seg_out => o_Dig1
+    );
+    Seg7_Inst2 : Seg7
+    port map
+    (
+        code => led(3 downto 0),
+        seg_out => o_Dig2
+    );
      FD_Inst : FreqDiv
     generic map
     (
@@ -255,38 +277,43 @@ begin
     (
         CLK => i_clock,
         RST => '0', 
-        O => clock_50m
+        O => clock_11m
     );
 
+    clock_50m <= clock_11m when i_sw(15 downto 14) = "00" else
+                 i_clock when i_sw(15 downto 14) = "01" else
+                 i_click when i_sw(15 downto 14) = "10" else 
+                 '0';
     --clock_50m <= i_clock;
     --clock_25m <= i_clock;
     process (i_sw)
     begin
-        if i_sw(15 downto 4) = "100000000000" then
-            o_Led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
-        elsif i_sw(15 downto 4) = "110000000000" then
+        if i_sw(13 downto 4) = "1000000000" then
+            led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
+        elsif i_sw(13 downto 4) = "1100000000" then
             case i_sw(3 downto 0) is
-                when "0000" => o_Led <= CPUCore_o_PC_o_PC;
-                when "0001" => o_Led <= CPUCore_o_i_StallClearController_o_nextPC;
-                when "0010" => o_Led <= CPUCore_o_IM_o_inst;
-                when others => o_Led <= (others => '1');
+                when "0000" => led <= CPUCore_o_PC_o_PC;
+                when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
+                when "0010" => led <= CPUCore_o_IM_o_inst;
+                when others => led <= (others => '1');
             end case;
-        elsif i_sw(15 downto 4) = "111000000000" then
+        elsif i_sw(13 downto 4) = "1110000000" then
             case i_sw(3 downto 0) is
-                when "0000" => o_Led <= CPUCore_o_ForwardUnit_o_OP0 ;
-                when "0001" => o_Led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => o_Led <= "00000000000000" & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
-                when "0011" => o_Led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
-                when "0100" => o_Led <= CPUCore_o_Decoder_o_OP0Data ;
-                when "0101" => o_Led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
-                when "0110" => o_Led <= CPUCore_o_Decoder_o_OP1Data ;
-                when "0111" => o_Led <= CPUCore_o_ImmExtend_o_immExtend ;
-                when others => o_Led <= (others => '1') ;
+                when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
+                when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
+                when "0010" => led <= "00000000000000" & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
+                when "0011" => led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
+                when "0100" => led <= CPUCore_o_Decoder_o_OP0Data ;
+                when "0101" => led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
+                when "0110" => led <= CPUCore_o_Decoder_o_OP1Data ;
+                when "0111" => led <= CPUCore_o_ImmExtend_o_immExtend ;
+                when others => led <= (others => '1') ;
             end case;
         else
-            o_Led <= CPUCore_o_TEST_word; 
+            led <= CPUCore_o_TEST_word; 
         end if;
     end process;
+    o_Led <= led;
 
     CPUCore_inst: CPUCore port map (
         i_clock => not clock_50m,
@@ -371,7 +398,7 @@ begin
     o_RAM2_nOE <= ExtBusController_nOE;
 
     UART_inst: UART port map (
-        i_clock => clock_50m,
+        i_clock => clock_11m,
         i_bus_data => SystemBusController_UART_bus_data,
         o_bus_data => UART_bus_data,
         o_bus_EN => UART_bus_EN,
