@@ -120,6 +120,7 @@ begin
                         o_writeDone <= '0';
                         if i_writeBegin = '1' then
                             o_writeReady <= '0';
+                            wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_1;
                         else
                             r_TX_State <= t_TX_0;
@@ -142,6 +143,7 @@ begin
                         o_bus_EN <= '0';
                         o_writeDone <= '1';
                         if i_tbre = '1' then
+                            wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_4;
                         else
                             r_TX_State <= t_TX_3;
