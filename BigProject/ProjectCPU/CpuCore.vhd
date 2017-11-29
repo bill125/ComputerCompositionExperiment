@@ -23,6 +23,15 @@ entity CpuCore is
         o_PC_o_PC : out word_t;
         o_IM_o_inst : out inst_t;
         o_StallClearController_o_nextPC : out word_t;
+        o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
+        o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
+        o_Control_o_DMRE : out std_logic;
+        o_Control_o_DMWR : out std_logic;
+        o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
+        o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
+        o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
+        o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
+        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
         o_Dig1 : out std_logic_vector(6 downto 0);
         o_Dig2 : out std_logic_vector(6 downto 0)
     );
@@ -390,6 +399,15 @@ begin
         code => StallClearController_o_nextPC(3 downto 0),
         seg_out => o_Dig2
     );
+    o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
+    o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
+    o_Control_o_DMRE <= Control_o_DMRE;
+    o_Control_o_DMWR <= Control_o_DMWR;
+    o_Decoder_o_OP0Addr <= Decoder_o_OP0Addr;
+    o_Decoder_o_OP0Data <= Decoder_o_OP0Data;
+    o_Decoder_o_OP1Addr <= Decoder_o_OP1Addr;
+    o_Decoder_o_OP1Data <= Decoder_o_OP1Data;
+    o_ImmExtend_o_immExtend <= ImmExtend_o_immExtend;
     o_registers <= myRegister_o_registers;
     o_PC_o_PC  <= PC_o_PC;
     o_StallClearController_o_nextPC <= StallClearController_o_nextPC;

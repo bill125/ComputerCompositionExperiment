@@ -91,6 +91,15 @@ architecture Behavioral of CPUOverall is
             o_PC_o_PC : out word_t;
             o_StallClearController_o_nextPC : out word_t;
             o_IM_o_inst : out inst_t;
+            o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
+            o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
+            o_Control_o_DMRE : out std_logic;
+            o_Control_o_DMWR : out std_logic;
+            o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
+            o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
+            o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
+            o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
+            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
             o_Dig1 : out std_logic_vector(6 downto 0);
             o_Dig2 : out std_logic_vector(6 downto 0)
         );
@@ -180,6 +189,15 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_PC_o_PC : word_t;
     signal CPUCore_o_IM_o_inst : inst_t;
     signal CPUCore_o_i_StallClearController_o_nextPC : word_t;
+    signal CPUCore_o_ForwardUnit_o_OP0 : std_logic_vector(15 downto 0);
+    signal CPUCore_o_ForwardUnit_o_OP1 : std_logic_vector(15 downto 0);
+    signal CPUCore_o_Control_o_DMRE : std_logic;
+    signal CPUCore_o_Control_o_DMWR : std_logic;
+    signal CPUCore_o_Decoder_o_OP0Addr : std_logic_vector(3 downto 0);
+    signal CPUCore_o_Decoder_o_OP0Data : std_logic_vector(15 downto 0);
+    signal CPUCore_o_Decoder_o_OP1Addr : std_logic_vector(3 downto 0);
+    signal CPUCore_o_Decoder_o_OP1Data : std_logic_vector(15 downto 0);
+    signal CPUCore_o_ImmExtend_o_immExtend : std_logic_vector(15 downto 0);
 
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_bus_data : word_t;
@@ -225,7 +243,19 @@ begin
                 when "0000" => o_Led <= CPUCore_o_PC_o_PC;
                 when "0001" => o_Led <= CPUCore_o_i_StallClearController_o_nextPC;
                 when "0010" => o_Led <= CPUCore_o_IM_o_inst;
-                when others => o_Led <= (others => '0');
+                when others => o_Led <= (others => '1');
+            end case;
+        elsif i_sw(15 downto 4) = "111000000000" then
+            case i_sw(3 downto 0) is
+                when "0000" => o_Led <= CPUCore_o_ForwardUnit_o_OP0 ;
+                when "0001" => o_Led <= CPUCore_o_ForwardUnit_o_OP1 ;
+                when "0010" => o_Led <= "00000000000000" & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
+                when "0011" => o_Led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
+                when "0100" => o_Led <= CPUCore_o_Decoder_o_OP0Data ;
+                when "0101" => o_Led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
+                when "0110" => o_Led <= CPUCore_o_Decoder_o_OP1Data ;
+                when "0111" => o_Led <= CPUCore_o_ImmExtend_o_immExtend ;
+                when others => o_Led <= (others => '1') ;
             end case;
         else
             o_Led <= CPUCore_o_TEST_word; 
@@ -251,7 +281,16 @@ begin
         o_registers => CPUCore_o_registers,
         o_PC_o_PC => CPUCore_o_PC_o_PC,
         o_StallClearController_o_nextPC => CPUCore_o_i_StallClearController_o_nextPC,
-        o_IM_o_inst => CPUCore_o_IM_o_inst
+        o_IM_o_inst => CPUCore_o_IM_o_inst,
+        o_ForwardUnit_o_OP0 => CPUCore_o_ForwardUnit_o_OP0,
+        o_ForwardUnit_o_OP1 => CPUCore_o_ForwardUnit_o_OP1,
+        o_Control_o_DMRE => CPUCore_o_Control_o_DMRE,
+        o_Control_o_DMWR => CPUCore_o_Control_o_DMWR,
+        o_Decoder_o_OP0Addr => CPUCore_o_Decoder_o_OP0Addr,
+        o_Decoder_o_OP0Data => CPUCore_o_Decoder_o_OP0Data,
+        o_Decoder_o_OP1Addr => CPUCore_o_Decoder_o_OP1Addr,
+        o_Decoder_o_OP1Data => CPUCore_o_Decoder_o_OP1Data,
+        o_ImmExtend_o_immExtend => CPUCore_o_ImmExtend_o_immExtend
     );
 
     SystemBusController_inst: SystemBusController port map (
