@@ -66,7 +66,7 @@ begin
 
     -- Read UART
     Receive_Data : process(i_clock)
-        variable wait_turns : integer range 0 to 1023 := 0;
+        variable wait_turns : integer range 0 to 31 := 0;
     begin
         if rising_edge(i_clock) then
             if wait_turns /= 0 then
@@ -106,7 +106,7 @@ begin
 
     -- Send UART
     Send_Data : process(i_clock)
-        variable wait_turns : integer range 0 to 1023 := 0;
+        variable wait_turns : integer range 0 to 31 := 0;
     begin
         if rising_edge(i_clock) then
             if wait_turns /= 0 then
@@ -116,11 +116,9 @@ begin
                     when t_TX_0 =>
                         o_bus_EN <= '0';
                         o_wrn <= '1';
-                        o_writeReady <= '1';
                         o_writeDone <= '0';
+                        o_writeReady <= not i_writeBegin;
                         if i_writeBegin = '1' then
-                            o_writeReady <= '0';
-                            wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_1;
                         else
                             r_TX_State <= t_TX_0;
@@ -143,7 +141,6 @@ begin
                         o_bus_EN <= '0';
                         o_writeDone <= '1';
                         if i_tbre = '1' then
-                            wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_4;
                         else
                             r_TX_State <= t_TX_3;
@@ -152,7 +149,6 @@ begin
                     when t_TX_4 =>
                         o_bus_EN <= '0';
                         if i_tsre = '1' then
-                            wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_0;
                         else
                             r_TX_State <= t_TX_4;
