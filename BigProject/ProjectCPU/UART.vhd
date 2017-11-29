@@ -152,7 +152,7 @@ begin
                         o_bus_EN <= '0';
                         if i_tsre = '1' then
                             --wait_turns := uart_wait_turns;
-                            r_TX_State <= t_TX_4;
+                            r_TX_State <= t_TX_0;
 								    --o_writeDone <= '0';
                         else
                             r_TX_State <= t_TX_4;

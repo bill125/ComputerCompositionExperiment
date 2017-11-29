@@ -31,6 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity ForwardUnit is
 	port(
+        i_DMRE : std_logic;
         i_OP0Data : in std_logic_vector(15 downto 0);
         i_OP1Data : in std_logic_vector(15 downto 0);
         i_OP0Addr : in std_logic_vector(3 downto 0);
@@ -52,13 +53,13 @@ architecture Behavioral of ForwardUnit is
 
 begin
     o_OP0 <= i_ALU1Res when i_OP0Addr /= "1111" and i_OP0Addr = i_ALU1Addr else
-             i_ALU2Res when i_OP0Addr /= "1111" and i_OP0Addr = i_ALU2Addr else
-             i_DMRes   when i_OP0Addr /= "1111" and i_OP0Addr = i_DMAddr else
+             i_ALU2Res when i_OP0Addr /= "1111" and i_OP0Addr = i_ALU2Addr and i_DMRE = '0' else
+             i_DMRes   when i_OP0Addr /= "1111" and i_OP0Addr = i_DMAddr and i_DMRE = '1' else
              i_OP0Data;
              
     o_OP1 <= i_ALU1Res when i_OP1Addr /= "1111" and i_OP1Addr = i_ALU1Addr else
-             i_ALU2Res when i_OP1Addr /= "1111" and i_OP1Addr = i_ALU2Addr else
-             i_DMRes   when i_OP1Addr /= "1111" and i_OP1Addr = i_DMAddr else
+             i_ALU2Res when i_OP1Addr /= "1111" and i_OP1Addr = i_ALU2Addr and i_DMRE = '0' else
+             i_DMRes   when i_OP1Addr /= "1111" and i_OP1Addr = i_DMAddr and i_DMRE = '1' else
              i_OP1Data;
 end Behavioral;
 
