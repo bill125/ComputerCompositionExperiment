@@ -31,19 +31,11 @@ entity CpuCore is
         o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
         o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
         o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
-        o_Dig1 : out std_logic_vector(6 downto 0);
-        o_Dig2 : out std_logic_vector(6 downto 0)
+        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0)
     );
 end entity;
 
 ARCHITECTURE behavior OF CpuCore IS
-    component seg7 is
-        port(
-            code: in std_logic_vector(3 downto 0);
-            seg_out : out std_logic_vector(6 downto 0)
-        );
-    end component seg7;
     component PC 
     	port (
             i_clock : in std_logic;
@@ -387,18 +379,6 @@ ARCHITECTURE behavior OF CpuCore IS
     signal i_breakEN : std_logic := '0';
 
 begin
-    Seg7_Inst1 : Seg7
-    port map
-    (
-        code => PC_o_PC(3 downto 0),
-        seg_out => o_Dig1
-    );
-    Seg7_Inst2 : Seg7
-    port map
-    (
-        code => StallClearController_o_nextPC(3 downto 0),
-        seg_out => o_Dig2
-    );
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
     o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
     o_Control_o_DMRE <= Control_o_DMRE;
