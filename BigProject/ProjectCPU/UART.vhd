@@ -51,9 +51,9 @@ entity UART is
         
         i_tbre         : in std_logic;
         i_tsre         : in std_logic;
-        o_wrn          : out std_logic;
+        o_wrn          : out std_logic := '1';
         i_data_ready   : in std_logic;
-        o_rdn          : out std_logic
+        o_rdn          : out std_logic := '1'
     );
 end UART;
 
@@ -135,11 +135,11 @@ begin
 
                     when t_TX_2 =>
                         o_wrn <= '1';
-                        o_writeDone <= '1';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_3;
 
                     when t_TX_3 =>
+                        o_writeDone <= '1';
                         if i_tbre = '1' then
                             r_TX_State <= t_TX_4;
                         else
