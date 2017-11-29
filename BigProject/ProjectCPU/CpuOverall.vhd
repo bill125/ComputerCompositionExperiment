@@ -280,7 +280,7 @@ begin
 
     clock_50m <= clock_11m when i_sw(15 downto 14) = "00" else
                  i_clock when i_sw(15 downto 14) = "01" else
-                 i_click when i_sw(15 downto 14) = "10" else 
+                 not i_click when i_sw(15 downto 14) = "10" else 
                  '0';
     --clock_50m <= i_clock;
     --clock_25m <= i_clock;
@@ -314,7 +314,7 @@ begin
     o_Led <= led;
 
     CPUCore_inst: CPUCore port map (
-        i_clock => not clock_50m,
+        i_clock => clock_50m,
         i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
