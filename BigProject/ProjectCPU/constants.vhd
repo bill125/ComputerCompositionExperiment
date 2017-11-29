@@ -28,7 +28,7 @@ package constants is
 -- function <function_name>  (signal <signal_name> : in <type_declaration>) return <type_declaration>;
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
-    constant uart_wait_turns: integer := 31;
+    constant uart_wait_turns: integer := 1000;
     constant uart_control_addr: std_logic_vector (17 downto 0) := "001011111100000001";
     constant uart_data_addr: std_logic_vector (17 downto 0) := "001011111100000000";
 
