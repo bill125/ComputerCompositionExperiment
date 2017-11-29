@@ -130,6 +130,7 @@ ARCHITECTURE behavior OF CpuCore IS
     end component;
     component ForwardUnit 
     	port(
+            i_DMRE : std_logic;
             i_OP0Data : in std_logic_vector(15 downto 0);
             i_OP1Data : in std_logic_vector(15 downto 0);
             i_OP0Addr : in std_logic_vector(3 downto 0);
@@ -477,6 +478,7 @@ begin
         o_wbAddr => Decoder_o_wbAddr
     );
     ForwardUnit_inst: ForwardUnit port map (
+        i_DMRE => EX_MEM_o_DMRE,
         i_OP0Data => Decoder_o_OP0Data,
         i_OP1Data => Decoder_o_OP1Data,
         i_OP0Addr => Decoder_o_OP0Addr,
