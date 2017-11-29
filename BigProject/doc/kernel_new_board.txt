@@ -103,8 +103,8 @@ DELINT:   ;�жϴ������
 	ADDSP 0x0001
 	NOP
 	MTIH R3;
-	JR R6
 	LW_SP R3 0x00FF
+	JR R6
 	
 	NOP	
 
@@ -253,8 +253,8 @@ TESTW:
 	AND R0 R6 
 	NOP		
 	BEQZ R0 TESTW     ;BF01&1=0 ��ȴ�	
-	JR R7
 	NOP 
+	JR R7
 	
 
 	
@@ -269,8 +269,8 @@ TESTR:
 	AND R0 R6 
 	NOP	
 	BEQZ R0 TESTR   ;BF01&2=0  ��ȴ�	
-	JR R7
 	NOP 		
+	JR R7
 	
 	
 SHOWREGS:    ;R�����ӡR0-R5
@@ -662,8 +662,8 @@ COMPILE:
 	MFPC R7
 	ADDIU R7 0x0004
 	MTIH R5    ;IH��λ��1	
-	JR R6
 	LW_SP R5 0x0000  ;R5�ָ��ֳ�
+	JR R6
 	
 	;�û�����ִ����ϣ�����kernel�������ֳ�
 	NOP
