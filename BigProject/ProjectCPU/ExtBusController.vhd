@@ -40,7 +40,9 @@ entity ExtBusController is
         o_IM_busResponse : out bus_response_t;
         o_DM_busResponse : out bus_response_t;
 
-        io_bus_data : inout word_t;
+        o_bus_EN : out std_logic;
+        i_bus_data : in word_t;
+        o_bus_data : out word_t;
         o_bus_addr : out bus_addr_t;
         o_nCE : out std_logic;
         o_nOE : out std_logic;
@@ -72,20 +74,22 @@ begin
         end if ;
     end process;
 
-    process (busRequest, io_bus_data, i_clock)
+    process (busRequest, i_bus_data, i_clock)
     begin
         if busRequest.writeRequest = '1' or busRequest.readRequest = '1' then
             o_nCE <= '0';
             if busRequest.readRequest = '1' then
+                o_bus_EN <= '0';
                 o_bus_addr <= busRequest.addr;
-                io_bus_data <= (others => 'Z');
-                busResponse.data <= io_bus_data;
+                o_bus_data <= (others => '-');
+                busResponse.data <= i_bus_data;
                 busResponse.stallRequest <= '0';
                 o_nOE <= '0';
                 o_nWE <= '1';
             else
+                o_bus_EN <= '1';
                 o_bus_addr <= busRequest.addr;
-                io_bus_data <= busRequest.data;
+                o_bus_data <= busRequest.data;
                 busResponse.data <= (others => '-');
                 busResponse.stallRequest <= '0';
                 o_nOE <= '1';
@@ -95,8 +99,9 @@ begin
             o_nCE <= '1';
             o_nOE <= '0';
             o_nWE <= '0';
+            o_bus_EN <= '0';
             o_bus_addr <= (others => '-');
-            io_bus_data <= (others => 'Z');
+            o_bus_data <= (others => '-');
             busResponse.data <= (others => '-');
             busResponse.stallRequest <= '0';
         end if;
