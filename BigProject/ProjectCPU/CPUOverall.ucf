@@ -2,7 +2,7 @@
 # PlanAhead Generated physical constraints 
 
 # NET "i_Click" LOC = U9;
-NET "i_Clock" LOC = U9;
+NET "i_Clock" LOC = B8;
 NET "i_nReset" LOC = U10;
 NET "o_Led[0]" LOC = D10;
 NET "o_Led[1]" LOC = E10;

@@ -20,7 +20,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE ieee.std_logic_signed.all;
-use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -69,7 +68,7 @@ begin
         o_OP0Data <= i_rxData when "000",
                      i_ryData when "001",
                      i_T when "010",
-                     i_PC + "1" when "011",
+                     (i_PC + '1') when "011",
                      i_IH when "100",
                      i_SP when "110",
                      (others => '0') when others;
@@ -86,7 +85,7 @@ begin
         o_OP1Data <= i_rxData when "000",
                      i_ryData when "001",
                      i_T when "010",
-                     i_PC + "1" when "011",
+                     (i_PC + '1') when "011",
                      i_IH when "100",
                      i_SP when "110",
                      (others => '0') when others;
