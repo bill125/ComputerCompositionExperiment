@@ -2,18 +2,18 @@ ADDSP3 R0 0x0000
 ADDSP3 R0 0x0000
 NOP
 
-;±£´æÓÃ»§³ÌÐò¼Ä´æÆ÷µÄµØÖ· 
+;ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö· 
 ;0xBF10  0xBF11 BF12 0xBF13 BF14 0xBF15
 ; R0    R1   R2   R3   R4   R5  
 
-B START
 NOP
+B START
 
-DELINT:   ;ÖÐ¶Ï´¦Àí³ÌÐò
+DELINT:   ;ï¿½Ð¶Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	NOP
 	NOP
 	NOP
-	;±£´æÓÃ»§³ÌÐòÏÖ³¡
+	;ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½
 	LI R6 0xBF
 	SLL R6 R6 0x0000
 	ADDIU R6 0x10					;R6=0xBF10
@@ -25,70 +25,70 @@ DELINT:   ;ÖÐ¶Ï´¦Àí³ÌÐò
 	
 
 	
-	;R1=ÖÐ¶ÏºÅ
+	;R1=ï¿½Ð¶Ïºï¿½
 	LW_SP R1 0x0000
 	ADDSP 0x0001
 	LI R0 0x00FF
 	AND R1 R0
 	
-	;R2=Ó¦ÓÃ³ÌÐòµÄpc
+	;R2=Ó¦ï¿½Ã³ï¿½ï¿½ï¿½ï¿½pc
 	LW_SP R2 0x0000
 	ADDSP 0x0001
 	
-	;±£´ær3
+	;ï¿½ï¿½ï¿½ï¿½r3
 	ADDSP 0xFFFF
 	SW_SP R3 0x0000
 
 
 	
-	;±£´æÓÃ»§³ÌÐò·µ»ØµØÖ·
+	;ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ò·µ»Øµï¿½Ö·
 	ADDSP 0xFFFF
 	SW_SP R7 0x0000
 	
-	;ÌáÊ¾ÖÕ¶Ë£¬½øÈëÖÐ¶Ï´¦Àí
+	;ï¿½ï¿½Ê¾ï¿½Õ¶Ë£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï´ï¿½ï¿½ï¿½
 	LI R3 0x000F
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	NOP
+	B TESTW 	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00
 	SW R6 R3 0x0000
 	NOP
-	;Êä³öÖÐ¶ÏºÅ
+	;ï¿½ï¿½ï¿½ï¿½Ð¶Ïºï¿½
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	NOP
+	B TESTW 	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00 
 	SW R6 R1 0x0000
 	NOP
 	
-	;ÌáÊ¾ÖÕ¶Ë£¬ÖÐ¶Ï´¦Àí½áÊø
+	;ï¿½ï¿½Ê¾ï¿½Õ¶Ë£ï¿½ï¿½Ð¶Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	LI R3 0x000F
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	NOP
+	B TESTW 	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00 
 	SW R6 R3 0x0000
 	NOP
 	
-	;R6±£´æ·µ»ØµØÖ·
+	;R6ï¿½ï¿½ï¿½æ·µï¿½Øµï¿½Ö·
 	ADDIU3 R2 R6 0x0000
 	
-	;ÓÃr3=IH£¨¸ßÎ»±ä³É1£©
+	;ï¿½ï¿½r3=IHï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½1ï¿½ï¿½
 	MFIH R3
 	LI R0 0x0080
 	SLL R0 R0 0x000
 	OR R3 R0
 	
-	;»Ö¸´ÏÖ³¡
+	;ï¿½Ö¸ï¿½ï¿½Ö³ï¿½
 	LI R7 0xBF
 	SLL R7 R7 0x0000
 	ADDIU R7 0x10					;R7=0xBF10
@@ -96,7 +96,7 @@ DELINT:   ;ÖÐ¶Ï´¦Àí³ÌÐò
 	LW R7 R1 0x0001
 	LW R7 R2 0x0002
 	
-	;r7=ÓÃ»§³ÌÐò·µ»ØµØÖ·
+	;r7=ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ò·µ»Øµï¿½Ö·
 	LW_SP R7 0x0000
 	
 	ADDSP 0x0001
@@ -111,17 +111,17 @@ DELINT:   ;ÖÐ¶Ï´¦Àí³ÌÐò
 
 ;init  0x8251
 START:
-	;³õÊ¼»¯IH¼Ä´æÆ÷£¬×î¸ßÎ»Îª1Ê±£¬ÔÊÐíÖÐ¶Ï£¬Îª0Ê±²»ÔÊÐí¡£³õÊ¼»¯Îª0£¬kernel²»ÔÊÐíÖÐ¶Ï
+	;ï¿½ï¿½Ê¼ï¿½ï¿½IHï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»Îª1Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï£ï¿½Îª0Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Îª0ï¿½ï¿½kernelï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 	LI R0 0x07
 	MTIH R0
-	;³õÊ¼»¯Õ»µØÖ·
+	;ï¿½ï¿½Ê¼ï¿½ï¿½Õ»ï¿½ï¿½Ö·
 	LI R0 0x00BF 
 	SLL R0 R0 0x0000
 	ADDIU R0 0x10					;R0=0xBF10 
 	MTSP R0
 	NOP
 	
-	;ÓÃ»§¼Ä´æÆ÷Öµ³õÊ¼»¯
+	;ï¿½Ã»ï¿½ï¿½Ä´ï¿½ï¿½ï¿½Öµï¿½ï¿½Ê¼ï¿½ï¿½
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000
 	ADDIU R6 0x10					;R6=0xBF10 
@@ -137,8 +137,8 @@ START:
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	LI R6 0x00BF 
+	B TESTW 	
 	SLL R6 R6 0x0000 
 	LI R0 0x004F
 	SW R6 R0 0x0000
@@ -146,8 +146,8 @@ START:
 	
 	MFPC R7 
 	ADDIU R7 0x0003  
-	NOP
 	B TESTW 	
+	NOP
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LI R0 0x004B
@@ -157,8 +157,8 @@ START:
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	LI R6 0x00BF 
+	B TESTW 	
 	SLL R6 R6 0x0000 
 	LI R0 0x000A
 	SW R6 R0 0x0000
@@ -167,8 +167,8 @@ START:
 	MFPC R7 
 	ADDIU R7 0x0003  
 	NOP
-	B TESTW 	
 	LI R6 0x00BF 
+	B TESTW 	
 	SLL R6 R6 0x0000 
 	LI R0 0x000D
 	SW R6 R0 0x0000
@@ -180,13 +180,13 @@ START:
 	
 
 	
-BEGIN:          ;¼ì²âÃüÁî
-	;½ÓÊÕ×Ö·û£¬±£´æµ½r1
+BEGIN:          ;ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	;ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æµ½r1
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R1 0x0000
@@ -195,54 +195,54 @@ BEGIN:          ;¼ì²âÃüÁî
 	NOP	
 	
 
-	;¼ì²âÊÇ·ñÎªRÃüÁî		
+	;ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªRï¿½ï¿½ï¿½ï¿½		
 	LI R0 0x0052
 	CMP R0 R1
 	BTEQZ SHOWREGS	
 	NOP	
-	;¼ì²âÊÇ·ñÎªDÃüÁî
+	;ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªDï¿½ï¿½ï¿½ï¿½
 	LI R0 0x0044
 	CMP R0 R1
 	BTEQZ SHOWMEM
 	NOP	
 	
-	;¼ì²âÊÇ·ñÎªAÃüÁî
+	;ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªAï¿½ï¿½ï¿½ï¿½
 	LI R0 0x0041
 	CMP R0 R1
 	BTEQZ GOTOASM
 	NOP	
 	
-	;¼ì²âÊÇ·ñÎªUÃüÁî
+	;ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªUï¿½ï¿½ï¿½ï¿½
 	LI R0 0x0055
 	CMP R0 R1
 	BTEQZ GOTOUASM
 	NOP	
-	;¼ì²âÊÇ·ñÎªGÃüÁî
+	;ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªGï¿½ï¿½ï¿½ï¿½
 	LI R0 0x0047
 	CMP R0 R1
 	BTEQZ GOTOCOMPILE
 	NOP		
 	
-	B BEGIN
 	NOP
+	B BEGIN
 
-;¸÷´¦Àí¿éµÄÈë¿Ú
+;ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 GOTOUASM:
 	NOP
-	B UASM
 	NOP
+	B UASM
 GOTOASM:
 	NOP
-	B ASM
 	NOP
+	B ASM
 	
 GOTOCOMPILE:
 	NOP
-	B COMPILE
 	NOP
+	B COMPILE
   
 	
-;²âÊÔ8251ÊÇ·ñÄÜÐ´
+;ï¿½ï¿½ï¿½ï¿½8251ï¿½Ç·ï¿½ï¿½ï¿½Ð´
 TESTW:	
 	NOP	 		
 	LI R6 0x00BF 
@@ -251,14 +251,14 @@ TESTW:
 	LW R6 R0 0x0000 
 	LI R6 0x0001 
 	AND R0 R6 
-	BEQZ R0 TESTW     ;BF01&1=0 ÔòµÈ´ý	
+	BEQZ R0 TESTW     ;BF01&1=0 ï¿½ï¿½È´ï¿½	
 	NOP		
 	JR R7
 	NOP 
 	
 
 	
-;²âÊÔ8251ÊÇ·ñÄÜ¶Á
+;ï¿½ï¿½ï¿½ï¿½8251ï¿½Ç·ï¿½ï¿½Ü¶ï¿½
 TESTR:	
 	NOP	
 	LI R6 0x00BF 
@@ -267,15 +267,15 @@ TESTR:
 	LW R6 R0 0x0000 
 	LI R6 0x0002
 	AND R0 R6 
-	BEQZ R0 TESTR   ;BF01&2=0  ÔòµÈ´ý	
+	BEQZ R0 TESTR   ;BF01&2=0  ï¿½ï¿½È´ï¿½	
 	NOP	
 	JR R7
 	NOP 		
 	
 	
-SHOWREGS:    ;RÃüÁî£¬´òÓ¡R0-R5
-	LI R1 0x0006  ;R1µÝ¼õ  
-	LI R2 0x0006   ;R2²»±ä
+SHOWREGS:    ;Rï¿½ï¿½ï¿½î£¬ï¿½ï¿½Ó¡R0-R5
+	LI R1 0x0006  ;R1ï¿½Ý¼ï¿½  
+	LI R2 0x0006   ;R2ï¿½ï¿½ï¿½ï¿½
 	
 LOOP:
 	LI R0  0x00BF
@@ -283,9 +283,9 @@ LOOP:
 	ADDIU R0 0x0010
 	SUBU R2 R1 R3   ;R2=0,1,2,3
 	ADDU R0 R3 R0   ;R0=BF10...
-	LW R0 R3 0x0000    ;R3=ÓÃ»§³ÌÐòµÄ R0,R1,R2	
+	LW R0 R3 0x0000    ;R3=ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ R0,R1,R2	
 
-	;·¢ËÍµÍ°ËÎ»
+	;ï¿½ï¿½ï¿½ÍµÍ°ï¿½Î»
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
@@ -294,13 +294,13 @@ LOOP:
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=BF00	
 	SW R6 R3 0x0000	
-	;·¢ËÍ¸ß°ËÎ»
+	;ï¿½ï¿½ï¿½Í¸ß°ï¿½Î»
 	SRA R3 R3 0x0000
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R3 0x0000	
@@ -309,8 +309,8 @@ LOOP:
 	NOP
 	BNEZ R1 LOOP
 	NOP	
-	B BEGIN
 	NOP
+	B BEGIN
 	
 
 	
@@ -319,8 +319,8 @@ LOOP:
 	
 	
 	
-SHOWMEM:  ;²é¿´ÄÚ´æ	
-;D¶ÁÈ¡µØÖ·µÍÎ»µ½r5
+SHOWMEM:  ;ï¿½é¿´ï¿½Ú´ï¿½	
+;Dï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
@@ -333,12 +333,12 @@ SHOWMEM:  ;²é¿´ÄÚ´æ
 	AND R5 R6
 	NOP	
 	
-	;¶ÁÈ¡µØÖ·¸ßÎ»µ½r1
+	;ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r1
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R1 0x0000
@@ -348,96 +348,96 @@ SHOWMEM:  ;²é¿´ÄÚ´æ
 	
 	
 	
-	;R1´æ´¢µØÖ·
+	;R1ï¿½æ´¢ï¿½ï¿½Ö·
 	SLL R1 R1 0x0000
 	OR R1 R5
 	
-	;¶ÁÈ¡ÏÔÊ¾´ÎÊýµÍÎ»µ½R5
+	;ï¿½ï¿½È¡ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½R5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
 	LI R6 0x00FF
 	AND R5 R6
 	NOP	
-	;¶ÁÈ¡ÏÔÊ¾´ÎÊý¸ßÎ»µ½R2
+	;ï¿½ï¿½È¡ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½R2
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R2 0x0000
 	LI R6 0x00FF
 	AND R2 R6
 	NOP	
-	;R2±£´æÄÚ´æ¸öÊý
+	;R2ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½
 	SLL R2 R2 0x0000
 	OR R2 R5
 
 	
-		;Ñ­»··¢³ö	
+		;Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 	
 MEMLOOP:		
 	
-	LW R1 R3 0x0000    ;R3ÎªÄÚ´æÊý¾Ý	
+	LW R1 R3 0x0000    ;R3Îªï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½	
 
-	;·¢ËÍµÍ°ËÎ»
+	;ï¿½ï¿½ï¿½ÍµÍ°ï¿½Î»
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R3 0x0000	
-	;·¢ËÍ¸ß°ËÎ»
+	;ï¿½ï¿½ï¿½Í¸ß°ï¿½Î»
 
 	SRA R3 R3 0x0000
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R3 0x0000	
 	
-	ADDIU R1 0x0001   ;R1=µØÖ·¼Ó¼Ó¼Ó
+	ADDIU R1 0x0001   ;R1=ï¿½ï¿½Ö·ï¿½Ó¼Ó¼ï¿½
 	ADDIU R2 0xFFFF
 	NOP
 	BNEZ R2 MEMLOOP
 	NOP	
 
-	B BEGIN
 	NOP		
+	B BEGIN
 
 
- ;»ã±à	
+ ;ï¿½ï¿½ï¿½	
 ASM:  
-	;AÃüÁî¶ÁÈ¡µØÖ·µÍÎ»µ½r5
+	;Aï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
 	LI R6 0x00FF
 	AND R5 R6
 	NOP	
-	;¶ÁÈ¡µØÖ·¸ßÎ»µ½r1
+	;ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r1
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R1 0x0000
@@ -445,26 +445,26 @@ ASM:
 	AND R1 R6
 	NOP	
 	
-	;R1´æ´¢µØÖ·
+	;R1ï¿½æ´¢ï¿½ï¿½Ö·
 	SLL R1 R1 0x0000
 	OR R1 R5
 	
 	
 	
 	
-	;¼ì²âµØÖ·ÊÇ·ñºÏ·¨
+	;ï¿½ï¿½ï¿½ï¿½Ö·ï¿½Ç·ï¿½Ï·ï¿½
 	LI R0 0x0000
 	CMP R0 R1      
   BTEQZ GOTOBEGIN
 	NOP	
 	
  
-	;¶ÁÈ¡Êý¾ÝµÍÎ»µ½R5
+	;ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ýµï¿½Î»ï¿½ï¿½R5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
@@ -473,56 +473,56 @@ ASM:
 	NOP	
 	
 
-	;¶ÁÈ¡Êý¾Ý¸ßÎ»µ½R2
+	;ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ý¸ï¿½Î»ï¿½ï¿½R2
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R2 0x0000
 	LI R6 0x00FF
 	AND R2 R6
 	NOP	
-	;R2±£´æÊý¾Ý
+	;R2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	SLL R2 R2 0x0000
 	OR R2 R5
 			
 	SW R1 R2 0x0000	
 	NOP
 	
-	B ASM
 	NOP
+	B ASM
 	
 GOTOBEGIN:
 	NOP
-	B BEGIN
 	NOP
+	B BEGIN
 	
 	
 	
 	
-;·´»ã±à£º½«ÐèÒª·´»ã±àµÄµØÖ·´¦µÄÖµ·¢¸øÖÕ¶Ë´¦Àí	
+;ï¿½ï¿½ï¿½ï¿½à£ºï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Õ¶Ë´ï¿½ï¿½ï¿½	
 UASM:
-;¶ÁÈ¡µØÖ·µÍÎ»µ½r5
+;ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
 	LI R6 0x00FF
 	AND R5 R6
 	NOP	
-	;¶ÁÈ¡µØÖ·¸ßÎ»µ½r1
+	;ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½r1
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R1 0x0000
@@ -532,102 +532,102 @@ UASM:
 	
 	
 	
-	;R1´æ´¢µØÖ·
+	;R1ï¿½æ´¢ï¿½ï¿½Ö·
 	SLL R1 R1 0x0000
 	OR R1 R5
 	
-	;¶ÁÈ¡ÏÔÊ¾´ÎÊýµÍÎ»µ½R5
+	;ï¿½ï¿½È¡ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½R5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
 	LI R6 0x00FF
 	AND R5 R6
 	NOP	
-	;¶ÁÈ¡ÏÔÊ¾´ÎÊý¸ßÎ»µ½R2
+	;ï¿½ï¿½È¡ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½R2
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R2 0x0000
 	LI R6 0x00FF
 	AND R2 R6
 	NOP	
-	;R2±£´æÄÚ´æ¸öÊý
+	;R2ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½
 	SLL R2 R2 0x0000
 	OR R2 R5
 
 	
-		;Ñ­»··¢³ö	
+		;Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 	
 UASMLOOP:		
 	
-	LW R1 R3 0x0000    ;R3ÎªÄÚ´æÊý¾Ý	
+	LW R1 R3 0x0000    ;R3Îªï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½	
 
-	;·¢ËÍµÍ°ËÎ»
+	;ï¿½ï¿½ï¿½ÍµÍ°ï¿½Î»
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R3 0x0000	
-	;·¢ËÍ¸ß°ËÎ»
+	;ï¿½ï¿½ï¿½Í¸ß°ï¿½Î»
 
 	SRA R3 R3 0x0000
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R3 0x0000	
 	
-	ADDIU R1 0x0001   ;R1=µØÖ·¼Ó¼Ó¼Ó
+	ADDIU R1 0x0001   ;R1=ï¿½ï¿½Ö·ï¿½Ó¼Ó¼ï¿½
 	ADDIU R2 0xFFFF
 	NOP
 	BNEZ R2 UASMLOOP
 	NOP	
 
-	B BEGIN
 	NOP			
+	B BEGIN
 	
-;Á¬ÐøÖ´ÐÐ
+;ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½
 COMPILE:
-	;¶ÁÈ¡µØÖ·µÍÎ»µ½R5
+	;ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½Î»ï¿½ï¿½R5
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R5 0x0000
 	LI R6 0x00FF
 	AND R5 R6
 	NOP	
-	;¶ÁÈ¡ÄÚ´æ¸ßÎ»µ½R2
+	;ï¿½ï¿½È¡ï¿½Ú´ï¿½ï¿½Î»ï¿½ï¿½R2
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP	
-	B TESTR	
 	NOP
+	B TESTR	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 
 	LW R6 R2 0x0000
 	LI R6 0x00FF
 	AND R2 R6
 	NOP	
-	;R2±£´æÄÚ´æµØÖ·  ´«¸ør6
+	;R2ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ö·  ï¿½ï¿½ï¿½ï¿½r6
 	SLL R2 R2 0x0000
 	OR R2 R5
 	ADDIU3 R2 R6 0x0000
@@ -642,7 +642,7 @@ COMPILE:
 	SW_SP R5 0x0000
 	
 	
-	;ÖÐ¶Ï±£´æÔÚR5ÖÐ
+	;ï¿½Ð¶Ï±ï¿½ï¿½ï¿½ï¿½ï¿½R5ï¿½ï¿½
 	MFIH R5
 	LI R1 0x0080
 	SLL R1 R1 0x000
@@ -650,7 +650,7 @@ COMPILE:
 	
 	
 	
-	;»Ö¸´ÏÖ³¡
+	;ï¿½Ö¸ï¿½ï¿½Ö³ï¿½
 	LW R7 R0 0x0000
 	LW R7 R1 0x0001
 	LW R7 R2 0x0002
@@ -661,11 +661,11 @@ COMPILE:
 	
 	MFPC R7
 	ADDIU R7 0x0004
-	MTIH R5    ;IH¸ßÎ»¸³1	
+	MTIH R5    ;IHï¿½ï¿½Î»ï¿½ï¿½1	
 	JR R6
-	LW_SP R5 0x0000  ;R5»Ö¸´ÏÖ³¡
+	LW_SP R5 0x0000  ;R5ï¿½Ö¸ï¿½ï¿½Ö³ï¿½
 	
-	;ÓÃ»§³ÌÐòÖ´ÐÐÍê±Ï£¬·µ»Økernel£¬±£´æÏÖ³¡
+	;ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½kernelï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½
 	NOP
 	NOP
 	ADDSP 0x0001
@@ -680,7 +680,7 @@ COMPILE:
 	SW R7 R4 0x0004
 	SW R7 R5 0x0005
 	
-	;IH¸ßÎ»¸³0
+	;IHï¿½ï¿½Î»ï¿½ï¿½0
 	MFIH R0
 	LI R1 0x007F
 	SLL R1 R1 0x0000
@@ -689,18 +689,18 @@ COMPILE:
 	AND R0 R1
 	MTIH R0
 	
-	;¸øÖÕ¶Ë·¢ËÍ½áÊøÓÃ»§³ÌÐòÌáÊ¾
+	;ï¿½ï¿½ï¿½Õ¶Ë·ï¿½ï¿½Í½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 	LI R1 0x0007
 	MFPC R7
 	ADDIU R7 0x0003	
 	NOP
-	B TESTW	
 	NOP	
+	B TESTW	
 	LI R6 0x00BF 
 	SLL R6 R6 0x0000 ;R6=0xBF00	
 	SW R6 R1 0x0000		
-	B BEGIN
 	NOP	
+	B BEGIN
 		
 	
 	
