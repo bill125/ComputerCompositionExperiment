@@ -150,11 +150,18 @@ begin
                     when t_TX_4 =>
                         o_bus_EN <= '0';
                         if i_tsre = '1' then
+                            wait_turns := uart_wait_turns;
                             o_writeReady <= '1';
                             r_TX_State <= t_TX_0;
                         else
                             r_TX_State <= t_TX_4;
                         end if;
+                    when others =>
+                        r_TX_State <= t_TX_0;
+                        o_bus_EN <= '0';
+                        o_wrn <= '1';
+                        o_writeReady <= '1';
+                        o_writeDone <= '0';
                 end case;
             end if;
         end if;
