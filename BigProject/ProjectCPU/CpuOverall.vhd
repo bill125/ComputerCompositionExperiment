@@ -270,8 +270,8 @@ begin
      FD_Inst : FreqDiv
     generic map
     (
-        div => 4,
-        half => 2
+        div => 1000,
+        half => 500
     )
     port map
     (
@@ -398,7 +398,7 @@ begin
     o_RAM2_nOE <= ExtBusController_nOE;
 
     UART_inst: UART port map (
-        i_clock => clock_50m,
+        i_clock => clock_11m,
         i_bus_data => SystemBusController_UART_bus_data,
         o_bus_data => UART_bus_data,
         o_bus_EN => UART_bus_EN,
