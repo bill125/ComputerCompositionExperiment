@@ -348,7 +348,7 @@ begin
         o_busResponse => SystemBusController_busResponse,
         i_UART_readReady => UART_readReady,
         i_UART_readDone => UART_readDone,
-        i_UART_writeReady => '0',
+        i_UART_writeReady => UART_writeReady,
         i_UART_writeDone => UART_writeDone,
         i_UART_bus_EN => UART_bus_EN,
         i_UART_bus_data => UART_bus_data,
