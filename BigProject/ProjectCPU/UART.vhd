@@ -112,9 +112,9 @@ begin
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else 
-                o_bus_EN <= '0';
                 case r_TX_State is
                     when t_TX_0 =>
+                        o_bus_EN <= '0';
                         o_wrn <= '1';
                         o_writeReady <= '1';
                         o_writeDone <= '0';
@@ -133,11 +133,13 @@ begin
                         r_TX_State <= t_TX_2;
 
                     when t_TX_2 =>
+                        o_bus_EN <= '1';
                         o_wrn <= '1';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_3;
 
                     when t_TX_3 =>
+                        o_bus_EN <= '0';
                         o_writeDone <= '1';
                         if i_tbre = '1' then
                             r_TX_State <= t_TX_4;
@@ -146,6 +148,7 @@ begin
                         end if;
                     
                     when t_TX_4 =>
+                        o_bus_EN <= '0';
                         if i_tsre = '1' then
                             o_writeReady <= '1';
                             r_TX_State <= t_TX_0;
