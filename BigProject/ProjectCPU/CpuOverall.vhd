@@ -248,8 +248,8 @@ begin
      FD_Inst : FreqDiv
     generic map
     (
-        div => 1000,
-        half => 500
+        div => 4,
+        half => 2
     )
     port map
     (
