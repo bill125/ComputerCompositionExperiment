@@ -322,7 +322,7 @@ begin
                 when "1001" => led <= CPUCore_o_ImmExtend_o_immExtend ;
                 when "1010" => led <= CPUCore_o_ALU_MUX_o_ALURes;
                 when "1011" => led <= CPUCore_o_DM_o_DMRes;
-                when "1100" => led <= CPUCore_o_MEM_WB_o_wbAddr;
+                when "1100" => led <= "000000000000" & CPUCore_o_MEM_WB_o_wbAddr;
                 when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
                 when others => led <= (others => '1') ;
             end case;

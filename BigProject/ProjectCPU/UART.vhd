@@ -58,7 +58,7 @@ entity UART is
 end UART;
 
 architecture Behavioral of UART is
-    type type_RX_State is (t_RX_0, t_RX_1, t_RX_2);
+    type type_RX_State is (t_RX_0, t_RX_1, t_RX_2, t_RX_3);
     type type_TX_State is (t_TX_0, t_TX_1, t_TX_2, t_TX_3, t_TX_4);
     signal r_RX_State : type_RX_State := t_RX_0;
     signal r_TX_State : type_TX_State := t_TX_0;
@@ -74,7 +74,7 @@ begin
             else
                 case r_RX_State is
                     when t_RX_0 => -- wait for data
-                        o_readDone <= '1';
+                        o_readDone <= not i_data_ready;
                         o_rdn <= '1';
                         o_readReady <= i_data_ready;
                         if i_data_ready = '1' then
@@ -84,11 +84,10 @@ begin
                         end if;
 
                     when t_RX_1 => -- receive data
+                        o_readDone <= '0';
                         if i_readBegin = '1' then
                             o_rdn <= '0';
-                            o_data <= i_bus_data;
                             o_readReady <= '0';
-                            o_readDone <= '0';
                             wait_turns := uart_wait_turns;
                             r_RX_State <= t_RX_2;
                         else
@@ -96,7 +95,12 @@ begin
                         end if;
 
                     when t_RX_2 =>
+                        o_data <= i_bus_data;
+                        r_RX_State <= t_RX_3;
+
+                    when t_RX_3 =>
                         o_readDone <= '1';
+                        wait_turns := uart_wait_turns;
                         r_RX_State <= t_RX_0;
                 end case;
             end if;
