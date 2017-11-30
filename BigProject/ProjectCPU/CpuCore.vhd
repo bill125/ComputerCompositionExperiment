@@ -270,7 +270,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_predPC : in word_t;
             i_predSucc : in std_logic;
             o_nextPC : out word_t;
-            o_clear : out std_logic_vector(0 to 4);
+            o_clear : out std_logic_vector(4 downto 0);
             
             -- stall
             i_wbAddr : in reg_addr_t;
@@ -279,7 +279,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_DMRE : in std_logic;
             i_OP0Addr : in reg_addr_t;
             i_OP1Addr : in reg_addr_t;
-            o_stall : out std_logic_vector(0 to 4)
+            o_stall : out std_logic_vector(4 downto 0)
         );
     end component;
     component BTB 
@@ -370,8 +370,8 @@ ARCHITECTURE behavior OF CpuCore IS
     signal MEM_WB_o_wbAddr : reg_addr_t;
     signal MEM_WB_o_wbData : word_t;
     signal StallClearController_o_nextPC : word_t;
-    signal StallClearController_o_clear : std_logic_vector(0 to 4);
-    signal StallClearController_o_stall : std_logic_vector(0 to 4);
+    signal StallClearController_o_clear : std_logic_vector(4 downto 0);
+    signal StallClearController_o_stall : std_logic_vector(4 downto 0);
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic ;
     signal BusDispatcher_IM_o_busResponse    : bus_response_t;

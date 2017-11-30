@@ -102,6 +102,9 @@ begin
                         o_readDone <= '1';
                         wait_turns := uart_wait_turns;
                         r_RX_State <= t_RX_0;
+
+                    when others =>
+                        r_RX_State <= t_RX_0;
                 end case;
             end if;
         end if;
