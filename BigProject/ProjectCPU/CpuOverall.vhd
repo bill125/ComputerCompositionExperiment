@@ -197,7 +197,9 @@ architecture Behavioral of CPUOverall is
             i_tsre         : in std_logic;
             o_wrn          : out std_logic;
             i_data_ready   : in std_logic;
-            o_rdn          : out std_logic
+            o_rdn          : out std_logic;
+
+            o_read_state   : out std_logic_vector(1 downto 0)
         );
     end component;
 
@@ -253,6 +255,7 @@ architecture Behavioral of CPUOverall is
     signal UART_readDone     : std_logic;
     signal UART_wrn          : std_logic;
     signal UART_rdn          : std_logic;
+    signal UART_read_state   : std_logic_vector(1 downto 0);
     signal clock : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
@@ -320,7 +323,7 @@ begin
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => led <= "00" &
+                when "0010" => led <= UART_read_state &
                     i_UART_tbre & i_UART_tsre & i_UART_data_ready & 
                     UART_readReady & UART_readDone & 
                     UART_writeReady & UART_writeDone & 
@@ -447,7 +450,8 @@ begin
         i_tsre => i_UART_tsre,
         o_wrn => UART_wrn,
         i_data_ready => i_UART_data_ready,
-        o_rdn => UART_rdn
+        o_rdn => UART_rdn,
+        o_read_state => UART_read_state
     );
     o_UART_rdn <= UART_rdn;
     o_UART_wrn <= UART_wrn;

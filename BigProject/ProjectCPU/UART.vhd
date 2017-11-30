@@ -53,7 +53,9 @@ entity UART is
         i_tsre         : in std_logic;
         o_wrn          : out std_logic := '1';
         i_data_ready   : in std_logic;
-        o_rdn          : out std_logic := '1'
+        o_rdn          : out std_logic := '1';
+
+        o_read_state   : out std_logic_vector(1 downto 0)
     );
 end UART;
 
@@ -63,6 +65,12 @@ architecture Behavioral of UART is
     signal r_RX_State : type_RX_State := t_RX_0;
     signal r_TX_State : type_TX_State := t_TX_0;
 begin
+
+    o_read_state <= "00" when r_RX_State = t_RX_0 else
+                    "01" when r_RX_State = t_RX_1 else
+                    "10" when r_RX_State = t_RX_2 else
+                    "11" when r_RX_State = t_RX_3 else
+                    "00";
 
     -- Read UART
     Receive_Data : process(i_clock)
@@ -74,7 +82,7 @@ begin
             else
                 case r_RX_State is
                     when t_RX_0 => -- wait for data
-                        o_readDone <= not i_data_ready;
+                        o_readDone <= '0';
                         o_rdn <= '1';
                         o_readReady <= i_data_ready;
                         if i_data_ready = '1' then
@@ -125,6 +133,8 @@ begin
                         o_writeDone <= '0';
                         o_writeReady <= not i_writeBegin;
                         if i_writeBegin = '1' then
+                            o_bus_EN <= '1';
+                            o_bus_data <= i_data;
                             r_TX_State <= t_TX_1;
                         else
                             r_TX_State <= t_TX_0;
