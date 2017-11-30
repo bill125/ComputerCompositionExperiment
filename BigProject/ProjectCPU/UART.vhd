@@ -138,7 +138,7 @@ begin
                         r_TX_State <= t_TX_2;
 
                     when t_TX_2 =>
-                        o_bus_EN <= '0';
+                        o_bus_EN <= '1';
                         o_wrn <= '1';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_3;

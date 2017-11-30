@@ -303,7 +303,7 @@ begin
     clock <= clock_50m when i_sw(15 downto 14) = "00" else
              clock_25m when i_sw(15 downto 14) = "01" else
              clock_12m when i_sw(15 downto 14) = "10" else 
-             i_click;
+             not i_click;
 
     process (i_sw)
     begin
@@ -320,7 +320,8 @@ begin
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => led <= "00000" & 
+                when "0010" => led <= "00" &
+                    i_UART_tbre & i_UART_tsre & i_UART_data_ready & 
                     UART_readReady & UART_readDone & 
                     UART_writeReady & UART_writeDone & 
                     UART_wrn & UART_rdn & 
