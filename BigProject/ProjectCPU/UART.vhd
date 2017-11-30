@@ -96,7 +96,6 @@ begin
                         end if;
 
                     when t_RX_2 =>
-                        o_rdn <= '1';
                         o_readDone <= '1';
                         r_RX_State <= t_RX_0;
                 end case;

@@ -71,8 +71,8 @@ begin
     begin
         if i_busRequest.addr = uart_control_addr then -- UART control
             o_nCE <= '1';
-            o_nOE <= '0';
-            o_nWE <= '0';
+            o_nOE <= '1';
+            o_nWE <= '1';
             o_bus_EN <= '0';
             o_bus_data <= (others => '-');
             o_bus_addr <= (others => '-');
@@ -90,8 +90,8 @@ begin
 
         elsif i_busRequest.addr = uart_data_addr then -- UART data
             o_nCE <= '1';
-            o_nOE <= '0';
-            o_nWE <= '0';
+            o_nOE <= '1';
+            o_nWE <= '1';
             o_bus_EN <= i_UART_bus_EN;
             o_bus_data <= i_UART_bus_data;
             o_bus_addr <= (others => '-');
@@ -139,8 +139,8 @@ begin
                 o_busResponse.stallRequest <= '0';
             else -- no request
                 o_nCE <= '1';
-                o_nOE <= '0';
-                o_nWE <= '0';
+                o_nOE <= '1';
+                o_nWE <= '1';
                 o_bus_data <= (others => '-');
                 o_bus_addr <= (others => '-');
                 o_bus_EN <= '0';
