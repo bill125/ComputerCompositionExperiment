@@ -197,7 +197,9 @@ architecture Behavioral of CPUOverall is
             i_tsre         : in std_logic;
             o_wrn          : out std_logic;
             i_data_ready   : in std_logic;
-            o_rdn          : out std_logic
+            o_rdn          : out std_logic;
+
+            o_read_state   : out std_logic_vector(1 downto 0)
         );
     end component;
 
@@ -253,9 +255,11 @@ architecture Behavioral of CPUOverall is
     signal UART_readDone     : std_logic;
     signal UART_wrn          : std_logic;
     signal UART_rdn          : std_logic;
+    signal UART_read_state   : std_logic_vector(1 downto 0);
+    signal clock : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
-    signal clock_11m : std_logic;
+    signal clock_12m : std_logic;
     -- debug
     signal led : word_t;
 
@@ -273,25 +277,37 @@ begin
         code => led(3 downto 0),
         seg_out => o_Dig2
     );
-     FD_Inst : FreqDiv
+    clock_50m <= i_clock;
+    FD_Inst : FreqDiv
     generic map
     (
-        div => 1000,
-        half => 500
+        div => 2,
+        half => 1
     )
     port map
     (
         CLK => i_clock,
         RST => '0', 
-        O => clock_11m
+        O => clock_25m
+    );
+    FD_Inst2 : FreqDiv
+    generic map
+    (
+        div => 4,
+        half => 2
+    )
+    port map
+    (
+        CLK => i_clock,
+        RST => '0', 
+        O => clock_12m
     );
 
-    clock_50m <= clock_11m when i_sw(15 downto 14) = "00" else
-                 i_clock when i_sw(15 downto 14) = "01" else
-                 not i_click when i_sw(15 downto 14) = "10" else 
-                 '0';
-    --clock_50m <= i_clock;
-    --clock_25m <= i_clock;
+    clock <= clock_50m when i_sw(15 downto 14) = "00" else
+             clock_25m when i_sw(15 downto 14) = "01" else
+             clock_12m when i_sw(15 downto 14) = "10" else 
+             not i_click;
+
     process (i_sw)
     begin
         if i_sw(13 downto 4) = "1000000000" then
@@ -307,7 +323,8 @@ begin
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => led <= "00000" & 
+                when "0010" => led <= UART_read_state &
+                    i_UART_tbre & i_UART_tsre & i_UART_data_ready & 
                     UART_readReady & UART_readDone & 
                     UART_writeReady & UART_writeDone & 
                     UART_wrn & UART_rdn & 
@@ -333,7 +350,7 @@ begin
     o_Led <= led;
 
     CPUCore_inst: CPUCore port map (
-        i_clock => clock_50m,
+        i_clock => clock,
         i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
@@ -366,7 +383,7 @@ begin
         );
 
     SystemBusController_inst: SystemBusController port map (
-        i_clock => clock_50m,
+        i_clock => clock,
         i_busRequest => CPUCore_sysBusRequest,
         o_busResponse => SystemBusController_busResponse,
         i_UART_readReady => UART_readReady,
@@ -396,7 +413,7 @@ begin
     o_RAM1_nOE <= SystemBusController_nOE;
 
     ExtBusController_inst: ExtBusController port map (
-        i_clock => clock_50m,
+        i_clock => clock,
         i_IM_busRequest => CPUCore_IM_extBusRequest,
         i_DM_busRequest => CPUCore_DM_extBusRequest,
         o_IM_busResponse => ExtBusController_IM_busResponse,
@@ -417,7 +434,7 @@ begin
     o_RAM2_nOE <= ExtBusController_nOE;
 
     UART_inst: UART port map (
-        i_clock => clock_50m,
+        i_clock => clock,
         i_bus_data => SystemBusController_UART_bus_data,
         o_bus_data => UART_bus_data,
         o_bus_EN => UART_bus_EN,
@@ -433,7 +450,8 @@ begin
         i_tsre => i_UART_tsre,
         o_wrn => UART_wrn,
         i_data_ready => i_UART_data_ready,
-        o_rdn => UART_rdn
+        o_rdn => UART_rdn,
+        o_read_state => UART_read_state
     );
     o_UART_rdn <= UART_rdn;
     o_UART_wrn <= UART_wrn;

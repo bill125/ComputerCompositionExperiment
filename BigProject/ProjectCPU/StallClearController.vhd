@@ -41,7 +41,7 @@ entity StallClearController is
         i_predPC : in addr_t;
         i_predSucc : in std_logic;
         o_nextPC : out addr_t := (others => '0');
-        o_clear : out std_logic_vector(0 to 4) := (others => '0');
+        o_clear : out std_logic_vector(4 downto 0) := (others => '0');
         
         -- stall
         i_wbAddr : in reg_addr_t;
@@ -50,31 +50,31 @@ entity StallClearController is
         i_DMRE : in std_logic;
         i_OP0Addr : in reg_addr_t;
         i_OP1Addr : in reg_addr_t;
-        o_stall : out std_logic_vector(0 to 4) := (others => '0')
+        o_stall : out std_logic_vector(4 downto 0) := (others => '0')
     );
 end StallClearController;
 
 architecture Behavioral of StallClearController is
-    signal clear, stall, EX_MEM_stall, IF_ID_stall, PC_stall : std_logic_vector(0 to 4) := "00000";
+    signal clear, stall, EX_MEM_stall, IF_ID_stall, PC_stall : std_logic_vector(4 downto 0) := "00000";
 begin
     -- clear
     o_clear(0) <= clear(0);
-    o_clear(1 to 4) <= clear(1 to 4) or ((not stall(1 to 4)) and stall(0 to 3)); -- clear when needing stall
+    o_clear(4 downto 1) <= clear(4 downto 1) or ((not stall(4 downto 1)) and stall(3 downto 0)); -- clear when needing stall
     o_nextPC <= i_breakPC when i_breakEN = '1' else 
                 i_predPC when i_predSucc = '1' else
                 i_jumpTarget;
     clear(1) <= ((not i_nReset) or (not i_predSucc));
     clear(0) <= not i_nReset;
-    clear(2 to 4) <= (others => not i_nReset);
+    clear(4 downto 2) <= (others => not i_nReset);
 
     -- stall
-    PC_stall     <= (0 to stage_PC     => '1', others => '0')  -- IF stall request
+    PC_stall     <= (stage_IF_ID downto 0     => '1', others => '0')  -- IF stall request
         when i_IFStallReq = '1' else (others => '0'); 
 
-    IF_ID_stall  <= (0 to stage_IF_ID  => '1', others => '0')  -- Read register after LW
+    IF_ID_stall  <= (stage_IF_ID downto 0 => '1', others => '0')  -- Read register after LW
         when (i_DMRE = '1' and (i_OP0Addr = i_wbAddr or i_OP1Addr = i_wbAddr) and i_wbAddr /= ("1111")) else (others => '0');
 
-    EX_MEM_stall <= (0 to stage_EX_MEM => '1', others => '0')  -- DM Stall request
+    EX_MEM_stall <= (stage_EX_MEM downto 0 => '1', others => '0')  -- DM Stall request
         when i_DMStallReq = '1' else (others => '0');
 
     stall <= PC_stall or IF_ID_stall or EX_MEM_stall;
