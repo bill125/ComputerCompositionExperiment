@@ -31,7 +31,11 @@ entity CpuCore is
         o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
         o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
         o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0)
+        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
+        o_ALU_MUX_o_ALURes : out word_t;
+        o_DM_o_DMRes : out word_t;
+        o_MEM_WB_o_wbAddr : out reg_addr_t;
+        o_MEM_WB_o_wbData : out word_t
     );
 end entity;
 

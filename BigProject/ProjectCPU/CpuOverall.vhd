@@ -119,7 +119,11 @@ architecture Behavioral of CPUOverall is
             o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
             o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
             o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0)
+            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
+            o_ALU_MUX_o_ALURes : out word_t;
+            o_DM_o_DMRes : out word_t;
+            o_MEM_WB_o_wbAddr : out reg_addr_t;
+            o_MEM_WB_o_wbData : out word_t
         );
     end component;
     component SystemBusController 
@@ -216,6 +220,10 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_Decoder_o_OP1Addr : std_logic_vector(3 downto 0);
     signal CPUCore_o_Decoder_o_OP1Data : std_logic_vector(15 downto 0);
     signal CPUCore_o_ImmExtend_o_immExtend : std_logic_vector(15 downto 0);
+    signal CPUCore_o_ALU_MUX_o_ALURes : word_t;
+    signal CPUCore_o_DM_o_DMRes : word_t;
+    signal CPUCore_o_MEM_WB_o_wbAddr : reg_addr_t;
+    signal CPUCore_o_MEM_WB_o_wbData : word_t;
 
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_bus_data : word_t;
@@ -299,12 +307,23 @@ begin
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => led <= "00000000000000" & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
-                when "0011" => led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
-                when "0100" => led <= CPUCore_o_Decoder_o_OP0Data ;
-                when "0101" => led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
-                when "0110" => led <= CPUCore_o_Decoder_o_OP1Data ;
-                when "0111" => led <= CPUCore_o_ImmExtend_o_immExtend ;
+                when "0010" => led <= "00000" & 
+                    UART_readReady & UART_readDone & 
+                    UART_writeReady & UART_writeDone & 
+                    UART_wrn & UART_rdn & 
+                    UART_bus_EN & ExtBusController_bus_EN & 
+                    SystemBusController_bus_EN & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
+                when "0011" => led <= UART_data;
+                when "0100" => led <= UART_bus_data;
+                when "0101" => led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
+                when "0110" => led <= CPUCore_o_Decoder_o_OP0Data ;
+                when "0111" => led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
+                when "1000" => led <= CPUCore_o_Decoder_o_OP1Data ;
+                when "1001" => led <= CPUCore_o_ImmExtend_o_immExtend ;
+                when "1010" => led <= CPUCore_o_ALU_MUX_o_ALURes;
+                when "1011" => led <= CPUCore_o_DM_o_DMRes;
+                when "1100" => led <= CPUCore_o_MEM_WB_o_wbAddr;
+                when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
                 when others => led <= (others => '1') ;
             end case;
         else
@@ -339,8 +358,12 @@ begin
         o_Decoder_o_OP0Data => CPUCore_o_Decoder_o_OP0Data,
         o_Decoder_o_OP1Addr => CPUCore_o_Decoder_o_OP1Addr,
         o_Decoder_o_OP1Data => CPUCore_o_Decoder_o_OP1Data,
-        o_ImmExtend_o_immExtend => CPUCore_o_ImmExtend_o_immExtend
-    );
+        o_ImmExtend_o_immExtend => CPUCore_o_ImmExtend_o_immExtend,
+        o_ALU_MUX_o_ALURes => CPUCore_o_ALU_MUX_o_ALURes,
+        o_DM_o_DMRes => CPUCore_o_DM_o_DMRes,
+        o_MEM_WB_o_wbAddr => CPUCore_o_MEM_WB_o_wbAddr,
+        o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData
+        );
 
     SystemBusController_inst: SystemBusController port map (
         i_clock => clock_50m,
