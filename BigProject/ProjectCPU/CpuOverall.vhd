@@ -410,7 +410,7 @@ begin
         i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
-        i_sysBusResponse => SystemBusController_busResponse, 
+        i_sysBusResponse => BusArbiter_busResponse_0, 
         o_IM_extBusRequest => CPUCore_IM_extBusRequest,  
         i_IM_extBusResponse => ExtBusController_IM_busResponse,  
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
