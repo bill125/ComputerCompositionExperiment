@@ -53,7 +53,6 @@ architecture Behavioral of VGAAdapter is
 begin
     o_busRequest.writeRequest <= '0';
     o_busRequest.readRequest <= i_read_EN;
-    o_busRequest.data <= (others => '-');
 
     o_data <= i_busResponse.data;
     x <= conv_integer(i_vectorX);
