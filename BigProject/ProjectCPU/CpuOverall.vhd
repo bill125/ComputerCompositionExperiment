@@ -64,11 +64,19 @@ entity CPUOverall is
         i_UART_tsre         : in std_logic;
         o_UART_wrn          : out std_logic;
         i_UART_data_ready   : in std_logic;
-        o_UART_rdn          : out std_logic
+        o_UART_rdn          : out std_logic;
 
-        -- TODO: VGA Interface
+        -- VGA Interface
+        o_VGA_hs : out std_logic;
+        o_VGA_vs : out std_logic;
+        o_VGA_r  : out std_logic_vector(2 downto 0);
+        o_VGA_g  : out std_logic_vector(2 downto 0);
+        o_VGA_b  : out std_logic_vector(2 downto 0);
+        
 
-        -- TODO: PS/2 Interface
+        -- PS/2 Interface
+        i_PS2_clock : in std_logic;
+        i_PS2_data  : in std_logic
     );
 end CPUOverall;
 
@@ -202,6 +210,43 @@ architecture Behavioral of CPUOverall is
             o_read_state   : out std_logic_vector(1 downto 0)
         );
     end component;
+    component Keyboard
+    	port (
+            PS2Data : in std_logic; -- PS2 data
+            PS2Clock : in std_logic; -- PS2 clk
+            Clock : in std_logic;
+            Reset : in std_logic;
+            DataReceive : in std_logic;
+            DataReady : out std_logic ;  -- data output enable signal
+            Output : out std_logic_vector(7 downto 0) -- scan code signal output
+        );
+    end component;
+    component VGA
+        port 
+        (
+            i_busResponse : in bus_response_t;
+            o_busRequest : out bus_request_t;
+            
+            i_clock : in std_logic;
+            o_hs : out std_logic;
+            o_vs : out std_logic;
+            o_r : out std_logic_vector(2 downto 0);
+            o_g : out std_logic_vector(2 downto 0);
+            o_b : out std_logic_vector(2 downto 0)
+        );
+    end component;
+    component BusArbiter  -- 1 > 0
+        port
+        (
+            i_busRequest_0 : in bus_request_t; 
+            i_busRequest_1 : in bus_request_t; 
+            o_busResponse_0 : out bus_response_t;
+            o_busResponse_1 : out bus_response_t;
+
+            o_busRequest : out bus_request_t;
+            i_busResponse : in bus_response_t
+        );
+    end component;
 
     signal CPUCore_sysBusRequest : bus_request_t;
     signal CPUCore_IM_extBusRequest : bus_request_t;
@@ -227,6 +272,9 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_MEM_WB_o_wbAddr : reg_addr_t;
     signal CPUCore_o_MEM_WB_o_wbData : word_t;
 
+    signal BusArbiter_busResponse_0 : bus_response_t;
+    signal BusArbiter_busResponse_1 : bus_response_t;
+    signal BusArbiter_busRequest : bus_request_t;
     signal SystemBusController_busResponse : bus_response_t;
     signal SystemBusController_UART_bus_data : word_t;
     signal SystemBusController_UART_data : word_t;
@@ -256,6 +304,14 @@ architecture Behavioral of CPUOverall is
     signal UART_wrn          : std_logic;
     signal UART_rdn          : std_logic;
     signal UART_read_state   : std_logic_vector(1 downto 0);
+    signal Keyboard_DataReady : std_logic;
+    signal Keyboard_Output : std_logic_vector(7 downto 0);
+    signal VGA_busRequest : bus_request_t;
+    signal VGA_hs : std_logic;
+    signal VGA_vs : std_logic;
+    signal VGA_r : std_logic_vector(2 downto 0);
+    signal VGA_b : std_logic_vector(2 downto 0);
+    signal VGA_g : std_logic_vector(2 downto 0);
     signal clock : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
@@ -380,11 +436,36 @@ begin
         o_DM_o_DMRes => CPUCore_o_DM_o_DMRes,
         o_MEM_WB_o_wbAddr => CPUCore_o_MEM_WB_o_wbAddr,
         o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData
-        );
+    );
+
+    BusArbiter_inst: BusArbiter port map (
+        i_busRequest_0 => CPUCore_sysBusRequest,
+        i_busRequest_1 => VGA_busRequest, 
+        o_busResponse_0 => BusArbiter_busResponse_0,
+        o_busResponse_1 => BusArbiter_busResponse_1,
+        o_busRequest => BusArbiter_busRequest,
+        i_busResponse => SystemBusController_busResponse
+    );
+
+    VGA_inst: VGA port map (
+        i_busResponse => BusArbiter_busResponse_1,
+        o_busRequest => VGA_busRequest,
+        i_clock => clock_25m,
+        o_hs => VGA_hs,
+        o_vs => VGA_vs,
+        o_r => VGA_r,
+        o_g => VGA_g,
+        o_b => VGA_b
+    );
+    o_VGA_hs <= VGA_hs;
+    o_VGA_vs <= VGA_vs;
+    o_VGA_r <= VGA_r;
+    o_VGA_g <= VGA_g;
+    o_VGA_b <= VGA_b;
 
     SystemBusController_inst: SystemBusController port map (
         i_clock => clock,
-        i_busRequest => CPUCore_sysBusRequest,
+        i_busRequest => BusArbiter_busRequest,
         o_busResponse => SystemBusController_busResponse,
         i_UART_readReady => UART_readReady,
         i_UART_readDone => UART_readDone,
@@ -455,5 +536,15 @@ begin
     );
     o_UART_rdn <= UART_rdn;
     o_UART_wrn <= UART_wrn;
+
+    -- Keyboard_inst: Keyboard port map (
+    --     PS2Data => i_PS2_data,
+    --     PS2Clock => i_PS2_clock,
+    --     Clock => clock_50m,
+    --     Reset => not i_nReset,
+    --     DataReady => Keyboard_DataReady,  -- data output enable signal
+    --     DataReceive => '1',
+    --     Output => Keyboard_Output
+    -- );
 
 end;

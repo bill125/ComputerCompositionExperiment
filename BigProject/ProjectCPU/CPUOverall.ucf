@@ -136,3 +136,18 @@ NET "o_UART_rdn" LOC = C14;
 NET "o_UART_wrn" LOC = U5;
 NET "i_UART_tbre" LOC = D14;
 NET "i_UART_tsre" LOC = N9;
+
+NET "o_VGA_hs" LOC = D6;
+NET "o_VGA_vs" LOC = E6;
+NET "o_VGA_r[0]" LOC = A7;
+NET "o_VGA_r[1]" LOC = C3;
+NET "o_VGA_r[2]" LOC = A4;
+NET "o_VGA_r[0]" LOC = B4;
+NET "o_VGA_g[1]" LOC = C4;
+NET "o_VGA_g[2]" LOC = C5;
+NET "o_VGA_b[0]" LOC = D5;
+NET "o_VGA_b[1]" LOC = A6;
+NET "o_VGA_b[2]" LOC = B6;
+
+NET "i_PS2_clock" LOC = U6;
+NET "i_PS2_data" LOC = V6;

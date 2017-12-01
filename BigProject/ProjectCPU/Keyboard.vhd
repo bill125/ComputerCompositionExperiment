@@ -20,23 +20,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity KeyboardAdapter is
-port (
-	PS2Data : in std_logic; -- PS2 data
-	PS2Clock : in std_logic; -- PS2 clk
-	Clock : in std_logic;
-	Reset : in std_logic;
-	DataReceive : in std_logic;
-	DataReady : out std_logic ;  -- data output enable signal
-	Output : out std_logic_vector(7 downto 0) -- scan code signal output
-	);
-end KeyboardAdapter;
-
-architecture Behavioral of KeyboardAdapter is
-
--- components
-
-component KeyboardInput
+entity Keyboard is
 	port (
 		PS2Data : in std_logic; -- PS2 data
 		PS2Clock : in std_logic; -- PS2 clk
@@ -44,25 +28,31 @@ component KeyboardInput
 		Reset : in std_logic;
 		DataReceive : in std_logic;
 		DataReady : out std_logic ;  -- data output enable signal
-		Output : out std_logic_vector (7 downto 0) -- scan code signal output
+		Output : out std_logic_vector(7 downto 0) -- scan code signal output
 	);
-end component;
+end entity Keyboard;
 
-component KeyboardTranslate
-	port (
-		Data : in std_logic_vector (7 downto 0);
-		Output : out std_logic_vector (7 downto 0)
-	);
-end component;
+architecture Behavioral of KeyboardAdapter is
+	component KeyboardInput
+		port (
+			PS2Data : in std_logic; -- PS2 data
+			PS2Clock : in std_logic; -- PS2 clk
+			Clock : in std_logic;
+			Reset : in std_logic;
+			DataReceive : in std_logic;
+			DataReady : out std_logic ;  -- data output enable signal
+			Output : out std_logic_vector (7 downto 0) -- scan code signal output
+		);
+	end component;
 
--- end components
+	component KeyboardTranslate
+		port (
+			Data : in std_logic_vector (7 downto 0);
+			Output : out std_logic_vector (7 downto 0)
+		);
+	end component;
 
--- signal
-
-signal PS2DataSignal : std_logic_vector (7 downto 0);
-
--- end signal
-
+	signal PS2DataSignal : std_logic_vector (7 downto 0);
 begin
 
 	KeyboardInput_inst : KeyboardInput port map (
