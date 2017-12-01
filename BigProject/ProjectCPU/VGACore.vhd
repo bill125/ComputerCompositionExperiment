@@ -121,11 +121,6 @@ begin
 					g1	<= "000";
 					b1	<= "000";
 			else
-<<<<<<< HEAD
-				r1 <= i_data(7 downto 5);
-				g1 <= i_data(4 downto 3) & "0";
-				b1 <= i_data(2 downto 0);
-=======
 				r1 <= i_data(15 downto 13);
 				g1 <= i_data(12 downto 10);
 				b1 <= i_data(9 downto 7);
@@ -148,7 +143,6 @@ begin
 				-- 	g1 <= "111";
 				-- 	b1 <= "111";
 				-- end if;
->>>>>>> 1e9eb588a58fa4cf8166a13743ffa4d7fdf4d0de
 			end if;
 		end if;		 
 	end process;	
