@@ -41,7 +41,7 @@ architecture behavior of VGACore is
 	signal hs1,vs1    : std_logic;				
 	signal vector_x   : std_logic_vector(9 downto 0);
 	signal vector_y   : std_logic_vector(8 downto 0);
-	signal unsignedA  : unsigned(9 downto 0);			
+	-- signal unsignedA  : unsigned(9 downto 0);			
 	signal readEnX    : std_logic:='0';
 	signal readEnY    : std_logic:='0';
 	--signal unsignedB : unsigned(8 downto 0);
@@ -111,7 +111,7 @@ begin
 	 end process;
 	o_vectorX <= vector_x;
 	o_vectorY <= vector_y;
-	o_read_EN <= readEnX and readEnY;
+	o_read_EN <= '1' when (readEnX = '1' and readEnY = '1') else '0';
 
 	process(clk,vector_x,vector_y)
 	begin

@@ -59,12 +59,15 @@ begin
     begin
         o_busResponse_0 <= i_busResponse;
         o_busResponse_1 <= i_busResponse;
-        if busEN_1 = '1' then
+        if busEN_0 = '1' and (i_busRequest_0.addr = uart_control_addr or i_busRequest_0.addr = uart_data_addr) then
+            o_busRequest <= i_busRequest_0;
+            o_busResponse_1.stallRequest <= busEN_1;
+        elsif busEN_1 = '1' then
             o_busRequest <= i_busRequest_1;
             o_busResponse_0.stallRequest <= busEN_0;
         elsif busEN_0 = '1' then
             o_busRequest <= i_busRequest_0;
-            o_busResponse_1.stallRequest <= '0';
+            o_busResponse_1.stallRequest <= busEN_1;
         else
             o_busRequest.writeRequest <= '0';
             o_busRequest.readRequest <= '0';
