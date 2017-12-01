@@ -30,8 +30,9 @@ entity VGACore is
 			i_data : in std_logic_vector(15 downto 0); --读到的数�
 			hs,vs : out std_logic;
 			r,g,b : out std_logic_vector(2 downto 0);
-			o_vectorX : out std_logic_vector(9 downto 0);  --需要获取颜色的x
-			o_vectorY : out std_logic_vector(8 downto 0);  --需要获取颜色的y
+			o_cnt : out std_logic_vector(17 downto 0);
+			-- o_vectorX : out std_logic_vector(9 downto 0);  --需要获取颜色的x
+			-- o_vectorY : out std_logic_vector(8 downto 0);  --需要获取颜色的y
 			o_read_EN : out std_logic -- 是否需要读SRAM ��� '0' - 不读
 	  );
 end VGACore; 
@@ -41,6 +42,7 @@ architecture behavior of VGACore is
 	signal hs1,vs1    : std_logic;				
 	signal vector_x   : std_logic_vector(9 downto 0);
 	signal vector_y   : std_logic_vector(8 downto 0);
+	signal cnt        : std_logic_vector(17 downto 0);
 	-- signal unsignedA  : unsigned(9 downto 0);			
 	signal readEnX    : std_logic:='0';
 	signal readEnY    : std_logic:='0';
@@ -77,6 +79,17 @@ begin
 	   		end if;
 	  	end if;
 	 end process;
+	 process (clk)
+	 begin
+	 	if clk'event and clk='1' then
+			if vector_x = 0 and vector_y = 0 then
+				cnt <= (others => '0');
+			end if;
+			if readENX = '1' and readENY = '1' then
+				cnt <= cnt + 1;
+			end if;
+		end if;
+	 end process;
 	 process(clk)
 	 begin
 		  if clk'event and clk='1' then
@@ -109,8 +122,9 @@ begin
 	   		vs <=  vs1;
 	  	end if;
 	 end process;
-	o_vectorX <= vector_x;
-	o_vectorY <= vector_y;
+	-- o_vectorX <= vector_x;
+	-- o_vectorY <= vector_y;
+	o_cnt <= cnt;
 	o_read_EN <= '1' when (readEnX = '1' and readEnY = '1') else '0';
 
 	process(clk,vector_x,vector_y)
