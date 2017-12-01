@@ -57,23 +57,24 @@ architecture Behavioral of BTB is
     signal idx : std_logic_vector(2 downto 0) := "000";
     signal key, val : Reg8:=(others => (others => '0'));
 begin
-    o_predPC <= val(0) when i_IMPC = key(0) else 
-        val(1) when i_IMPC = key(1) else 
-        val(2) when i_IMPC = key(2) else 
-        val(3) when i_IMPC = key(3) else 
-        val(4) when i_IMPC = key(4) else 
-        val(5) when i_IMPC = key(5) else 
-        val(6) when i_IMPC = key(6) else 
-        val(7) when i_IMPC = key(7) else 
-        -- val(8) when i_IMPC = key(8) else 
-        -- val(9) when i_IMPC = key(9) else 
-        -- val(10) when i_IMPC = key(10) else 
-        -- val(11) when i_IMPC = key(11) else 
-        -- val(12) when i_IMPC = key(12) else 
-        -- val(13) when i_IMPC = key(13) else 
-        -- val(14) when i_IMPC = key(14) else 
-        -- val(15) when i_IMPC = key(15) else 
-        i_IMPC + '1';
+    o_predPC <= i_IMPC + '1';
+    -- o_predPC <= val(0) when i_IMPC = key(0) else 
+    --     val(1) when i_IMPC = key(1) else 
+    --     val(2) when i_IMPC = key(2) else 
+    --     val(3) when i_IMPC = key(3) else 
+    --     val(4) when i_IMPC = key(4) else 
+    --     val(5) when i_IMPC = key(5) else 
+    --     val(6) when i_IMPC = key(6) else 
+    --     val(7) when i_IMPC = key(7) else 
+    --     -- val(8) when i_IMPC = key(8) else 
+    --     -- val(9) when i_IMPC = key(9) else 
+    --     -- val(10) when i_IMPC = key(10) else 
+    --     -- val(11) when i_IMPC = key(11) else 
+    --     -- val(12) when i_IMPC = key(12) else 
+    --     -- val(13) when i_IMPC = key(13) else 
+    --     -- val(14) when i_IMPC = key(14) else 
+    --     -- val(15) when i_IMPC = key(15) else 
+    --     i_IMPC + '1';
     o_predSucc <= '1' when (i_IF_ID_cleared = '1' or 
         (i_IF_ID_cleared = '0' and i_jumpTarget = i_predPC)) else '0';
     -- jumpTarget <= i_jumpTarget;
