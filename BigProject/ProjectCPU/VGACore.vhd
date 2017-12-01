@@ -109,11 +109,8 @@ begin
 	   		vs <=  vs1;
 	  	end if;
 	 end process;
-
- 	unsignedA <= unsigned(vector_x);
- 	o_vectorX <= to_stdlogicvector(to_bitvector(conv_std_logic_vector(unsignedA-160,10)) srl 1) when unsignedA>159 else
-	 			 (others => '0');
- 	o_vectorY <= to_stdlogicvector(to_bitvector(vector_y) srl 1);
+	o_vectorX <= vector_x;
+	o_vectorY <= vector_y;
 	o_read_EN <= readEnX and readEnY;
 
 	process(clk,vector_x,vector_y)

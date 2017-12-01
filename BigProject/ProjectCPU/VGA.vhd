@@ -77,11 +77,7 @@ architecture Behavioral of VGA is
     end component;
 
     signal VGAAdapter_data : word_t;
-    signal VGAAdapter_busResquest : bus_request_t;
-    
-    signal VGACore_hs : std_logic;
-    signal VGACore_vs : std_logic;
-    signal VGACore_r, VGACore_g, VGACore_b : std_logic_vector(2 downto 0);
+
     signal VGACore_vectorX : std_logic_vector(9 downto 0);
     signal VGACore_vectorY : std_logic_vector(8 downto 0);
     signal VGACore_read_EN : std_logic;
@@ -89,11 +85,11 @@ begin
     VGACore_inst: VGACore port map (
         clk => i_clock,
         i_data => VGAAdapter_data,
-        hs => VGACore_hs,
-        vs => VGACore_vs,
-        r => VGACore_r,
-        g => VGACore_g,
-        b => VGACore_b,
+        hs => o_hs,
+        vs => o_vs,
+        r => o_r,
+        g => o_g,
+        b => o_b,
         o_vectorX => VGACore_vectorX,
         o_vectorY => VGACore_vectorY,
         o_read_EN => VGACore_read_EN
