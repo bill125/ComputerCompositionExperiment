@@ -20,7 +20,7 @@
 
 library	ieee;
 use		ieee.std_logic_1164.all;
-use		ieee.std_logic_unsigned.all;
+use		ieee.std_logic_signed.all;
 use		ieee.std_logic_arith.all;
 use     ieee.numeric_std.all;
 
@@ -87,6 +87,8 @@ begin
 			end if;
 			if readENX = '1' and readENY = '1' then
 				cnt <= cnt + 1;
+			elsif vector_y(0) = '1' and vector_x = 799 then
+				cnt <= cnt - 320;
 			end if;
 		end if;
 	 end process;
@@ -124,7 +126,7 @@ begin
 	 end process;
 	-- o_vectorX <= vector_x;
 	-- o_vectorY <= vector_y;
-	o_cnt <= cnt;
+	o_cnt <= '0' & to_stdlogicvector(to_bitvector(cnt) SRL 1);
 	o_read_EN <= '1' when (readEnX = '1' and readEnY = '1') else '0';
 
 	process(clk,vector_x,vector_y)
