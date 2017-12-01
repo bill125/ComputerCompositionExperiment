@@ -27,21 +27,23 @@ use     ieee.numeric_std.all;
 entity VGACore is
 	 port(
 			clk : in  std_logic;
-			i_data : in std_logic_vector(15 downto 0); --读到的数�
+			i_data : in std_logic_vector(15 downto 0); --读到的数�
 			hs,vs : out std_logic;
 			r,g,b : out std_logic_vector(2 downto 0);
 			o_vectorX : out std_logic_vector(9 downto 0);  --需要获取颜色的x
 			o_vectorY : out std_logic_vector(8 downto 0);  --需要获取颜色的y
-			o_read_EN : out std_logic -- 是否需要读SRAM ��� '0' - 不读
+			o_read_EN : out std_logic -- 是否需要读SRAM ��� '0' - 不读
 	  );
 end VGACore; 
 
 architecture behavior of VGACore is	
 	signal r1,g1,b1   : std_logic_vector(2 downto 0);					
 	signal hs1,vs1    : std_logic;				
-	signal vector_x : std_logic_vector(9 downto 0);
-	signal vector_y : std_logic_vector(8 downto 0);
-	signal unsignedA : unsigned(9 downto 0);
+	signal vector_x   : std_logic_vector(9 downto 0);
+	signal vector_y   : std_logic_vector(8 downto 0);
+	signal unsignedA  : unsigned(9 downto 0);			
+	signal readEnX    : std_logic:='0';
+	signal readEnY    : std_logic:='0';
 	--signal unsignedB : unsigned(8 downto 0);
 begin
 	 process(clk)
@@ -52,9 +54,9 @@ begin
 	   		else 
 	    		vector_x <= vector_x + 1;
 				if vector_x=159 then
-					o_read_EN <= '1';
+					readEnX <= '1';
 				elsif vector_x=479 then
-					o_read_EN <= '0';
+					readEnX <= '0';
 				end if;
 	   		end if;
 	  	end if;
@@ -65,11 +67,11 @@ begin
 	   		if vector_x=799 then
 	    		if vector_y=524 then
 	     			vector_y <= (others=>'0');
-					o_read_EN <= '1';
+					readEnY <= '1';
 	    		else
 	     			vector_y <= vector_y + 1;
 					if vector_y=480 then
-						o_read_EN <= '0';
+						readEnY <= '0';
 					end if;
 	    		end if;
 	   		end if;
@@ -112,7 +114,8 @@ begin
  	o_vectorX <= to_stdlogicvector(to_bitvector(conv_std_logic_vector(unsignedA-160,10)) srl 1) when unsignedA>159 else
 	 			 (others => '0');
  	o_vectorY <= to_stdlogicvector(to_bitvector(vector_y) srl 1);
-	
+	o_read_EN <= readEnX and readEnY;
+
 	process(clk,vector_x,vector_y)
 	begin
 		if(clk'event and clk='1')then
