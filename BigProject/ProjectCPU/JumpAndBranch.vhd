@@ -47,35 +47,37 @@ entity JumpAndBranch is
 end JumpAndBranch;
 
 architecture Behavioral of JumpAndBranch is
+    signal PC_1 : word_t;
 begin
+    PC_1 <= i_OP1 + '1';
     process (i_OP0, i_OP1, i_imm, i_OP)
     begin
         case i_OP is
             when op_B => -- PC = PC + imm
                 o_jumpEN <= '1';
-                o_jumpTarget <= i_OP1 + i_imm;
+                o_jumpTarget <= PC_1 + i_imm;
             when op_BEQZ | op_BTEQZ => -- if rx = 0 then PC = PC + imm | if T = 0 then PC = PC + imm
                 if i_OP0 = x"0000" then
                     o_jumpEN <= '1';
-                    o_jumpTarget <= i_OP1 + i_imm;
+                    o_jumpTarget <= PC_1 + i_imm;
                 else
                     o_jumpEN <= '0';
-                    o_jumpTarget <= i_OP1;
+                    o_jumpTarget <= PC_1;
                 end if;
             when op_BNEZ => -- if rx /= 0 then PC = PC + imm
                 if i_OP0 /= x"0000" then
                     o_jumpEN <= '1';
-                    o_jumpTarget <= i_OP1 + i_imm;
+                    o_jumpTarget <= PC_1 + i_imm;
                 else
                     o_jumpEN <= '0';
-                    o_jumpTarget <= i_OP1;
+                    o_jumpTarget <= PC_1;
                 end if;
             when op_JR =>
                 o_jumpEN <= '1';
                 o_jumpTarget <= i_OP0;
             when others =>
                 o_jumpEN <= '0';
-                o_jumpTarget <= i_OP1;
+                o_jumpTarget <= PC_1;
         end case;
     end process;
 
