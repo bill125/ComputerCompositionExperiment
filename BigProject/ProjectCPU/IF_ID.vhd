@@ -44,7 +44,8 @@ entity IF_ID is
         o_inst : out word_t := work.inst_const.INST_NOP;
         o_rxAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
         o_ryAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
-        o_rzAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid
+        o_rzAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
+        o_cleared : out std_logic
     );
 end IF_ID;
 
@@ -54,6 +55,7 @@ begin
     begin
         if rising_edge(i_clock) and i_stall = '0' then
             if i_clear = '1' then
+                o_cleared <= '1';
                 -- o_OP <= work.inst_const.OP_NOP;
                 o_PC <= i_PC;
                 o_inst <= work.inst_const.INST_NOP;
@@ -61,6 +63,7 @@ begin
                 o_ryAddr <= work.reg_addr.invalid;
                 o_rzAddr <= work.reg_addr.invalid;
             else
+                o_cleared <= '0';
                 -- o_OP <= i_inst(15 downto 11);
                 o_PC <= i_PC;
                 o_inst <= i_inst;

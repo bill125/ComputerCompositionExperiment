@@ -39,6 +39,7 @@ use work.op_type_constants;
 entity BTB is
     port (
         i_clock : in std_logic;
+        i_IF_ID_cleared : in std_logic;
         i_OP : in op_t;
         -- BTBRead
         i_IMPC : in word_t;
@@ -73,7 +74,8 @@ begin
         -- val(14) when i_IMPC = key(14) else 
         -- val(15) when i_IMPC = key(15) else 
         i_IMPC + '1';
-    o_predSucc <= '1' when i_jumpTarget = i_predPC else '0';
+    o_predSucc <= '1' when (i_IF_ID_cleared = '1' or 
+        (i_IF_ID_cleared = '0' and i_jumpTarget = i_predPC)) else '0';
     -- jumpTarget <= i_jumpTarget;
     --  when i_jumpEN = '1' 
     --     else i_REGPC + '1';

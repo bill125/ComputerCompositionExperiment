@@ -72,7 +72,8 @@ ARCHITECTURE behavior OF CpuCore IS
             o_inst : out word_t;
             o_rxAddr : out std_logic_vector(3 downto 0);
             o_ryAddr : out std_logic_vector(3 downto 0);
-            o_rzAddr : out std_logic_vector(3 downto 0)
+            o_rzAddr : out std_logic_vector(3 downto 0);
+            o_cleared : out std_logic
         );
     end component;
     component myRegister
@@ -285,6 +286,7 @@ ARCHITECTURE behavior OF CpuCore IS
     component BTB 
         port (
             i_clock : in std_logic;
+            i_IF_ID_cleared : in std_logic;
             i_OP : in op_t;
             -- BTBRead
             i_IMPC : in word_t;
@@ -319,6 +321,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal IF_ID_o_rxAddr : std_logic_vector(3 downto 0);
     signal IF_ID_o_ryAddr : std_logic_vector(3 downto 0);
     signal IF_ID_o_rzAddr : std_logic_vector(3 downto 0);
+    signal IF_ID_o_cleared : std_logic;
     signal myRegister_o_rxData : std_logic_vector(15 downto 0);
     signal myRegister_o_ryData : std_logic_vector(15 downto 0);
     signal myRegister_o_T : std_logic_vector(15 downto 0);
@@ -432,7 +435,8 @@ begin
         o_inst => IF_ID_o_inst,
         o_rxAddr => IF_ID_o_rxAddr,
         o_ryAddr => IF_ID_o_ryAddr,
-        o_rzAddr => IF_ID_o_rzAddr
+        o_rzAddr => IF_ID_o_rzAddr,
+        o_cleared => IF_ID_o_cleared
     );
     myRegister_inst: myRegister port map (
         i_clock => not i_clock,
@@ -608,6 +612,7 @@ begin
     );
     BTB_inst: BTB port map (
         i_clock => i_clock,
+        i_IF_ID_cleared => IF_ID_o_cleared,
         i_OP => Control_o_OP,
         -- BTBRea => ,
         i_IMPC => PC_o_PC,
