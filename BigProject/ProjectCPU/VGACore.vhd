@@ -109,11 +109,8 @@ begin
 	   		vs <=  vs1;
 	  	end if;
 	 end process;
-
- 	unsignedA <= unsigned(vector_x);
- 	o_vectorX <= to_stdlogicvector(to_bitvector(conv_std_logic_vector(unsignedA-160,10)) srl 1) when unsignedA>159 else
-	 			 (others => '0');
- 	o_vectorY <= to_stdlogicvector(to_bitvector(vector_y) srl 1);
+	o_vectorX <= vector_x;
+	o_vectorY <= vector_y;
 	o_read_EN <= readEnX and readEnY;
 
 	process(clk,vector_x,vector_y)
@@ -124,9 +121,34 @@ begin
 					g1	<= "000";
 					b1	<= "000";
 			else
+<<<<<<< HEAD
 				r1 <= i_data(7 downto 5);
 				g1 <= i_data(4 downto 3) & "0";
 				b1 <= i_data(2 downto 0);
+=======
+				r1 <= i_data(15 downto 13);
+				g1 <= i_data(12 downto 10);
+				b1 <= i_data(9 downto 7);
+				-- if vector_x < 320 then
+				-- 	if vector_y < 240 then
+				-- 		r1 <= "111";
+				-- 		g1 <= "000";
+				-- 		b1 <= "000";
+				-- 	else
+				-- 		r1 <= "000";
+				-- 		g1 <= "111";
+				-- 		b1 <= "000";
+				-- 	end if;
+				-- elsif vector_y < 240 then
+				-- 	r1 <= "000";
+				-- 	g1 <= "000";
+				-- 	b1 <= "111";
+				-- else
+				-- 	r1 <= "111";
+				-- 	g1 <= "111";
+				-- 	b1 <= "111";
+				-- end if;
+>>>>>>> 1e9eb588a58fa4cf8166a13743ffa4d7fdf4d0de
 			end if;
 		end if;		 
 	end process;	

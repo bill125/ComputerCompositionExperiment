@@ -280,20 +280,12 @@ architecture Behavioral of CPUOverall is
     signal SystemBusController_UART_data : word_t;
     signal SystemBusController_UART_readBegin : std_logic;
     signal SystemBusController_UART_writeBegin : std_logic;
-    signal SystemBusController_nOE : std_logic;
-    signal SystemBusController_nWE : std_logic;
-    signal SystemBusController_nCE : std_logic;
     signal SystemBusController_bus_EN : std_logic;
     signal SystemBusController_bus_data : word_t;
-    signal SystemBusController_bus_addr : bus_addr_t;
     signal ExtBusController_IM_busResponse : bus_response_t;
     signal ExtBusController_DM_busResponse : bus_response_t;
     signal ExtBusController_bus_EN : std_logic;
     signal ExtBusController_bus_data : word_t;
-    signal ExtBusController_bus_addr : bus_addr_t;
-    signal ExtBusController_nCE : std_logic;
-    signal ExtBusController_nOE : std_logic;
-    signal ExtBusController_nWE : std_logic;
     signal UART_writeReady   : std_logic;
     signal UART_writeDone    : std_logic;
     signal UART_data         : word_t;
@@ -307,11 +299,6 @@ architecture Behavioral of CPUOverall is
     signal Keyboard_DataReady : std_logic;
     signal Keyboard_Output : std_logic_vector(7 downto 0);
     signal VGA_busRequest : bus_request_t;
-    signal VGA_hs : std_logic;
-    signal VGA_vs : std_logic;
-    signal VGA_r : std_logic_vector(2 downto 0);
-    signal VGA_b : std_logic_vector(2 downto 0);
-    signal VGA_g : std_logic_vector(2 downto 0);
     signal clock : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
@@ -410,7 +397,7 @@ begin
         i_nReset => i_nReset,
 
         o_sysBusRequest => CPUCore_sysBusRequest,  
-        i_sysBusResponse => SystemBusController_busResponse, 
+        i_sysBusResponse => BusArbiter_busResponse_0, 
         o_IM_extBusRequest => CPUCore_IM_extBusRequest,  
         i_IM_extBusResponse => ExtBusController_IM_busResponse,  
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
@@ -451,17 +438,12 @@ begin
         i_busResponse => BusArbiter_busResponse_1,
         o_busRequest => VGA_busRequest,
         i_clock => clock_25m,
-        o_hs => VGA_hs,
-        o_vs => VGA_vs,
-        o_r => VGA_r,
-        o_g => VGA_g,
-        o_b => VGA_b
+        o_hs => o_VGA_hs,
+        o_vs => o_VGA_vs,
+        o_r => o_VGA_r,
+        o_g => o_VGA_g,
+        o_b => o_VGA_b
     );
-    o_VGA_hs <= VGA_hs;
-    o_VGA_vs <= VGA_vs;
-    o_VGA_r <= VGA_r;
-    o_VGA_g <= VGA_g;
-    o_VGA_b <= VGA_b;
 
     SystemBusController_inst: SystemBusController port map (
         i_clock => clock,
@@ -478,20 +460,16 @@ begin
         o_UART_data => SystemBusController_UART_data,
         o_UART_readBegin => SystemBusController_UART_readBegin,
         o_UART_writeBegin => SystemBusController_UART_writeBegin,
-        o_nOE => SystemBusController_nOE,
-        o_nWE => SystemBusController_nWE,
-        o_nCE => SystemBusController_nCE,
+        o_nOE => o_RAM1_nOE,
+        o_nWE => o_RAM1_nWE,
+        o_nCE => o_RAM1_nCE,
         o_bus_EN => SystemBusController_bus_EN,
         i_bus_data => io_sysBus_data,
         o_bus_data => SystemBusController_bus_data,
-        o_bus_addr => SystemBusController_bus_addr
+        o_bus_addr => o_sysBus_addr
     );
     io_sysBus_data <= SystemBusController_bus_data when SystemBusController_bus_EN = '1' else
                       (others => 'Z');
-    o_sysBus_addr <= SystemBusController_bus_addr;
-    o_RAM1_nCE <= SystemBusController_nCE;
-    o_RAM1_nWE <= SystemBusController_nWE;
-    o_RAM1_nOE <= SystemBusController_nOE;
 
     ExtBusController_inst: ExtBusController port map (
         i_clock => clock,
@@ -501,18 +479,14 @@ begin
         o_DM_busResponse => ExtBusController_DM_busResponse,
         i_bus_data => io_extBus_data,
         o_bus_data => ExtBusController_bus_data,
-        o_bus_addr => ExtBusController_bus_addr,
+        o_bus_addr => o_extBus_addr,
         o_bus_EN => ExtBusController_bus_EN,
-        o_nCE => ExtBusController_nCE,
-        o_nOE => ExtBusController_nOE,
-        o_nWE => ExtBusController_nWE
+        o_nCE => o_RAM2_nCE,
+        o_nOE => o_RAM2_nOE,
+        o_nWE => o_RAM2_nWE
     );
     io_extBus_data <= ExtBusController_bus_data when ExtBusController_bus_EN = '1' else
                       (others => 'Z');
-    o_extBus_addr <= ExtBusController_bus_addr;
-    o_RAM2_nCE <= ExtBusController_nCE;
-    o_RAM2_nWE <= ExtBusController_nWE;
-    o_RAM2_nOE <= ExtBusController_nOE;
 
     UART_inst: UART port map (
         i_clock => clock,
@@ -529,13 +503,11 @@ begin
         o_readDone => UART_readDone,
         i_tbre => i_UART_tbre,
         i_tsre => i_UART_tsre,
-        o_wrn => UART_wrn,
+        o_wrn => o_UART_wrn,
         i_data_ready => i_UART_data_ready,
-        o_rdn => UART_rdn,
+        o_rdn => o_UART_rdn,
         o_read_state => UART_read_state
     );
-    o_UART_rdn <= UART_rdn;
-    o_UART_wrn <= UART_wrn;
 
     -- Keyboard_inst: Keyboard port map (
     --     PS2Data => i_PS2_data,

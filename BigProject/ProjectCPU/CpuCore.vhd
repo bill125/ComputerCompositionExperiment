@@ -292,7 +292,6 @@ ARCHITECTURE behavior OF CpuCore IS
     
             -- BTBWrite
             i_REGPC : in word_t; -- for BTBWrite
-            i_jumpEN : in std_logic;
             i_jumpTarget : in word_t;
             i_predPC : in word_t;
             o_predSucc : out std_logic
@@ -500,7 +499,7 @@ begin
     );
     JumpAndBranch_inst: JumpAndBranch port map (
         i_OP0 => ForwardUnit_o_OP0,
-        i_OP1 => ForwardUnit_o_OP1,
+        i_OP1 => IF_ID_o_PC,
         i_imm => ImmExtend_o_immExtend,
         i_OP => Control_o_OP,
         o_jumpEN => JumpAndBranch_o_jumpEN,
@@ -615,7 +614,6 @@ begin
         o_predPC => BTB_o_predPC,
         -- BTBWrit => ,
         i_REGPC => IF_ID_o_PC,
-        i_jumpEN => JumpAndBranch_o_jumpEN,
         i_jumpTarget => JumpAndBranch_o_jumpTarget,
         i_predPC => PC_o_PC,
         o_predSucc => BTB_o_predSucc
