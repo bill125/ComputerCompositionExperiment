@@ -284,6 +284,8 @@ ARCHITECTURE behavior OF CpuCore IS
     end component;
     component BTB 
         port (
+            i_clock : in std_logic;
+            i_OP : in op_t;
             -- BTBRead
             i_IMPC : in word_t;
             o_predPC : out word_t;
@@ -606,6 +608,8 @@ begin
         o_stall => StallClearController_o_stall
     );
     BTB_inst: BTB port map (
+        i_clock => i_clock,
+        i_OP => Control_o_OP,
         -- BTBRea => ,
         i_IMPC => PC_o_PC,
         o_predPC => BTB_o_predPC,
