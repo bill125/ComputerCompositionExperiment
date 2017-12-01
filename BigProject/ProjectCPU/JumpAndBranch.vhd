@@ -50,7 +50,7 @@ architecture Behavioral of JumpAndBranch is
     signal PC_1 : word_t;
 begin
     PC_1 <= i_OP1 + '1';
-    process (i_OP0, i_OP1, i_imm, i_OP)
+    process (i_OP0, PC_1, i_imm, i_OP)
     begin
         case i_OP is
             when op_B => -- PC = PC + imm
