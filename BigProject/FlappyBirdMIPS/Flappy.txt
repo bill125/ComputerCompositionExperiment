@@ -1,10 +1,12 @@
-B GAMESTART
+B GAME_START
 
-:GAMESTART
+:GAME_START
 	LI R0 0x00BF 
 	SLL R0 R0 0x0000
 	ADDIU R0 0x10					;R0=0xBF10 
 	MTSP R0
+
+:EVENT_LOOP
     
     if TestKeyboardStartPressed
         goto GAMELOOP

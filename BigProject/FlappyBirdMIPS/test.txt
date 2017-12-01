@@ -34,5 +34,4 @@ FOR_J:   ;J=0~160
     SLT R5 R3    ;239<R3
     BTEQZ FOR_I
 
-	LW R0   ;PRINT END
-	JR R7
+	JR R7   ;PRINT END
