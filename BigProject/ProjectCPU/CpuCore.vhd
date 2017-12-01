@@ -499,7 +499,7 @@ begin
     );
     JumpAndBranch_inst: JumpAndBranch port map (
         i_OP0 => ForwardUnit_o_OP0,
-        i_OP1 => ForwardUnit_o_OP1,
+        i_OP1 => IF_ID_o_PC,
         i_imm => ImmExtend_o_immExtend,
         i_OP => Control_o_OP,
         o_jumpEN => JumpAndBranch_o_jumpEN,
