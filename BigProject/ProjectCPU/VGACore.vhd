@@ -124,6 +124,25 @@ begin
 				r1 <= i_data(15 downto 13);
 				g1 <= i_data(12 downto 10);
 				b1 <= i_data(9 downto 7);
+				-- if vector_x < 320 then
+				-- 	if vector_y < 240 then
+				-- 		r1 <= "111";
+				-- 		g1 <= "000";
+				-- 		b1 <= "000";
+				-- 	else
+				-- 		r1 <= "000";
+				-- 		g1 <= "111";
+				-- 		b1 <= "000";
+				-- 	end if;
+				-- elsif vector_y < 240 then
+				-- 	r1 <= "000";
+				-- 	g1 <= "000";
+				-- 	b1 <= "111";
+				-- else
+				-- 	r1 <= "111";
+				-- 	g1 <= "111";
+				-- 	b1 <= "111";
+				-- end if;
 			end if;
 		end if;		 
 	end process;	

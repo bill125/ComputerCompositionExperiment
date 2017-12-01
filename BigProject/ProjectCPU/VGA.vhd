@@ -98,8 +98,8 @@ begin
     VGAAdapter_inst: VGAAdapter
     generic map
     (
-        screenX => 200,
-        screenY => 120,
+        screenX => 0,
+        screenY => 0,
         screenW => 240
     )
     port map

@@ -32,7 +32,7 @@ entity Keyboard is
 	);
 end entity Keyboard;
 
-architecture Behavioral of KeyboardAdapter is
+architecture Behavioral of Keyboard is
 	component KeyboardInput
 		port (
 			PS2Data : in std_logic; -- PS2 data
