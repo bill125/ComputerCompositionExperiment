@@ -98,7 +98,7 @@ begin
     VGAAdapter_inst: VGAAdapter
     generic map
     (
-        screenX => 0,
+        screenX => 160,
         screenY => 0,
         screenW => 240
     )
