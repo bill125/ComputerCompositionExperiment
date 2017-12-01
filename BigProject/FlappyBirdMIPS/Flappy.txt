@@ -1,0 +1,45 @@
+B GAME_START
+
+:GAME_START
+	LI R0 0x00BF 
+	SLL R0 R0 0x0000
+	ADDIU R0 0x10					;R0=0xBF10 
+	MTSP R0
+
+:EVENT_LOOP
+    
+    if TestKeyboardStartPressed
+        goto GAMELOOP
+    B 0xFF
+    resetParameters()
+    paintBackGround()
+    paintPipe()
+    paintBird()
+    goto GAMESTART
+
+:GAMELOOP
+    if TestKeyboardMovePressed
+        reactToKeyboard()
+    
+    if TestTimingPeriod
+        updateParameters()
+
+    if TestGameOver
+        goto GAMEOVER
+
+    paintBackGround()
+    paintPipe()
+    paintBird()
+
+    goto GAMELOOP
+
+
+:GAMEOVER
+    if TestKeyboardRestartPressed
+        goto :GAMELOOP
+
+    paintBackGround()
+    paintPipe()
+    paintBird()
+    paintGGWP()
+    goto GAMESTART

@@ -1,0 +1,37 @@
+B START
+
+START:
+	LI R0 0x00BF 
+	SLL R0 R0 0x0000
+	ADDIU R0 0x10   ;R0=0xBF10 
+	MTSP R0
+PRINT_LOOP:
+	MFPC R7 
+	ADDIU R7 0x0002
+    B PRINT
+    B PRINT_LOOP
+
+PRINT:
+    LI R1 0x0C   ;图片地址
+    SLL R1 R1 0x00
+    ADDIU R1 0x80
+    LI R2 0x80   ;显存地址
+    SLL R2 R2 0x00
+    LI R3 0x00   ;I=0
+FOR_I:   ;I=0~239
+    LI R4 0x00   ;J=0
+FOR_J:   ;J=0~160
+    ADDIU R1 0x01
+    ADDIU R2 0x01
+    LW R1 R5 0x00
+    SW R2 R5 0x00
+
+    LI R5 0x9F   ;R5=159
+    SLT R5 R4    ;159<R4
+    BTEQZ FOR_J
+
+    LI R5 0xEF   ;R5=239
+    SLT R5 R3    ;239<R3
+    BTEQZ FOR_I
+
+	JR R7   ;PRINT END
