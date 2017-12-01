@@ -131,7 +131,21 @@ architecture Behavioral of CPUOverall is
             o_ALU_MUX_o_ALURes : out word_t;
             o_DM_o_DMRes : out word_t;
             o_MEM_WB_o_wbAddr : out reg_addr_t;
-            o_MEM_WB_o_wbData : out word_t
+            o_MEM_WB_o_wbData : out word_t;
+            o_EX_MEM_o_ALURes : out word_t;
+            o_EX_MEM_o_DMRE : out std_logic;
+            o_EX_MEM_o_DMWR : out std_logic;
+            o_EX_MEM_o_addr : out word_t;
+            o_EX_MEM_o_data : out word_t;
+            o_ID_EX_o_DMRE : out std_logic;
+            o_ID_EX_o_DMWR : out std_logic;
+            o_ID_EX_o_OP : out op_t;
+            o_ID_EX_o_OP0 : out word_t;
+            o_ID_EX_o_OP1 : out word_t;
+            o_ID_EX_o_OP0Src : out opSrc_t;
+            o_ID_EX_o_OP1Src : out opSrc_t;
+            o_ID_EX_o_imm : out word_t;
+            o_ID_EX_o_wbAddr : out reg_addr_t
         );
     end component;
     component SystemBusController 
@@ -271,6 +285,20 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_DM_o_DMRes : word_t;
     signal CPUCore_o_MEM_WB_o_wbAddr : reg_addr_t;
     signal CPUCore_o_MEM_WB_o_wbData : word_t;
+    signal CPUCore_o_EX_MEM_o_ALURes : word_t;
+    signal CPUCore_o_EX_MEM_o_DMRE : std_logic;
+    signal CPUCore_o_EX_MEM_o_DMWR : std_logic;
+    signal CPUCore_o_EX_MEM_o_addr : word_t;
+    signal CPUCore_o_EX_MEM_o_data : word_t;
+    signal CPUCore_o_ID_EX_o_DMRE : std_logic;
+    signal CPUCore_o_ID_EX_o_DMWR : std_logic;
+    signal CPUCore_o_ID_EX_o_OP : op_t;
+    signal CPUCore_o_ID_EX_o_OP0 : word_t;
+    signal CPUCore_o_ID_EX_o_OP1 : word_t;
+    signal CPUCore_o_ID_EX_o_OP0Src : opSrc_t;
+    signal CPUCore_o_ID_EX_o_OP1Src : opSrc_t;
+    signal CPUCore_o_ID_EX_o_imm : word_t;
+    signal CPUCore_o_ID_EX_o_wbAddr : reg_addr_t;
 
     signal BusArbiter_busResponse_0 : bus_response_t;
     signal BusArbiter_busResponse_1 : bus_response_t;
@@ -399,6 +427,18 @@ begin
                 when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
                 when others => led <= (others => '1') ;
             end case;
+        elsif i_sw(13 downto 4) = "1111000000" then
+            case i_sw(3 downto 0) is
+                when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
+                when "0010" => led <= "000000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
+                when "0011" => led <= CPUCore_o_EX_MEM_o_addr;
+                when "0100" => led <= CPUCore_o_EX_MEM_o_data;
+                when "1000" => led <= CPUCore_o_ID_EX_o_OP0;
+                when "1001" => led <= CPUCore_o_ID_EX_o_OP1;
+                when "1100" => led <= CPUCore_o_ID_EX_o_imm;
+                when "1101" => led <= "000000000000" & CPUCore_o_ID_EX_o_wbAddr;
+                when others => led <= (others => '1');
+            end case;
         else
             led <= CPUCore_o_TEST_word; 
         end if;
@@ -435,7 +475,21 @@ begin
         o_ALU_MUX_o_ALURes => CPUCore_o_ALU_MUX_o_ALURes,
         o_DM_o_DMRes => CPUCore_o_DM_o_DMRes,
         o_MEM_WB_o_wbAddr => CPUCore_o_MEM_WB_o_wbAddr,
-        o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData
+        o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData,
+        o_EX_MEM_o_ALURes => CPUCore_o_EX_MEM_o_ALURes,
+        o_EX_MEM_o_DMRE => CPUCore_o_EX_MEM_o_DMRE,
+        o_EX_MEM_o_DMWR => CPUCore_o_EX_MEM_o_DMWR,
+        o_EX_MEM_o_addr => CPUCore_o_EX_MEM_o_addr,
+        o_EX_MEM_o_data => CPUCore_o_EX_MEM_o_data,
+        o_ID_EX_o_DMRE => CPUCore_o_ID_EX_o_DMRE,
+        o_ID_EX_o_DMWR => CPUCore_o_ID_EX_o_DMWR,
+        o_ID_EX_o_OP => CPUCore_o_ID_EX_o_OP,
+        o_ID_EX_o_OP0 => CPUCore_o_ID_EX_o_OP0,
+        o_ID_EX_o_OP1 => CPUCore_o_ID_EX_o_OP1,
+        o_ID_EX_o_OP0Src => CPUCore_o_ID_EX_o_OP0Src,
+        o_ID_EX_o_OP1Src => CPUCore_o_ID_EX_o_OP1Src,
+        o_ID_EX_o_imm => CPUCore_o_ID_EX_o_imm,
+        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr
     );
 
     BusArbiter_inst: BusArbiter port map (
