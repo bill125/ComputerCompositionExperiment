@@ -55,7 +55,8 @@ entity UART is
         i_data_ready   : in std_logic;
         o_rdn          : out std_logic := '1';
 
-        o_read_state   : out std_logic_vector(1 downto 0)
+        o_read_state   : out std_logic_vector(1 downto 0);
+        o_write_state   : out std_logic_vector(2 downto 0)
     );
 end UART;
 
@@ -72,6 +73,13 @@ begin
                     "11" when r_RX_State = t_RX_3 else
                     "00";
 
+    o_write_state <= "000" when r_TX_State = t_TX_0 else
+                    "001" when r_TX_State = t_TX_1 else
+                    "010" when r_TX_State = t_TX_2 else
+                    "011" when r_TX_State = t_TX_3 else
+                    "100" when r_TX_State = t_TX_4 else
+                    "101";
+
     -- Read UART
     Receive_Data : process(i_clock)
         variable wait_turns : integer range 0 to 31 := 0;
@@ -84,7 +92,7 @@ begin
                     when t_RX_0 => -- wait for data
                         o_readDone <= '0';
                         o_rdn <= '1';
-                        o_readReady <= i_data_ready;
+                        o_readReady <= '0';
                         if i_data_ready = '1' then
                             r_RX_State <= t_RX_1;
                         else
@@ -92,6 +100,7 @@ begin
                         end if;
 
                     when t_RX_1 => -- receive data
+                        o_readReady <= '1';
                         o_readDone <= '0';
                         if i_readBegin = '1' then
                             o_rdn <= '0';
@@ -131,8 +140,9 @@ begin
                         o_bus_EN <= '0';
                         o_wrn <= '1';
                         o_writeDone <= '0';
-                        o_writeReady <= not i_writeBegin;
+                        o_writeReady <= '1';
                         if i_writeBegin = '1' then
+                            o_writeReady <= '0';
                             o_bus_EN <= '1';
                             o_bus_data <= i_data;
                             r_TX_State <= t_TX_1;
