@@ -86,9 +86,7 @@ begin
 				cnt <= (others => '0');
 			end if;
 			if readENX = '1' and readENY = '1' then
-				if vector_x(1 downto 0) = "11" then
-					cnt <= cnt + 1;
-				end if;
+				cnt <= cnt + 1;
 			elsif vector_y(0) = '1' and vector_x = 799 then
 				cnt <= cnt - 320;
 			end if;
