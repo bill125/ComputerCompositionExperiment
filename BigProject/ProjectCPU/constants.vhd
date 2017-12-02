@@ -32,6 +32,7 @@ package constants is
     constant uart_control_addr: std_logic_vector (17 downto 0) := "001111111100000001";
     constant uart_data_addr: std_logic_vector (17 downto 0) := "001111111100000000";
 
+
     constant word_length: integer := 16;
     constant addr_length: integer := 16;
     constant bus_addr_length: integer := 18;
@@ -79,4 +80,8 @@ package constants is
         stallRequest: std_logic;
     end record;
 
+    constant clock_break_PC : word_t := x"0005";
+    constant key_break_PC : word_t := x"ff20";
+
+    constant fpc : integer := 833333;
 end constants;

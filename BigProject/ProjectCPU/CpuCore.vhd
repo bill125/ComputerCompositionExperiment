@@ -49,7 +49,12 @@ entity CpuCore is
         o_ID_EX_o_OP0Src : out opSrc_t;
         o_ID_EX_o_OP1Src : out opSrc_t;
         o_ID_EX_o_imm : out word_t;
-        o_ID_EX_o_wbAddr : out reg_addr_t
+        o_ID_EX_o_wbAddr : out reg_addr_t;
+        o_keyNDataReceive : out std_logic;
+        i_keyDataReady : in std_logic;
+        i_keyData : in std_logic_vector(7 downto 0);
+        o_clockNDataReceive : out std_logic;
+        i_clockDataReady : in std_logic
     );
 end entity;
 
@@ -325,6 +330,21 @@ ARCHITECTURE behavior OF CpuCore IS
             i_extBusResponse : in bus_response_t
         );
     end component;
+    component BreackController is
+        port (
+            i_IH : in std_logic_vector(15 downto 0);
+            i_PC_stalled : in std_logic;
+            o_key : out std_logic_vector(7 downto 0);
+
+            o_keyNDataReceive : out std_logic;
+            i_keyDataReady : in std_logic; 
+            i_keyData : in std_logic_vector(7 downto 0);
+            o_clockNDataReceive : out std_logic;
+            i_clockDataReady : in std_logic;
+            o_breakEN : out std_logic;
+            o_breakPC : out word_t
+        );
+    end component;
 
     signal PC_o_PC : word_t;
     signal IM_o_inst         : inst_t;
@@ -398,9 +418,11 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-    signal i_breakPC : word_t := (others => '0');
-    signal i_breakEN : std_logic := '0';
-
+    signal BreackController_o_breakEN : std_logic;
+    signal BreackController_o_breakPC : word_t;
+    signal BreackController_o_key : std_logic_vector(7 downto 0);
+    -- signal BreackController_o_keyNDataReceive : 
+    -- signal BreackController_o_clockNDataReceive
 begin
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
     o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
@@ -623,8 +645,8 @@ begin
     StallClearController_inst: StallClearController port map (
         i_nReset => i_nReset,
         -- clea => ,
-        i_breakEN => i_breakEN,
-        i_breakPC => i_breakPC,
+        i_breakEN => BreackController_o_breakEN,
+        i_breakPC => BreackController_o_breakPC,
         i_jumpTarget => JumpAndBranch_o_jumpTarget,
         i_predPC => BTB_o_predPC,
         i_predSucc => BTB_o_predSucc,
@@ -671,5 +693,19 @@ begin
     );
     o_sysBusRequest <= BusDispatcher_DM_o_sysBusRequest;
     o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
+
+    BreakController_inst: BreackController port map (
+        i_IH => myRegister_o_IH,
+        i_PC_stalled => StallClearController_o_stall(stage_PC),
+        o_key => BreackController_o_key,
+        o_breakEN => BreackController_o_breakEN,
+        o_breakPC => BreackController_o_breakPC,
+
+        o_keyNDataReceive => o_keyNDataReceive,
+        i_keyDataReady => i_keyDataReady,
+        i_keyData => i_keyData,
+        o_clockNDataReceive => o_clockNDataReceive,
+        i_clockDataReady => i_clockDataReady
+    );
 
 end;
