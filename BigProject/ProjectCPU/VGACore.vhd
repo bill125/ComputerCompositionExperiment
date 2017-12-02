@@ -136,7 +136,7 @@ begin
 				g1	<= "000";
 				b1	<= "000";
 			else
-				if vector_x(1) = '1' then
+				if vector_x(1) = '0' then
 					r1 <= i_data(7 downto 5);
 					g1 <= i_data(4 downto 3) & '0';
 					b1 <= i_data(2 downto 0);
