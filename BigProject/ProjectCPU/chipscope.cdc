@@ -1,5 +1,5 @@
 #ChipScope Core Inserter Project File Version 3.0
-#Sat Dec 02 12:57:07 GMT+08:00 2017
+#Sat Dec 02 12:57:40 GMT+08:00 2017
 Project.device.designInputFile=D\:\\ComputerCompositionExperiment\\BigProject\\ProjectCPU\\CPUOverall_cs.ngc
 Project.device.designOutputFile=D\:\\ComputerCompositionExperiment\\BigProject\\ProjectCPU\\CPUOverall_cs.ngc
 Project.device.deviceFamily=13
