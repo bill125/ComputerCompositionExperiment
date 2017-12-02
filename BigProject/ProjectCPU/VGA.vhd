@@ -41,7 +41,8 @@ entity VGA is
         o_vs : out std_logic;
         o_r : out std_logic_vector(2 downto 0);
         o_g : out std_logic_vector(2 downto 0);
-        o_b : out std_logic_vector(2 downto 0)
+        o_b : out std_logic_vector(2 downto 0);
+        o_read_EN : out std_logic
     );
 end VGA;
 
