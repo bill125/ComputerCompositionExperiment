@@ -43,12 +43,12 @@ entity VGAAdapter is
 end VGAAdapter;
 
 architecture Behavioral of VGAAdapter is
-    signal x : std_logic_vector(9 downto 0);
-    signal y : std_logic_vector(8 downto 0);
-    -- signal x : integer range 0 to 1023 := 0;
-    -- signal y : integer range 0 to 1023 := 0;
-    signal x1 : integer range 0 to 1023 := 0;
-    signal y1 : integer range 0 to 1023 := 0;
+    -- signal x : std_logic_vector(9 downto 0);
+    -- signal y : std_logic_vector(9 downto 0);
+    -- -- signal x : integer range 0 to 1023 := 0;
+    -- -- signal y : integer range 0 to 1023 := 0;
+    -- signal x1 : integer range 0 to 1023 := 0;
+    -- signal y1 : integer range 0 to 1023 := 0;
 begin
     o_busRequest.writeRequest <= '0';
     o_busRequest.readRequest <= i_read_EN;
