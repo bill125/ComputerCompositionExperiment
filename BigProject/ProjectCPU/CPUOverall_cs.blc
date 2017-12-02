@@ -1,17 +1,13 @@
-Release 14.7 ngcbuild P.20131013 (nt)
+Release 14.7 ngcbuild P.20131013 (nt64)
 Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
 
 Command Line: ngcbuild.exe -dd
-Z:/MyDocument/3.1/ComputerComposition/ComputerCompositionExperiment/BigProject/P
-rojectCPU/_ngo -p xc3s1200e-fg320-4 -i
-Z:\MyDocument\3.1\ComputerComposition\ComputerCompositionExperiment\BigProject\P
-rojectCPU\CPUOverall.ngc
-Z:\MyDocument\3.1\ComputerComposition\ComputerCompositionExperiment\BigProject\P
-rojectCPU\CPUOverall_cs.ngc
+D:/ComputerCompositionExperiment/BigProject/ProjectCPU/_ngo -p xc3s1200e-fg320-4
+-i D:\ComputerCompositionExperiment\BigProject\ProjectCPU\CPUOverall.ngc
+D:\ComputerCompositionExperiment\BigProject\ProjectCPU\CPUOverall_cs.ngc
 
 Reading NGO file
-"Z:/MyDocument/3.1/ComputerComposition/ComputerCompositionExperiment/BigProject/
-ProjectCPU/CPUOverall.ngc" ...
+"D:/ComputerCompositionExperiment/BigProject/ProjectCPU/CPUOverall.ngc" ...
 
 Partition Implementation Status
 -------------------------------
@@ -24,14 +20,12 @@ NGCBUILD Design Results Summary:
   Number of errors:     0
   Number of warnings:   0
 
-Total memory usage is 118916 kilobytes
+Total memory usage is 175388 kilobytes
 
 Writing NGC file
-"Z:/MyDocument/3.1/ComputerComposition/ComputerCompositionExperiment/BigProject/
-ProjectCPU/CPUOverall_cs.ngc" ...
+"D:/ComputerCompositionExperiment/BigProject/ProjectCPU/CPUOverall_cs.ngc" ...
 Total REAL time to NGCBUILD completion:  2 sec
 Total CPU time to NGCBUILD completion:   2 sec
 
 Writing NGCBUILD log file
-"Z:/MyDocument/3.1/ComputerComposition/ComputerCompositionExperiment/BigProject/
-ProjectCPU/CPUOverall_cs.blc"...
+"D:/ComputerCompositionExperiment/BigProject/ProjectCPU/CPUOverall_cs.blc"...
