@@ -1,45 +1,178 @@
-B GAME_START
+;0000~1FFF - code
+;2000~207F - bird1       (16*16)
+;2080~20FF - bird2       (16*16)
+;2100~217F - bird3       (16*16)
+;2180~227F - pipe        (32*16)
+;2280~2C7F - ground      (160*32)
+;2C80~777F - background  (160*240)
 
-:GAME_START
+;0xFE00 - bird_coordinateY 
+;0xFE01 - bird_velocity 
+;0xFE02 - bird_accelerator(constant)
+;0xFE03 - pipe0_coordinateX
+;0xFE04 - pipe0_height
+;0xFE05 - pipe1_coordinateX
+;0xFE06 - pipe1_height
+;0xFE07 - ground_coordinateX
+
+B START
+
+START:
 	LI R0 0x00BF 
 	SLL R0 R0 0x0000
-	ADDIU R0 0x10					;R0=0xBF10 
+	ADDIU R0 0x10   ;R0=0xBF10 
 	MTSP R0
+PRINT_LOOP:
+	MFPC R7
+	ADDIU R7 0x0002
+    B RESET_PARAMETERS   ;计算参数
 
-:EVENT_LOOP
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BACKGROUND   ;绘制背景
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_GROUND   ;绘制地板
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_PIPE   ;绘制管道
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BIRD   ;绘制鸟
+
+    B PRINT_LOOP
+
+RESET_PARAMETERS:
+    SW_SP R0 0X00
+    SW_SP R1 0X00
+    SW_SP R2 0X00
+    SW_SP R3 0X00
+    SW_SP R4 0X00
+    SW_SP R5 0X00
+    SW_SP R6 0X00
+    SW_SP R7 0X00
+ 
+    ;更新ground_coordinateX +1
+    LI R0 0xFE
+    SLL R0 0X00
+    ADDIU R0 0X07
     
-    if TestKeyboardStartPressed
-        goto GAMELOOP
-    B 0xFF
-    resetParameters()
-    paintBackGround()
-    paintPipe()
-    paintBird()
-    goto GAMESTART
+    LW R0 R1 0X00
+    ADDIU R1 0X01
+    LI R2 0X0F
+    SLT R1 R2   ;15<ground_coordinateX
+    BTEQZ 0X01
+    LI R1 0X00
+    SW R0 R1 0X00
 
-:GAMELOOP
-    if TestKeyboardMovePressed
-        reactToKeyboard()
-    
-    if TestTimingPeriod
-        updateParameters()
+    LW_SP R0 0X00
+    LW_SP R1 0X00
+    LW_SP R2 0X00
+    LW_SP R3 0X00
+    LW_SP R4 0X00
+    LW_SP R5 0X00
+    LW_SP R6 0X00
+    LW_SP R7 0X00
+	JR R7   ;END
 
-    if TestGameOver
-        goto GAMEOVER
+PRINT_BACKGROUND:
+    SW_SP R0 0X00
+    SW_SP R1 0X00
+    SW_SP R2 0X00
+    SW_SP R3 0X00
+    SW_SP R4 0X00
+    SW_SP R5 0X00
+    SW_SP R6 0X00
+    SW_SP R7 0X00
 
-    paintBackGround()
-    paintPipe()
-    paintBird()
+    LI R1 0x2C   ;图片地址
+    SLL R1 R1 0x00
+    ADDIU R1 0x80
+    LI R2 0x80   ;显存地址
+    SLL R2 R2 0x00
+    LI R3 0x00   ;I=0
+BACKGROUND_FOR_I:   ;I=0~239
+    LI R4 0x00   ;J=0
+BACKGROUND_FOR_J:   ;J=0~80
+    ADDIU R1 0x01
+    ADDIU R2 0x01
+    LW R1 R5 0x00
+    SW R2 R5 0x00
 
-    goto GAMELOOP
+    LI R5 0x4F   ;R5=79
+    SLT R5 R4    ;159<R4
+    BTEQZ FOR_J
 
+    LI R5 0xEF   ;R5=239
+    SLT R5 R3    ;239<R3
+    BTEQZ FOR_I
 
-:GAMEOVER
-    if TestKeyboardRestartPressed
-        goto :GAMELOOP
+    LW_SP R0 0X00
+    LW_SP R1 0X00
+    LW_SP R2 0X00
+    LW_SP R3 0X00
+    LW_SP R4 0X00
+    LW_SP R5 0X00
+    LW_SP R6 0X00
+    LW_SP R7 0X00
+	JR R7   ;PRINT_BACKGROUND END
 
-    paintBackGround()
-    paintPipe()
-    paintBird()
-    paintGGWP()
-    goto GAMESTART
+PRINT_GROUND:
+    SW_SP R0 0X00
+    SW_SP R1 0X00
+    SW_SP R2 0X00
+    SW_SP R3 0X00
+    SW_SP R4 0X00
+    SW_SP R5 0X00
+    SW_SP R6 0X00
+    SW_SP R7 0X00
+
+    LI R1 0x22   ;图片地址
+    SLL R1 R1 0x00
+    ADDIU R1 0x80
+    LI R2 0xc1   ;显存地址
+    SLL R2 R2 0x00
+    LI R3 0x00   ;I=0
+GROUND_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+GROUND_FOR_J:   ;J=0~79
+    ADDIU R1 0x01
+    ADDIU R2 0x01
+
+    LI R0 0xFE
+    SLL R0 0X00
+    ADDIU R0 0X07
+    LW R0 R6 0X00   ;R6=ground_coordinateX
+    ADDU R6 R1 R1
+
+    LW R1 R5 0x00
+    SW R2 R5 0x00
+
+    ADDU R4 R6 R6
+    LI R0 0X4E   ;R0=79
+    CMP R0 R6   ;R0!=R6
+    BTEQZ 0X01
+    ADDIU R1 0X50
+    ADDIU R1 0XB0
+
+    LI R5 0x4F   ;R5=79
+    SLT R5 R4    ;79<R4
+    BTEQZ FOR_J
+
+    ADDIU R1 0X50
+    LI R5 0x0F   ;R5=15
+    SLT R5 R3    ;15<R3
+    BTEQZ FOR_I
+
+    LW_SP R0 0X00
+    LW_SP R1 0X00
+    LW_SP R2 0X00
+    LW_SP R3 0X00
+    LW_SP R4 0X00
+    LW_SP R5 0X00
+    LW_SP R6 0X00
+    LW_SP R7 0X00
+	JR R7   ;PRINT_GROUND END

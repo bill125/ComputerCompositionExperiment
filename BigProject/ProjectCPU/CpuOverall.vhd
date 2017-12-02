@@ -247,6 +247,7 @@ architecture Behavioral of CPUOverall is
             o_r : out std_logic_vector(2 downto 0);
             o_g : out std_logic_vector(2 downto 0);
             o_b : out std_logic_vector(2 downto 0);
+            o_read_EN : out std_logic;
             i_EN : in std_logic
         );
     end component;
@@ -341,6 +342,7 @@ architecture Behavioral of CPUOverall is
     signal VGA_r : std_logic_vector(2 downto 0);
     signal VGA_b : std_logic_vector(2 downto 0);
     signal VGA_g : std_logic_vector(2 downto 0);
+    signal VGA_o_read_EN : std_logic;
     signal clock : std_logic;
     signal clock_50m : std_logic;
     signal clock_25m : std_logic;
@@ -440,6 +442,8 @@ begin
                 when "1101" => led <= "000000000000" & CPUCore_o_ID_EX_o_wbAddr;
                 when others => led <= (others => '1');
             end case;
+        elsif i_sw(12 downto 4) = "111110000" then
+            led <= "0000" & VGA_hs & VGA_vs & VGA_r & VGA_g & VGA_b & VGA_o_read_EN;
         else
             led <= CPUCore_o_TEST_word; 
         end if;
@@ -505,12 +509,13 @@ begin
     VGA_inst: VGA port map (
         i_busResponse => BusArbiter_busResponse_1,
         o_busRequest => VGA_busRequest,
-        i_clock => clock_25m,
+        i_clock => clock,
         o_hs => VGA_hs,
         o_vs => VGA_vs,
         o_r => VGA_r,
         o_g => VGA_g,
         o_b => VGA_b,
+        o_read_EN => VGA_o_read_EN,
         i_EN => i_sw(13)
     );
     o_VGA_hs <= VGA_hs;
