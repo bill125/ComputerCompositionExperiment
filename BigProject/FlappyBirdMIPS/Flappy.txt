@@ -35,13 +35,13 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B PRINT_GROUND   ;绘制地板
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_PIPE   ;绘制管道
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B PRINT_PIPE   ;绘制管道
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_BIRD   ;绘制鸟
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B PRINT_BIRD   ;绘制鸟
 
     B PRINT_LOOP
 
@@ -57,7 +57,7 @@ RESET_PARAMETERS:
  
     ;更新ground_coordinateX +1
     LI R0 0xFE
-    SLL R0 0X00
+    SLL R0 R0 0X00
     ADDIU R0 0X07
     
     LW R0 R1 0X00
@@ -104,11 +104,11 @@ BACKGROUND_FOR_J:   ;J=0~80
 
     LI R5 0x4F   ;R5=79
     SLT R5 R4    ;159<R4
-    BTEQZ FOR_J
+    BTEQZ BACKGROUND_FOR_J
 
     LI R5 0xEF   ;R5=239
     SLT R5 R3    ;239<R3
-    BTEQZ FOR_I
+    BTEQZ BACKGROUND_FOR_I
 
     LW_SP R0 0X00
     LW_SP R1 0X00
@@ -143,7 +143,7 @@ GROUND_FOR_J:   ;J=0~79
     ADDIU R2 0x01
 
     LI R0 0xFE
-    SLL R0 0X00
+    SLL R0 R0 0X00
     ADDIU R0 0X07
     LW R0 R6 0X00   ;R6=ground_coordinateX
     ADDU R6 R1 R1
@@ -160,12 +160,12 @@ GROUND_FOR_J:   ;J=0~79
 
     LI R5 0x4F   ;R5=79
     SLT R5 R4    ;79<R4
-    BTEQZ FOR_J
+    BTEQZ GROUND_FOR_J
 
     ADDIU R1 0X50
     LI R5 0x0F   ;R5=15
     SLT R5 R3    ;15<R3
-    BTEQZ FOR_I
+    BTEQZ GROUND_FOR_I
 
     LW_SP R0 0X00
     LW_SP R1 0X00
