@@ -246,7 +246,8 @@ architecture Behavioral of CPUOverall is
             o_vs : out std_logic;
             o_r : out std_logic_vector(2 downto 0);
             o_g : out std_logic_vector(2 downto 0);
-            o_b : out std_logic_vector(2 downto 0)
+            o_b : out std_logic_vector(2 downto 0);
+            i_EN : in std_logic
         );
     end component;
     component BusArbiter  -- 1 > 0
@@ -394,16 +395,16 @@ begin
 
     process (i_sw)
     begin
-        if i_sw(13 downto 4) = "1000000000" then
+        if i_sw(12 downto 4) = "100000000" then
             led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
-        elsif i_sw(13 downto 4) = "1100000000" then
+        elsif i_sw(12 downto 4) = "110000000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_PC_o_PC;
                 when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
                 when "0010" => led <= CPUCore_o_IM_o_inst;
                 when others => led <= (others => '1');
             end case;
-        elsif i_sw(13 downto 4) = "1110000000" then
+        elsif i_sw(12 downto 4) = "111000000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
@@ -427,7 +428,7 @@ begin
                 when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
                 when others => led <= (others => '1') ;
             end case;
-        elsif i_sw(13 downto 4) = "1111000000" then
+        elsif i_sw(12 downto 4) = "111100000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
                 when "0010" => led <= "000000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
@@ -509,7 +510,8 @@ begin
         o_vs => VGA_vs,
         o_r => VGA_r,
         o_g => VGA_g,
-        o_b => VGA_b
+        o_b => VGA_b,
+        i_EN => i_sw(13)
     );
     o_VGA_hs <= VGA_hs;
     o_VGA_vs <= VGA_vs;

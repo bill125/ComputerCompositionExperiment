@@ -35,6 +35,8 @@ entity VGA is
     (
         i_busResponse : in bus_response_t;
         o_busRequest : out bus_request_t;
+
+        i_EN : in std_logic;
         
         i_clock : in std_logic;
         o_hs : out std_logic;
@@ -83,7 +85,7 @@ architecture Behavioral of VGA is
     -- signal VGACore_vectorX : std_logic_vector(9 downto 0);
     -- signal VGACore_vectorY : std_logic_vector(8 downto 0);
     signal VGACore_cnt : std_logic_vector(17 downto 0);
-    signal VGACore_read_EN : std_logic;
+    signal VGACore_read_EN, EN : std_logic;
 begin
     VGACore_inst: VGACore 
     -- generic map
@@ -105,6 +107,7 @@ begin
         o_cnt => VGACore_cnt,
         o_read_EN => VGACore_read_EN
     );
+    EN <= '1' when (VGACore_read_EN = '1' and i_EN = '1') else '0';
 
     VGAAdapter_inst: VGAAdapter
     port map
@@ -112,7 +115,7 @@ begin
         i_cnt => VGACore_cnt,
         -- i_vectorX => VGACore_vectorX,
         -- i_vectorY => VGACore_vectorY,
-        i_read_EN => VGACore_read_EN,
+        i_read_EN => EN,
         o_data => VGAAdapter_data,
         i_busResponse => i_busResponse,
         o_busRequest => o_busRequest
