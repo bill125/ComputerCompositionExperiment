@@ -18,9 +18,9 @@
 B START
 
 START:
-	LI R0 0x00BF 
+	LI R0 0x00FF 
 	SLL R0 R0 0x0000
-	ADDIU R0 0x10   ;R0=0xBF10 
+	ADDIU R0 0x10   ;R0=0xFF10 
 	MTSP R0
 PRINT_LOOP:
 	MFPC R7
@@ -35,9 +35,9 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B PRINT_GROUND   ;绘制地板
 
-	;MFPC R7
-	;ADDIU R7 0x0002
-    ;B PRINT_PIPE   ;绘制管道
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_PIPE   ;绘制管道
 
 	;MFPC R7
 	;ADDIU R7 0x0002
@@ -72,9 +72,27 @@ RESET_PARAMETERS:
     ;0xFE04 - pipe0_height
     ;0xFE05 - pipe1_coordinateX
     ;0xFE06 - pipe1_height
-    LI R0 FE
+    LI R0 0XFE
     SLL R0 R0 0X00
-    ADDIU 0X03
+    ADDIU R0 0X03
+    LI R1 0X10
+    SW R0 R1 0X00   ;pipe0_coordinateX=16
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X04
+    SW R0 R1 0X00   ;pipe0_height=16
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X05
+    LI R1 0X30
+    SW R0 R1 0X00   ;pipe1_coordinateX=48
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X06
+    SW R0 R1 0X00   ;pipe1_height=48
 
     LW_SP R0 0X00
     LW_SP R1 0X01
@@ -307,7 +325,7 @@ PRINT_PIPE_BODY_FOR_J:   ;J=0~16
     AND R7 R6
     BNEZ R7 0X09   ;低8位不为0
     LI R1 0X2C
-    SLL R1 R1
+    SLL R1 R1 0X00
     ADDIU R1 0X40
     ADDIU R1 0X40  ;R1=背景地址 2C80
     ADDU R0 R1 R1
@@ -321,7 +339,7 @@ PRINT_PIPE_BODY_FOR_J:   ;J=0~16
     AND R7 R6
     BNEZ R7 0X0A   ;高8位不为0
     LI R1 0X2C
-    SLL R1 R1
+    SLL R1 R1 0X00
     ADDIU R1 0X40
     ADDIU R1 0X40  ;R1=背景地址 2C80
     ADDU R0 R1 R1
