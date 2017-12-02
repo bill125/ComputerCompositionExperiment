@@ -29,7 +29,7 @@ PRINT_LOOP:
     B RESET_PARAMETERS   ;计算参数
 
 	MFPC R7
-	ADDIU R7 0x0002
+    ADDIU R7 0x0002
     B PRINT_BACKGROUND   ;绘制背景
 
 	;MFPC R7
@@ -40,9 +40,9 @@ PRINT_LOOP:
 	;ADDIU R7 0x0002
     ;B PRINT_PIPE   ;绘制管道
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_BIRD   ;绘制鸟
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B PRINT_BIRD   ;绘制鸟
 
     B PRINT_LOOP
 
@@ -91,7 +91,8 @@ PRINT_BACKGROUND:
 
     LI R1 0x2C   ;图片地址
     SLL R1 R1 0x00
-    ADDIU R1 0x80
+    ADDIU R1 0x40
+    ADDIU R1 0x40
     LI R2 0x80   ;显存地址
     SLL R2 R2 0x00
     LI R3 0x00   ;I=0
@@ -194,12 +195,12 @@ PRINT_PIPE:
 
 ;pipe0
     LI R6 0xFE
-    SLL R6 0X00
+    SLL R6 R6 0X00
     ADDIU R6 0X03
     LW R6 R0 0X00   ;R0=pipe0_coordinateX
     LI R1 0x00      ;R1=0
     LI R6 0xFE
-    SLL R6 0X00
+    SLL R6 R6 0X00
     ADDIU R6 0X04
     LW R6 R2 0X00   ;R2=pipe0_height
 	MFPC R6
@@ -225,12 +226,12 @@ PRINT_PIPE:
 
 ;pipe1
     LI R6 0xFE
-    SLL R6 0X00
+    SLL R6 R6 0X00
     ADDIU R6 0X05
     LW R6 R0 0X00   ;R0=pipe1_coordinateX  COORDX
     LI R1 0x00      ;R1=0  COORDY
     LI R6 0xFE
-    SLL R6 0X00
+    SLL R6 R6 0X00
     ADDIU R6 0X06
     LW R6 R2 0X00   ;R2=pipe1_height  HEIGHT
 	MFPC R6
@@ -386,64 +387,65 @@ BIRD_END_IF: ; R5 = bird_pic
 
     LI R0 0x00
     LI R6 0x80 
-    SLL R6 R6 0x00 ; R1 = 0x8000
+    SLL R6 R6 0x00 ; R6 = 0x8000
+    ADDIU R3 0xFF
 BIRD_ADDR_JUMP:
     ADDIU R6 0x40 ; next line
     ADDIU R0 0x01 ; ++ R0
-    SLT R0 R3 ; if R0 < bird_coordinateY
+    SLT R3 R0 ; if R3 >= bird_coordinateY
     BTEQZ BIRD_ADDR_JUMP
 
     ; bird_pic address in R5
     ; target line head address in R6
     LI R0 0x00 ; R0 = 0
 BIRD_COPY_LOOP:
-    ADDIU3 R6 R4 0x10 ; R4 = target address
     LI R1 0x00 ; R1 = 0
 BIRD_COPY_LINE_LOOP:
     ; Brute Force Copy
-    ; LW R5 R2 0x00 ; R2 = Target Pic Color
-    ; SW R4 R2 0x00 ; Store R2 to R4
+    ADDIU3 R6 R4 0x10
+    LW R5 R2 0x00 ; R2 = bird pixel
+    SW R4 R2 0x00 ; Store R2 to R4
 
     ; Selective Replace
     ; High - 8
-    LW R5 R2 0x00
-    SRA R2 R2 0x00
-    LI R7 0xFF
-    AND R2 R7 ; get high-8 bits
-    ADDIU R2 0x01 ; Transparent Pixel
-    BNEZ R2 0x02
-    LW R4 R2 0x00 ; Use Previous
-    B 0x02
-    ADDIU R2 0xFF ; Use New
-    SLL R2 R2 0x00
+    ;LW R5 R2 0x00
+    ;SRA R2 R2 0x00
+    ;LI R7 0xFF
+    ;AND R2 R7 ; get high-8 bits
+    ;ADDIU R2 0x01 ; Transparent Pixel
+    ;BNEZ R2 0x02
+    ;LW R4 R2 0x00 ; Use Previous
+    ;B 0x02
+    ;ADDIU R2 0xFF ; Use New
+    ;SLL R2 R2 0x00
 
     ; Low - 8
-    LW R5 R3 0x00
-    LI R7 0xFF
-    AND R3 R7 ; get low-8 bits
-    ADDIU R3 0x01 ; Transparent Pixel
-    BNEZ R3 0x05
-    LW R4 R7 0x00 ; Use Previous
-    LI R3 0xFF
-    AND R7 R3
-    ADDU R2 R7 R2;
-    B 0x02
-    ADDIU R3 0xFF ; Use New
-    ADDU R2 R3 R2
+    ;LW R5 R3 0x00
+    ;LI R7 0xFF
+    ;AND R3 R7 ; get low-8 bits
+    ;ADDIU R3 0x01 ; Transparent Pixel
+    ;BNEZ R3 0x05
+    ;LW R4 R7 0x00 ; Use Previous
+    ;LI R3 0xFF
+    ;AND R7 R3
+    ;ADDU R2 R7 R2;
+    ;B 0x02
+    ;ADDIU R3 0xFF ; Use New
+    ;ADDU R2 R3 R2
 
-    SW R4 R2 0x00 ; Store R2 to R4
+    ;SW R4 R2 0x00 ; Store R2 to R4
     
     ADDIU R6 0x01 ; ++ R6
     ADDIU R5 0x01 ; ++ R5
     ADDIU R1 0x01 ; ++ R1
     SLTUI R1 0x08 ; if R1 < 8
-    BTEQZ 0x02 ; loop
+    BTEQZ 0x01 ; loop
     B BIRD_COPY_LINE_LOOP 
-
-    ADDIU R6 0x38 ; R6 jump line
+    
+    ADDIU R6 0x48 ; R6 jump line
     ADDIU R0 0x01 ; ++ R0
     SLTUI R0 0x10 ; if R0 < 16
-    BTEQZ 0x02 ; loop
+    BTEQZ 0x01 ; loop
     B BIRD_COPY_LOOP 
 
     ADDSP 0xF8
