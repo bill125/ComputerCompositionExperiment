@@ -221,7 +221,8 @@ architecture Behavioral of CPUOverall is
             i_data_ready   : in std_logic;
             o_rdn          : out std_logic;
 
-            o_read_state   : out std_logic_vector(1 downto 0)
+            o_read_state   : out std_logic_vector(1 downto 0);
+            o_write_state   : out std_logic_vector(2 downto 0)
         );
     end component;
     component Keyboard
@@ -334,6 +335,7 @@ architecture Behavioral of CPUOverall is
     signal UART_wrn          : std_logic;
     signal UART_rdn          : std_logic;
     signal UART_read_state   : std_logic_vector(1 downto 0);
+    signal UART_write_state   : std_logic_vector(2 downto 0);
     signal Keyboard_DataReady : std_logic;
     signal Keyboard_Output : std_logic_vector(7 downto 0);
     signal VGA_busRequest : bus_request_t;
@@ -433,7 +435,7 @@ begin
         elsif i_sw(12 downto 4) = "111100000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
-                when "0010" => led <= "000000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
+                when "0010" => led <= UART_write_state & "000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
                 when "0011" => led <= CPUCore_o_EX_MEM_o_addr;
                 when "0100" => led <= CPUCore_o_EX_MEM_o_data;
                 when "1000" => led <= CPUCore_o_ID_EX_o_OP0;
@@ -593,7 +595,8 @@ begin
         o_wrn => UART_wrn,
         i_data_ready => i_UART_data_ready,
         o_rdn => UART_rdn,
-        o_read_state => UART_read_state
+        o_read_state => UART_read_state,
+        o_write_state => UART_write_state--  : out std_logic_vector(1 downto 0)
     );
     o_UART_rdn <= UART_rdn;
     o_UART_wrn <= UART_wrn;
