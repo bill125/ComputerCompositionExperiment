@@ -1,0 +1,38 @@
+#:C9     
+#Xilinx FPGA Editor Command Log File
+#Editor Version:
+#:V   NT M2.1 P.20131013
+#Current Working Directory:
+#:D   Z:\MyDocument\3.1\ComputerComposition\ComputerCompositionExperiment\BigProject\ProjectCPU
+#Date/Time:
+#:T   Sun Dec 03 14:16:31 2017
+#------------------------------
+	#Reading CPUOverall_map.ncd...
+	#Loading device for application Rf_Device from file '3s1200e.nph' in environment C:\Xilinx\14.7\ISE_DS\ISE\.
+	#   "CPUOverall" is an NCD, version 3.2, device xc3s1200e, package fg320, speed -4
+	#Design creation date: 2017.12.03.03.29.39
+	#Building chip graphics...
+	#Loading speed info...
+	#1
+setattr main edit-mode no-logic-changes
+	#2
+unselect -all
+	#3
+select site 'SLICE_X51Y64'
+	#site "SLICE_X51Y64",  type = SLICEL  (RPM grid X107Y66)
+	#4
+unselect -all
+	#5
+select site 'SLICE_X59Y66'
+	#site "SLICE_X59Y66",  type = SLICEL  (RPM grid X123Y68)
+	#6
+unselect -all
+	#7
+select site 'SLICE_X59Y66'
+	#site "SLICE_X59Y66",  type = SLICEL  (RPM grid X123Y68)
+	#8
+post block
+	#9
+unselect site 'SLICE_X59Y66'
+	#10
+select -k comp 'BusArbiter_inst/o_busRequest.addr_0'
