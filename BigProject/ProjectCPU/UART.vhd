@@ -161,7 +161,7 @@ begin
                         r_TX_State <= t_TX_3;
 
                     when t_TX_3 =>
-                        o_write_Done <= '1';
+                        o_writeDone <= '1';
                         if i_tbre = '1' then
                             r_TX_State <= t_TX_4;
                         else
