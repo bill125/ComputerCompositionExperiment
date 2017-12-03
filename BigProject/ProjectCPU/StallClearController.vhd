@@ -70,7 +70,7 @@ begin
     o_forceClear(stage_PC) <= '0';
     o_forceClear(stage_EX_MEM) <= '0';
     o_forceClear(stage_MEM_WB) <= '0';
-    o_forceClear(stage_ID_EX downto stage_IF_ID) <= "11";
+    o_forceClear(stage_ID_EX downto stage_IF_ID) <= "11" when i_breakEN = '1' else "00";
 
     -- stall
     PC_stall     <= (stage_IF_ID downto 0     => '1', others => '0')  -- IF stall request

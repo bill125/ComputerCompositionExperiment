@@ -464,10 +464,10 @@ begin
     o_ID_EX_o_imm <= ID_EX_o_imm;
     o_ID_EX_o_wbAddr <= ID_EX_o_wbAddr;
     o_TEST_word <= StallClearController_o_stall -- 5
-        & StallClearController_o_clear -- 3
+        & StallClearController_o_clear -- 5
         & i_nReset -- 1
         & JumpAndBranch_o_jumpEN -- 1
-        & IM_o_inst(15 downto 12); -- 6
+        & IM_o_inst(15 downto 12); -- 4
     o_TEST_addr <= StallClearController_o_stall -- 5 useless
         & StallClearController_o_clear -- 5
         & StallClearController_o_nextPC(7 downto 0); -- 8
