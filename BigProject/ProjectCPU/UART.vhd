@@ -82,7 +82,7 @@ begin
 
     -- Read UART
     Receive_Data : process(i_clock)
-        variable wait_turns : integer range 0 to 31 := 0;
+        variable wait_turns : integer range 0 to 63 := 0;
     begin
         if rising_edge(i_clock) then
             if wait_turns /= 0 then
@@ -128,8 +128,9 @@ begin
     end process;
 
     -- Send UART
+    o_bus_data <= i_data;
     Send_Data : process(i_clock)
-        variable wait_turns : integer range 0 to 31 := 0;
+        variable wait_turns : integer range 0 to 63 := 0;
     begin
         if rising_edge(i_clock) then
             if wait_turns /= 0 then
@@ -142,29 +143,24 @@ begin
                         o_writeDone <= '0';
                         o_writeReady <= '1';
                         if i_writeBegin = '1' then
-                            o_writeReady <= '0';
-                            o_bus_EN <= '1';
-                            o_bus_data <= i_data;
                             r_TX_State <= t_TX_1;
                         else
                             r_TX_State <= t_TX_0;
                         end if;
 
                     when t_TX_1 =>
+                        o_writeReady <= '0';
                         o_bus_EN <= '1';
-                        o_bus_data <= i_data;
                         o_wrn <= '0';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_2;
 
                     when t_TX_2 =>
-                        o_bus_EN <= '1';
                         o_wrn <= '1';
                         wait_turns := uart_wait_turns;
                         r_TX_State <= t_TX_3;
 
                     when t_TX_3 =>
-                        o_bus_EN <= '0';
                         o_writeDone <= '1';
                         if i_tbre = '1' then
                             r_TX_State <= t_TX_4;
@@ -172,13 +168,11 @@ begin
                             r_TX_State <= t_TX_3;
                         end if;
                     
-                    when t_TX_4 =>
+                    when t_TX_4 =>   
                         o_bus_EN <= '0';
                         if i_tsre = '1' then
-                            --wait_turns := uart_wait_turns;
                             r_TX_State <= t_TX_0;
-								    --o_writeDone <= '0';
-                        else
+					    else
                             r_TX_State <= t_TX_4;
                         end if;
                     when others =>

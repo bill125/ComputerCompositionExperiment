@@ -115,7 +115,7 @@ begin
                         o_OP <= op_ADDSP;
                     when "100" => -- mtsp
                         o_ALUOP <= alu_addu;
-                        o_OP0Type <= work.op_type_constants.rx;
+                        o_OP0Type <= work.op_type_constants.ry;
                         o_OP1Type <= work.op_type_constants.invalid;
                         o_wbType <= work.op_type_constants.SP;
                         o_OP0Src <= opSrc_op0;
