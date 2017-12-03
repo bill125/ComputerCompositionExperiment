@@ -1,6 +1,5 @@
 
 # PlanAhead Generated physical constraints 
-
 NET "i_click" LOC = U9;
 NET "i_clock" LOC = B9;
 NET "i_nReset" LOC = U10;
@@ -151,3 +150,6 @@ NET "o_VGA_b[2]" LOC = B6;
 
 NET "i_PS2_clock" LOC = U6;
 NET "i_PS2_data" LOC = V6;
+#Created by Constraints Editor (xc3s1200e-fg320-4) - 2017/12/03
+NET "i_clock" TNM_NET = i_clock;
+TIMESPEC TS_i_clock = PERIOD "i_clock" 20 ns HIGH 50%;
