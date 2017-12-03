@@ -35,9 +35,9 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B PRINT_GROUND   ;绘制地板
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_PIPE   ;绘制管道
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B PRINT_PIPE   ;绘制管道
 
 	;MFPC R7
 	;ADDIU R7 0x0002
@@ -60,12 +60,12 @@ RESET_PARAMETERS:
     SLL R0 R0 0X00
     ADDIU R0 0X07
     
-    LW R0 R1 0X00
+    LW R0 R1 0X00 
     ADDIU R1 0X01
     LI R2 0X0F
     SLT R2 R1   ;15<ground_coordinateX
     BTEQZ 0X01
-    LI R1 0X00
+    LI R1 0X08
     SW R0 R1 0X00
 
     ;0xFE03 - pipe0_coordinateX
@@ -88,7 +88,7 @@ RESET_PARAMETERS:
     ADDIU R0 0X05
     LI R1 0X30
     SW R0 R1 0X00   ;pipe1_coordinateX=48
-    
+
     LI R0 0XFE
     SLL R0 R0 0X00
     ADDIU R0 0X06
@@ -135,7 +135,7 @@ BACKGROUND_FOR_J:   ;J=0~80
     SLT R5 R4    ;159<R4
     BTEQZ BACKGROUND_FOR_J
 
-    LI R5 0xCF   ;R5=207
+    LI R5 0XEF   ;R5=239
     SLT R5 R3    ;239<R3
     BTEQZ BACKGROUND_FOR_I
 
