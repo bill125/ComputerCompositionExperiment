@@ -63,6 +63,7 @@ ARCHITECTURE behavior OF CpuCore IS
     	port (
             i_clock : in std_logic;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
     		i_stall : in std_logic;
     		i_nextPC : in word_t;
     		o_PC : out word_t
@@ -86,6 +87,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_inst : in word_t;
             i_PC : in word_t;
             i_stall : in std_logic;
+            i_forceClear : in std_logic;
             i_clear : in std_logic;
             o_PC : out word_t;
             o_inst : out word_t;
@@ -194,6 +196,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_OP0Src : in opSrc_t;
             i_OP1Src : in opSrc_t;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_imm : in word_t;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
@@ -239,6 +242,7 @@ ARCHITECTURE behavior OF CpuCore IS
             -- i_OP1 : in std_logic;
             i_addr : in word_t;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_data : in word_t;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
@@ -272,6 +276,7 @@ ARCHITECTURE behavior OF CpuCore IS
         port (
             i_clock : in std_logic;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
             i_wbData : in word_t;
@@ -291,6 +296,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_predSucc : in std_logic;
             o_nextPC : out word_t;
             o_clear : out std_logic_vector(4 downto 0);
+            o_forceClear : out std_logic_vector(4 downto 0);
             
             -- stall
             i_wbAddr : in reg_addr_t;
@@ -333,7 +339,9 @@ ARCHITECTURE behavior OF CpuCore IS
     component BreackController is
         port (
             i_IH : in std_logic_vector(15 downto 0);
-            i_PC_stalled : in std_logic;
+            i_clock : in std_logic;
+            i_IF_FD_PC : in word_t;
+            -- i_PC_stalled : in std_logic;
             o_key : out std_logic_vector(7 downto 0);
 
             o_keyNDataReceive : out std_logic;
@@ -342,7 +350,8 @@ ARCHITECTURE behavior OF CpuCore IS
             o_clockNDataReceive : out std_logic;
             i_clockDataReady : in std_logic;
             o_breakEN : out std_logic;
-            o_breakPC : out word_t
+            o_breakPC : out word_t;
+            o_EPC : out word_t
         );
     end component;
 
@@ -410,6 +419,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal StallClearController_o_nextPC : word_t;
     signal StallClearController_o_clear : std_logic_vector(4 downto 0);
     signal StallClearController_o_stall : std_logic_vector(4 downto 0);
+    signal StallClearController_o_forceClear : std_logic_vector(4 downto 0);
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic ;
     signal BusDispatcher_IM_o_busResponse    : bus_response_t;
@@ -418,11 +428,12 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-    signal BreackController_o_breakEN : std_logic;
+signal BreackController_o_breakEN : std_logic;
     signal BreackController_o_breakPC : word_t;
     signal BreackController_o_key : std_logic_vector(7 downto 0);
     -- signal BreackController_o_keyNDataReceive : 
     -- signal BreackController_o_clockNDataReceive
+    signal BreakController_o_EPC : word_t;
 begin
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
     o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
@@ -466,6 +477,7 @@ begin
         i_clock => i_clock,
         i_stall => StallClearController_o_stall(stage_PC) ,
         i_clear => StallClearController_o_clear(stage_PC) ,
+        i_forceClear => StallClearController_o_forceClear(stage_PC),
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
@@ -482,6 +494,7 @@ begin
         i_PC => PC_o_PC,
         i_stall => StallClearController_o_stall(stage_IF_ID),
         i_clear => StallClearController_o_clear(stage_IF_ID),
+        i_forceClear => StallClearController_o_forceClear(stage_IF_ID),
         o_PC => IF_ID_o_PC,
         o_inst => IF_ID_o_inst,
         o_rxAddr => IF_ID_o_rxAddr,
@@ -571,6 +584,7 @@ begin
         i_OP0Src => Control_o_OP0Src,
         i_OP1Src => Control_o_OP1Src,
         i_clear => StallClearController_o_clear(stage_ID_EX),
+        i_forceClear => StallClearController_o_forceClear(stage_ID_EX),
         i_imm => ImmExtend_o_immExtend,
         i_stall => StallClearController_o_stall(stage_ID_EX),
         i_wbAddr => Decoder_o_wbAddr,
@@ -611,6 +625,7 @@ begin
         -- i_OP1 => ,
         i_addr => ALU_MUX_o_addr, --TODO
         i_clear => StallClearController_o_clear(stage_EX_MEM),
+        i_forceClear => StallClearController_o_forceClear(stage_EX_MEM),
         i_data => ALU_MUX_o_data,
         i_stall => StallClearController_o_stall(stage_EX_MEM),
         i_wbAddr => ID_EX_o_wbAddr,
@@ -636,6 +651,7 @@ begin
     MEM_WB_inst: MEM_WB port map (
         i_clock => i_clock,
         i_clear => StallClearController_o_clear(stage_MEM_WB),
+        i_forceClear => StallClearController_o_forceClear(stage_MEM_WB),
         i_stall => StallClearController_o_stall(stage_MEM_WB),
         i_wbAddr => EX_MEM_o_wbAddr,
         i_wbData => DM_o_wbData,
@@ -652,6 +668,7 @@ begin
         i_predSucc => BTB_o_predSucc,
         o_nextPC => StallClearController_o_nextPC,
         o_clear => StallClearController_o_clear,
+        o_forceClear => StallClearController_o_forceClear,
         -- stal => ,
         i_wbAddr => ID_EX_o_wbAddr,
         i_DMStallReq => DM_o_stallRequest,
@@ -695,9 +712,11 @@ begin
     o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
 
     BreakController_inst: BreackController port map (
+        i_clock => i_clock,
         i_IH => myRegister_o_IH,
-        i_PC_stalled => StallClearController_o_stall(stage_PC),
         o_key => BreackController_o_key,
+        i_IF_FD_PC => IF_ID_o_PC,
+        o_EPC => BreakController_o_EPC,
         o_breakEN => BreackController_o_breakEN,
         o_breakPC => BreackController_o_breakPC,
 
@@ -705,7 +724,7 @@ begin
         i_keyDataReady => i_keyDataReady,
         i_keyData => i_keyData,
         o_clockNDataReceive => o_clockNDataReceive,
-        i_clockDataReady => i_clockDataReady
+        i_clockDataReady => '0'--i_clockDataReady
     );
 
 end;

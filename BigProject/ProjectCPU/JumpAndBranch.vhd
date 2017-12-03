@@ -40,6 +40,7 @@ entity JumpAndBranch is
         i_OP1 : in word_t; -- PC
         i_imm : in word_t;
         i_OP : in op_t;
+        -- i_EPC : in word_t;
 
         o_jumpEN : out std_logic := '0';
         o_jumpTarget : out word_t
@@ -75,6 +76,9 @@ begin
             when op_JR =>
                 o_jumpEN <= '1';
                 o_jumpTarget <= i_OP0;
+            -- when op_ERET =>
+            --     o_jumpEN <= '1';
+            --     o_jumpTarget <= i_EPC;
             when others =>
                 o_jumpEN <= '0';
                 o_jumpTarget <= PC_1;
