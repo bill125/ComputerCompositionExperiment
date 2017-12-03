@@ -10,6 +10,16 @@ RRRGGBBB
 2280~2C7F: ground      (160*32)
 2C80~777F: background  (160*240)
 
+0xFE00 - bird_coordinateY 
+0xFE01 - bird_velocity 
+0xFE02 - bird_stateaddr
+0xFE03 - pipe0_coordinateX
+0xFE04 - pipe0_height
+0xFE05 - pipe1_coordinateX
+0xFE06 - pipe1_height
+0xFE07 - ground_coordinateX 
+0xFE08 - bird_state
+
 FF02 事件
   0x00 没事
   0x10 时间
