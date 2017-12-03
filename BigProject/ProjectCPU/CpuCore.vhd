@@ -336,7 +336,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_extBusResponse : in bus_response_t
         );
     end component;
-    component BreackController is
+    component BreakController is
         port (
             i_IH : in std_logic_vector(15 downto 0);
             i_clock : in std_logic;
@@ -428,11 +428,11 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-signal BreackController_o_breakEN : std_logic;
-    signal BreackController_o_breakPC : word_t;
-    signal BreackController_o_key : std_logic_vector(7 downto 0);
-    -- signal BreackController_o_keyNDataReceive : 
-    -- signal BreackController_o_clockNDataReceive
+signal BreakController_o_breakEN : std_logic;
+    signal BreakController_o_breakPC : word_t;
+    signal BreakController_o_key : std_logic_vector(7 downto 0);
+    -- signal BreakController_o_keyNDataReceive : 
+    -- signal BreakController_o_clockNDataReceive
     signal BreakController_o_EPC : word_t;
 begin
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
@@ -661,8 +661,8 @@ begin
     StallClearController_inst: StallClearController port map (
         i_nReset => i_nReset,
         -- clea => ,
-        i_breakEN => BreackController_o_breakEN,
-        i_breakPC => BreackController_o_breakPC,
+        i_breakEN => BreakController_o_breakEN,
+        i_breakPC => BreakController_o_breakPC,
         i_jumpTarget => JumpAndBranch_o_jumpTarget,
         i_predPC => BTB_o_predPC,
         i_predSucc => BTB_o_predSucc,
@@ -711,14 +711,14 @@ begin
     o_sysBusRequest <= BusDispatcher_DM_o_sysBusRequest;
     o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
 
-    BreakController_inst: BreackController port map (
+    BreakController_inst: BreakController port map (
         i_clock => i_clock,
         i_IH => myRegister_o_IH,
-        o_key => BreackController_o_key,
+        o_key => BreakController_o_key,
         i_IF_FD_PC => IF_ID_o_PC,
         o_EPC => BreakController_o_EPC,
-        o_breakEN => BreackController_o_breakEN,
-        o_breakPC => BreackController_o_breakPC,
+        o_breakEN => BreakController_o_breakEN,
+        o_breakPC => BreakController_o_breakPC,
 
         o_keyNDataReceive => o_keyNDataReceive,
         i_keyDataReady => i_keyDataReady,

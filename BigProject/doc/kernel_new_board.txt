@@ -11,8 +11,8 @@ NOP
 
 DELINT:   ;中断处理程序
 	NOP
-	NOP
-	NOP
+	LI R6 0xFF ;不允许中断
+	MTIH R6
 	;保存用户程序现场
 	LI R6 0xFF
 	SLL R6 R6 0x0000
@@ -83,7 +83,7 @@ DELINT:   ;中断处理程序
 	ADDIU3 R2 R6 0x0000
 	
 	;用r3=IH（高位变成1）
-	MFIH R3
+	;MFIH R3
 	LI R0 0x0080
 	SLL R0 R0 0x000
 	OR R3 R0
@@ -102,6 +102,7 @@ DELINT:   ;中断处理程序
 	ADDSP 0x0001
 	ADDSP 0x0001
 	NOP
+	LI R3 0x00
 	MTIH R3;
 	JR R6
 	LW_SP R3 0x00FF
@@ -111,8 +112,8 @@ DELINT:   ;中断处理程序
 
 ;init  0x8251
 START:
-	;初始化IH寄存器，最高位为1时，允许中断，为0时不允许。初始化为0，kernel不允许中断
-	LI R0 0x07
+	;初始化IH寄存器，最低位为1时，允许中断，为0时不允许。初始化为0，kernel<del>不<del>允许中断
+	LI R0 0x00
 	MTIH R0
 	;初始化栈地址
 	LI R0 0x00FF 
@@ -661,7 +662,7 @@ COMPILE:
 	
 	MFPC R7
 	ADDIU R7 0x0004
-	MTIH R5    ;IH高位赋1	
+	;MTIH R5    ;IH高位赋1	
 	JR R6
 	LW_SP R5 0x0000  ;R5恢复现场
 	
@@ -687,7 +688,7 @@ COMPILE:
 	LI R2 0x00FF
 	OR R1 R2	
 	AND R0 R1
-	MTIH R0
+	;MTIH R0
 	
 	;给终端发送结束用户程序提示
 	LI R1 0x0007
