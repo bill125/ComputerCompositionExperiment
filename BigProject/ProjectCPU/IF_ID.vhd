@@ -40,6 +40,7 @@ entity IF_ID is
         i_PC : in word_t;
         i_stall : in std_logic;
         i_clear : in std_logic;
+        i_forceClear : in std_logic;
         o_PC : out word_t := (others => '0');
         o_inst : out word_t := work.inst_const.INST_NOP;
         o_rxAddr : out std_logic_vector(3 downto 0) := work.reg_addr.invalid;
@@ -53,8 +54,8 @@ architecture Behavioral of IF_ID is
 begin
     process(i_clock)
     begin
-        if rising_edge(i_clock) and i_stall = '0' then
-            if i_clear = '1' then
+        if rising_edge(i_clock) and (i_stall = '0' or i_forceClear = '1') then
+            if i_clear = '1' or i_forceClear = '1' then
                 o_cleared <= '1';
                 -- o_OP <= work.inst_const.OP_NOP;
                 o_PC <= i_PC;
