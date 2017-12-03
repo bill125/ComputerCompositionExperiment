@@ -80,8 +80,9 @@ package constants is
         stallRequest: std_logic;
     end record;
 
-    constant clock_break_PC : word_t := x"0005";
-    constant key_break_PC : word_t := x"ff20";
+    constant clock_break_PC : word_t := x"ff20";
+    constant key_break_PC : word_t := x"0005";
 
-    constant fpc : integer := 833333;
+    constant fps : integer := 833333;
+    constant break_wait_turns : std_logic_vector(3 downto 0) := "1111";
 end constants;
