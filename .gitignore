@@ -106,3 +106,7 @@ xilinxsim.ini
 
 ProjectCPU.xise
 BigProject/util/tmp.txt
+
+BigProject/ProjectCPU/CPUOverall_cs.blc
+BigProject/ProjectCPU/netgen/synthesis/CPUOverall_synthesis.vhd
+BigProject/ProjectCPU/netgen/synthesis/CPUOverall_synthesis.nlf

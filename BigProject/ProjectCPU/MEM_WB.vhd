@@ -37,6 +37,7 @@ entity MEM_WB is
     port (
         i_clock : in std_logic;
         i_clear : in std_logic;
+        i_forceClear : in std_logic;
         i_stall : in std_logic;
         i_wbAddr : in reg_addr_t;
         i_wbData : in word_t;
@@ -51,8 +52,8 @@ architecture Behavioral of MEM_WB is
 begin
     process (i_clock)
     begin
-        if rising_edge(i_clock) and i_stall = '0' then
-            if i_clear = '1' then
+        if rising_edge(i_clock) and (i_stall = '0' or i_forceClear = '1') then
+            if i_clear = '1' or i_forceClear = '1' then
                 o_wbData <= (others => '-');
                 o_wbAddr <= work.reg_addr.invalid;
             else

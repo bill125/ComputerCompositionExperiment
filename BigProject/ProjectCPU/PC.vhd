@@ -35,6 +35,7 @@ entity PC is
         i_clock : in std_logic;
 		i_stall : in std_logic;
         i_clear : in std_logic;
+        i_forceClear : in std_logic;
 		i_nextPC : in word_t;
 		o_PC : out word_t := (others => '0')
 	);
@@ -45,7 +46,7 @@ architecture Behavioral of PC is
 begin
     process(i_clock)
     begin
-        if rising_edge(i_clock) and i_stall = '0' then
+        if rising_edge(i_clock) and (i_stall = '0' or i_forceClear = '1') then
             if i_clear = '1' then
                 o_PC <= (others => '0');
             else

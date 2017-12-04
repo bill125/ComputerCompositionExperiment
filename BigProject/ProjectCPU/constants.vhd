@@ -32,6 +32,7 @@ package constants is
     constant uart_control_addr: std_logic_vector (17 downto 0) := "001111111100000001";
     constant uart_data_addr: std_logic_vector (17 downto 0) := "001111111100000000";
 
+
     constant word_length: integer := 16;
     constant addr_length: integer := 16;
     constant bus_addr_length: integer := 18;
@@ -51,7 +52,7 @@ package constants is
                   op_JR, op_NOP, op_ADDU, op_AND,
                   op_CMP, op_MFIH, op_MFPC, op_MOVE,
                   op_MTIH, op_MTSP, op_NEG, op_NOT, op_OR,
-                  op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU);
+                  op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU, op_ERET);
     type alu_op_t is (alu_nop, alu_cmp, alu_less, alu_uless,
                   alu_addu, alu_subu,
                   alu_or, alu_and, alu_xor, alu_nor, alu_not,
@@ -79,4 +80,9 @@ package constants is
         stallRequest: std_logic;
     end record;
 
+    constant clock_break_PC : word_t := x"ff20";
+    constant key_break_PC : word_t := x"0005";
+
+    constant fps : integer := 833333;
+    constant break_wait_turns : std_logic_vector(3 downto 0) := "1111";
 end constants;

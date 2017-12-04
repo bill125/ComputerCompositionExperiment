@@ -13,39 +13,40 @@ DELINT:   ;中断处理程序
 	NOP
 	NOP
 	NOP
+	ADDSP 0x0020
 	;保存用户程序现场
-	LI R6 0xFF
-	SLL R6 R6 0x0000
-	ADDIU R6 0x10					;R6=0xFF10
-	SW R6 R0 0x0000
-	SW R6 R1 0x0001
-	SW R6 R2 0x0002
+	SW_SP R0 0x00
+	SW_SP R1 0x01
+	SW_SP R2 0x02
+	SW_SP R3 0x03
+	SW_SP R4 0x04
+	SW_SP R5 0x05
+	SW_SP R6 0x06
+	SW_SP R7 0x07
+	ADDSP 0x0008
+
+	LI R0 0x0001 ;test
 	
 
-	
-
-	
-	;R1=中断号
-	LW_SP R1 0x0000
-	ADDSP 0x0001
-	LI R0 0x00FF
-	AND R1 R0
-	
-	;R2=应用程序的pc
-	LW_SP R2 0x0000
-	ADDSP 0x0001
-	
-	;保存r3
-	ADDSP 0xFFFF
-	SW_SP R3 0x0000
-
-
-	
-	;保存用户程序返回地址
-	ADDSP 0xFFFF
-	SW_SP R7 0x0000
-	
-	;提示终端，进入中断处理
+;	;R1=0xFF03
+;	LI R1 0x00FF
+;	SLL R1 R1 0x0000
+;	LI R3 0x03
+;	OR R1 R3
+;
+;	;R0=mem[0xFF03]
+;	LW R1 R0 0x0000
+;
+;	;R6=0xFF02
+;	LI R6 0x00FF
+;	SLL R6 R6 0x0000
+;	LI R3 0x02
+;	OR R6 R3
+;
+;	;mem[0xFF02]=mem[0xFF03]
+;	SW R6 R0 0x00
+;	
+;	;提示终端，进入中断处理
 	LI R3 0x000F
 	MFPC R7 
 	ADDIU R7 0x0003  
@@ -54,7 +55,7 @@ DELINT:   ;中断处理程序
 	NOP
 	LI R6 0x00FF 
 	SLL R6 R6 0x0000 ;R6=0xFF00
-	SW R6 R3 0x0000
+	SW R6 R0 0x0000
 	NOP
 	;输出中断号
 	MFPC R7 
@@ -79,34 +80,37 @@ DELINT:   ;中断处理程序
 	SW R6 R3 0x0000
 	NOP
 	
-	;R6保存返回地址
-	ADDIU3 R2 R6 0x0000
-	
 	;用r3=IH（高位变成1）
 	MFIH R3
 	LI R0 0x0080
 	SLL R0 R0 0x000
 	OR R3 R0
-	
-	;恢复现场
-	LI R7 0xFF
-	SLL R7 R7 0x0000
-	ADDIU R7 0x10					;R7=0xFF10
-	LW R7 R0 0x0000
-	LW R7 R1 0x0001
-	LW R7 R2 0x0002
-	
-	;r7=用户程序返回地址
-	LW_SP R7 0x0000
-	
-	ADDSP 0x0001
-	ADDSP 0x0001
+	MTIH R3;u
+
+	;确保可写
+	MFPC R7 
+	ADDIU R7 0x0003  
 	NOP
-	MTIH R3;
-	JR R6
-	LW_SP R3 0x00FF
+	B TESTW 	
+	NOP
+
+	;恢复现场
+	ADDSP 0xFFF8
+	LW_SP R0 0x00
+	LW_SP R1 0x01
+	LW_SP R2 0x02
+	LW_SP R3 0x03
+	LW_SP R4 0x04
+	LW_SP R5 0x05
+	LW_SP R6 0x06
+	LW_SP R7 0x07
+	ADDSP 0xFFE0
 	
 	NOP	
+	NOP
+	NOP
+	NOP
+	SW_RS 0x00
 
 
 ;init  0x8251
@@ -117,7 +121,7 @@ START:
 	;初始化栈地址
 	LI R0 0x00FF 
 	SLL R0 R0 0x0000
-	ADDIU R0 0x10					;R0=0xFF10 
+	ADDIU R0 0x20					;R0=0xFF10 
 	MTSP R0
 	NOP
 	

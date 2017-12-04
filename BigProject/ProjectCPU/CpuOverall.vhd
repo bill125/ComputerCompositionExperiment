@@ -112,6 +112,13 @@ architecture Behavioral of CPUOverall is
             i_IM_extBusResponse : bus_response_t;
             o_DM_extBusRequest : bus_request_t;
             i_DM_extBusResponse : bus_response_t;
+            -- break
+            o_keyNDataReceive : out std_logic;
+            i_keyDataReady : in std_logic;
+            i_keyData : in std_logic_vector(7 downto 0);
+            o_clockNDataReceive : out std_logic;
+            i_clockDataReady : in std_logic;
+
             o_TEST_word : out word_t;
             o_TEST_addr : out bus_addr_t;
             o_TEST_EN : out std_logic;
@@ -145,7 +152,8 @@ architecture Behavioral of CPUOverall is
             o_ID_EX_o_OP0Src : out opSrc_t;
             o_ID_EX_o_OP1Src : out opSrc_t;
             o_ID_EX_o_imm : out word_t;
-            o_ID_EX_o_wbAddr : out reg_addr_t
+            o_ID_EX_o_wbAddr : out reg_addr_t;
+            o_BreakController_o_EPC : out word_t
         );
     end component;
     component SystemBusController 
@@ -236,6 +244,13 @@ architecture Behavioral of CPUOverall is
             Output : out std_logic_vector(7 downto 0) -- scan code signal output
         );
     end component;
+    component ClockBreak is
+    port (
+        i_clock : in std_logic;
+		i_nReceive : in std_logic;
+		o_dataReady : out std_logic := '0'
+    );
+    end component;
     component VGA
         port 
         (
@@ -302,6 +317,9 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_ID_EX_o_OP1Src : opSrc_t;
     signal CPUCore_o_ID_EX_o_imm : word_t;
     signal CPUCore_o_ID_EX_o_wbAddr : reg_addr_t;
+    signal CPUCore_o_keyNDataReceive : std_logic;
+    signal CPUCore_o_clockNDataReceive : std_logic;
+    signal CPUCore_o_BreakController_o_EPC : word_t;
 
     signal BusArbiter_busResponse_0 : bus_response_t;
     signal BusArbiter_busResponse_1 : bus_response_t;
@@ -338,6 +356,7 @@ architecture Behavioral of CPUOverall is
     signal UART_write_state   : std_logic_vector(2 downto 0);
     signal Keyboard_DataReady : std_logic;
     signal Keyboard_Output : std_logic_vector(7 downto 0);
+    signal ClockBreak_o_dataReady : std_logic;
     signal VGA_busRequest : bus_request_t;
     signal VGA_hs : std_logic;
     signal VGA_vs : std_logic;
@@ -406,6 +425,7 @@ begin
                 when "0000" => led <= CPUCore_o_PC_o_PC;
                 when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
                 when "0010" => led <= CPUCore_o_IM_o_inst;
+                when "0011" => led <= CPUCore_o_BreakController_o_EPC;
                 when others => led <= (others => '1');
             end case;
         elsif i_sw(12 downto 4) = "111000000" then
@@ -462,6 +482,14 @@ begin
         i_IM_extBusResponse => ExtBusController_IM_busResponse,  
         o_DM_extBusRequest => CPUCore_DM_extBusRequest,
         i_DM_extBusResponse => ExtBusController_DM_busResponse,
+
+        -- break
+        o_keyNDataReceive => CPUCore_o_keyNDataReceive,
+        i_keyDataReady => Keyboard_DataReady,
+        i_keyData => Keyboard_Output,
+        o_clockNDataReceive => CPUCore_o_clockNDataReceive,
+        i_clockDataReady => ClockBreak_o_dataReady,
+        
 		
         o_TEST_word => CPUCore_o_TEST_word,
 		o_TEST_addr => CPUCore_o_TEST_addr,
@@ -496,7 +524,8 @@ begin
         o_ID_EX_o_OP0Src => CPUCore_o_ID_EX_o_OP0Src,
         o_ID_EX_o_OP1Src => CPUCore_o_ID_EX_o_OP1Src,
         o_ID_EX_o_imm => CPUCore_o_ID_EX_o_imm,
-        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr
+        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr,
+        o_BreakController_o_EPC => CPUCore_o_BreakController_o_EPC
     );
 
     BusArbiter_inst: BusArbiter port map (
@@ -601,14 +630,19 @@ begin
     o_UART_rdn <= UART_rdn;
     o_UART_wrn <= UART_wrn;
 
-    -- Keyboard_inst: Keyboard port map (
-    --     PS2Data => i_PS2_data,
-    --     PS2Clock => i_PS2_clock,
-    --     Clock => clock_50m,
-    --     Reset => not i_nReset,
-    --     DataReady => Keyboard_DataReady,  -- data output enable signal
-    --     DataReceive => '1',
-    --     Output => Keyboard_Output
-    -- );
+    Keyboard_inst: Keyboard port map (
+        PS2Data => i_PS2_data,
+        PS2Clock => i_PS2_clock,
+        Clock => clock_50m,
+        Reset => not i_nReset,
+        DataReady => Keyboard_DataReady,  -- data output enable signal
+        DataReceive => CPUCore_o_keyNDataReceive,
+        Output => Keyboard_Output
+    );
+    ClockBreak_inst: ClockBreak port map (
+        i_clock => clock,
+        i_nReceive => CPUCore_o_clockNDataReceive,
+        o_dataReady => ClockBreak_o_dataReady
+    );
 
 end;

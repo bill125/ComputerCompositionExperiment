@@ -7,15 +7,16 @@ use work.inst_const;
 
 entity CpuCore is
     port (
-        i_clock : in std_logic;  -- CPU主频时钟
+        i_clock : in std_logic;  
         i_nReset : in std_logic;
 
-        o_sysBusRequest : out  bus_request_t;   -- 系统总线
+        o_sysBusRequest : out  bus_request_t; 
         i_sysBusResponse:  in  bus_response_t; 
-        o_IM_extBusRequest : out  bus_request_t;   -- 拓展总线
+        o_IM_extBusRequest : out  bus_request_t;  
         i_IM_extBusResponse:  in  bus_response_t;
         o_DM_extBusRequest : out  bus_request_t;
         i_DM_extBusResponse:  in  bus_response_t;
+
         o_TEST_word : out word_t;
         o_TEST_addr : out bus_addr_t;
         o_TEST_EN : out std_logic;
@@ -49,7 +50,14 @@ entity CpuCore is
         o_ID_EX_o_OP0Src : out opSrc_t;
         o_ID_EX_o_OP1Src : out opSrc_t;
         o_ID_EX_o_imm : out word_t;
-        o_ID_EX_o_wbAddr : out reg_addr_t
+        o_ID_EX_o_wbAddr : out reg_addr_t;
+        o_BreakController_o_EPC : out word_t;
+        -- break
+        o_keyNDataReceive : out std_logic;
+        i_keyDataReady : in std_logic;
+        i_keyData : in std_logic_vector(7 downto 0);
+        o_clockNDataReceive : out std_logic;
+        i_clockDataReady : in std_logic
     );
 end entity;
 
@@ -58,6 +66,7 @@ ARCHITECTURE behavior OF CpuCore IS
     	port (
             i_clock : in std_logic;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
     		i_stall : in std_logic;
     		i_nextPC : in word_t;
     		o_PC : out word_t
@@ -81,6 +90,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_inst : in word_t;
             i_PC : in word_t;
             i_stall : in std_logic;
+            i_forceClear : in std_logic;
             i_clear : in std_logic;
             o_PC : out word_t;
             o_inst : out word_t;
@@ -172,6 +182,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_OP1 : in word_t; -- PC
             i_imm : in word_t;
             i_OP : in op_t;
+            i_EPC : in word_t;
     
             o_jumpEN : out std_logic;
             o_jumpTarget : out word_t
@@ -189,6 +200,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_OP0Src : in opSrc_t;
             i_OP1Src : in opSrc_t;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_imm : in word_t;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
@@ -234,6 +246,7 @@ ARCHITECTURE behavior OF CpuCore IS
             -- i_OP1 : in std_logic;
             i_addr : in word_t;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_data : in word_t;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
@@ -267,6 +280,7 @@ ARCHITECTURE behavior OF CpuCore IS
         port (
             i_clock : in std_logic;
             i_clear : in std_logic;
+            i_forceClear : in std_logic;
             i_stall : in std_logic;
             i_wbAddr : in reg_addr_t;
             i_wbData : in word_t;
@@ -286,6 +300,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_predSucc : in std_logic;
             o_nextPC : out word_t;
             o_clear : out std_logic_vector(4 downto 0);
+            o_forceClear : out std_logic_vector(4 downto 0);
             
             -- stall
             i_wbAddr : in reg_addr_t;
@@ -323,6 +338,29 @@ ARCHITECTURE behavior OF CpuCore IS
             i_sysBusResponse : in bus_response_t;
             o_extBusRequest  : out bus_request_t;
             i_extBusResponse : in bus_response_t
+        );
+    end component;
+    component BreakController is
+        port (
+            i_IH : in std_logic_vector(15 downto 0);
+            i_clock : in std_logic;
+            i_IF_FD_PC : in word_t;
+            i_IM_PC : in word_t;
+            i_IF_FD_cleared : in std_logic;
+            i_Control_OP : in op_t;
+            -- i_PC_stalled : in std_logic;
+            o_key : out std_logic_vector(7 downto 0);
+
+            o_IH : out std_logic; --debug
+
+            o_keyNDataReceive : out std_logic;
+            i_keyDataReady : in std_logic; 
+            i_keyData : in std_logic_vector(7 downto 0);
+            o_clockNDataReceive : out std_logic;
+            i_clockDataReady : in std_logic;
+            o_breakEN : out std_logic;
+            o_breakPC : out word_t;
+            o_EPC : out word_t
         );
     end component;
 
@@ -390,6 +428,7 @@ ARCHITECTURE behavior OF CpuCore IS
     signal StallClearController_o_nextPC : word_t;
     signal StallClearController_o_clear : std_logic_vector(4 downto 0);
     signal StallClearController_o_stall : std_logic_vector(4 downto 0);
+    signal StallClearController_o_forceClear : std_logic_vector(4 downto 0);
     signal BTB_o_predPC : word_t;
     signal BTB_o_predSucc : std_logic ;
     signal BusDispatcher_IM_o_busResponse    : bus_response_t;
@@ -398,9 +437,13 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-    signal i_breakPC : word_t := (others => '0');
-    signal i_breakEN : std_logic := '0';
-
+    signal BreakController_o_breakEN : std_logic;
+    signal BreakController_o_breakPC : word_t;
+    signal BreakController_o_key : std_logic_vector(7 downto 0);
+    -- signal BreakController_o_keyNDataReceive : 
+    -- signal BreakController_o_clockNDataReceive
+    signal BreakController_o_EPC : word_t;
+    signal BreakController_o_IH : std_logic;
 begin
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
     o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
@@ -431,10 +474,10 @@ begin
     o_ID_EX_o_imm <= ID_EX_o_imm;
     o_ID_EX_o_wbAddr <= ID_EX_o_wbAddr;
     o_TEST_word <= StallClearController_o_stall -- 5
-        & StallClearController_o_clear -- 3
-        & i_nReset -- 1
+        & StallClearController_o_clear -- 5
+        & BreakController_o_IH -- 1
         & JumpAndBranch_o_jumpEN -- 1
-        & IM_o_inst(15 downto 12); -- 6
+        & IM_o_inst(15 downto 12); -- 4
     o_TEST_addr <= StallClearController_o_stall -- 5 useless
         & StallClearController_o_clear -- 5
         & StallClearController_o_nextPC(7 downto 0); -- 8
@@ -444,6 +487,7 @@ begin
         i_clock => i_clock,
         i_stall => StallClearController_o_stall(stage_PC) ,
         i_clear => StallClearController_o_clear(stage_PC) ,
+        i_forceClear => StallClearController_o_forceClear(stage_PC),
         i_nextPC => StallClearController_o_nextPC,
         o_PC => PC_o_PC
     );
@@ -460,6 +504,7 @@ begin
         i_PC => PC_o_PC,
         i_stall => StallClearController_o_stall(stage_IF_ID),
         i_clear => StallClearController_o_clear(stage_IF_ID),
+        i_forceClear => StallClearController_o_forceClear(stage_IF_ID),
         o_PC => IF_ID_o_PC,
         o_inst => IF_ID_o_inst,
         o_rxAddr => IF_ID_o_rxAddr,
@@ -535,6 +580,7 @@ begin
         i_OP1 => IF_ID_o_PC,
         i_imm => ImmExtend_o_immExtend,
         i_OP => Control_o_OP,
+        i_EPC => BreakController_o_EPC,
         o_jumpEN => JumpAndBranch_o_jumpEN,
         o_jumpTarget => JumpAndBranch_o_jumpTarget
     );
@@ -549,6 +595,7 @@ begin
         i_OP0Src => Control_o_OP0Src,
         i_OP1Src => Control_o_OP1Src,
         i_clear => StallClearController_o_clear(stage_ID_EX),
+        i_forceClear => StallClearController_o_forceClear(stage_ID_EX),
         i_imm => ImmExtend_o_immExtend,
         i_stall => StallClearController_o_stall(stage_ID_EX),
         i_wbAddr => Decoder_o_wbAddr,
@@ -589,6 +636,7 @@ begin
         -- i_OP1 => ,
         i_addr => ALU_MUX_o_addr, --TODO
         i_clear => StallClearController_o_clear(stage_EX_MEM),
+        i_forceClear => StallClearController_o_forceClear(stage_EX_MEM),
         i_data => ALU_MUX_o_data,
         i_stall => StallClearController_o_stall(stage_EX_MEM),
         i_wbAddr => ID_EX_o_wbAddr,
@@ -614,6 +662,7 @@ begin
     MEM_WB_inst: MEM_WB port map (
         i_clock => i_clock,
         i_clear => StallClearController_o_clear(stage_MEM_WB),
+        i_forceClear => StallClearController_o_forceClear(stage_MEM_WB),
         i_stall => StallClearController_o_stall(stage_MEM_WB),
         i_wbAddr => EX_MEM_o_wbAddr,
         i_wbData => DM_o_wbData,
@@ -623,13 +672,14 @@ begin
     StallClearController_inst: StallClearController port map (
         i_nReset => i_nReset,
         -- clea => ,
-        i_breakEN => i_breakEN,
-        i_breakPC => i_breakPC,
+        i_breakEN => BreakController_o_breakEN,
+        i_breakPC => BreakController_o_breakPC,
         i_jumpTarget => JumpAndBranch_o_jumpTarget,
         i_predPC => BTB_o_predPC,
         i_predSucc => BTB_o_predSucc,
         o_nextPC => StallClearController_o_nextPC,
         o_clear => StallClearController_o_clear,
+        o_forceClear => StallClearController_o_forceClear,
         -- stal => ,
         i_wbAddr => ID_EX_o_wbAddr,
         i_DMStallReq => DM_o_stallRequest,
@@ -671,5 +721,26 @@ begin
     );
     o_sysBusRequest <= BusDispatcher_DM_o_sysBusRequest;
     o_DM_extBusRequest <= BusDispatcher_DM_o_extBusRequest;
+
+    BreakController_inst: BreakController port map (
+        i_clock => i_clock,
+        i_IH => myRegister_o_IH,
+        o_key => BreakController_o_key,
+        i_IF_FD_PC => IF_ID_o_PC,
+        i_IM_PC => PC_o_PC,
+        i_IF_FD_cleared => IF_ID_o_cleared,
+        i_Control_OP => Control_o_OP,
+        o_EPC => BreakController_o_EPC,
+        o_breakEN => BreakController_o_breakEN,
+        o_breakPC => BreakController_o_breakPC,
+
+        o_IH => BreakController_o_IH, --debug
+
+        o_keyNDataReceive => o_keyNDataReceive,
+        i_keyDataReady => i_keyDataReady,
+        i_keyData => i_keyData,
+        o_clockNDataReceive => o_clockNDataReceive,
+        i_clockDataReady => '0'--i_clockDataReady
+    );
 
 end;
