@@ -24,10 +24,11 @@ NGCBUILD Design Results Summary:
   Number of errors:     0
   Number of warnings:   0
 
-Total memory usage is 175400 kilobytes
+Total memory usage is 119044 kilobytes
 
 Writing NGC file
-"D:/ComputerCompositionExperiment/BigProject/ProjectCPU/CPUOverall_cs.ngc" ...
+"Z:/MyDocument/3.1/ComputerComposition/ComputerCompositionExperiment/BigProject/
+ProjectCPU/CPUOverall_cs.ngc" ...
 Total REAL time to NGCBUILD completion:  2 sec
 Total CPU time to NGCBUILD completion:   2 sec
 
