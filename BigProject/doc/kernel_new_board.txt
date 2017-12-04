@@ -27,7 +27,6 @@ DELINT:   ;中断处理程序
 
 	LI R0 0x0001 ;test
 	
-
 ;	;R1=0xFF03
 ;	LI R1 0x00FF
 ;	SLL R1 R1 0x0000
@@ -36,17 +35,19 @@ DELINT:   ;中断处理程序
 ;
 ;	;R0=mem[0xFF03]
 ;	LW R1 R0 0x0000
-;
-;	;R6=0xFF02
-;	LI R6 0x00FF
-;	SLL R6 R6 0x0000
-;	LI R3 0x02
-;	OR R6 R3
-;
-;	;mem[0xFF02]=mem[0xFF03]
-;	SW R6 R0 0x00
-;	
-;	;提示终端，进入中断处理
+
+	;R6=0xFF02
+	LI R6 0x00FF
+	SLL R6 R6 0x0000
+	LI R3 0x02
+	OR R6 R3
+
+	LI R0 0x00FF
+	SLL R0 0x0000
+	;mem[0xFF02]=mem[0xFF03]
+	SW R6 R0 0x00
+	
+	;提示终端，进入中断处理
 	LI R3 0x000F
 	MFPC R7 
 	ADDIU R7 0x0003  
