@@ -48,6 +48,16 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B UPDATE_PARAMETERS   ;计算参数
 
+    ; MFPC R7 
+    ; ADDIU R7 0x02
+    ; B DETECT_COLLISION ;Detect Collision
+
+    LI R0 0xFE ;Dead | Alive  
+    SLL R0 R0 0x00
+    LW R0 R1 0x08
+
+    BNEZ R1 GAME_OVER
+
 	MFPC R7
 	ADDIU R7 0x0002
     B PRINT_GROUND   ;绘制地板
@@ -60,15 +70,7 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B PRINT_BIRD   ;绘制鸟
 
-    MFPC R7
-    ADDIU R7 0x02
-    B DETECT_COLLISION ;detect collision
-
-    LI R0 0xFE ;Dead | Alive  
-    SLL R0 R0 0x00
-    LW R0 R1 0x08
-
-    BEQZ R1 PRINT_LOOP
+    B PRINT_LOOP
 
 GAME_OVER:
     LI R0 0xFE ;Dead | Alive  
@@ -109,6 +111,8 @@ RESET_PARAMETERS:
     SW R6 R0 0x07
     LI R0 0x00    ; 0xFE08
     SW R6 R0 0x08
+    LI R0 0x00    ; 0xFE09
+    SW R6 R0 0x09
     
     ;RESET BIRD
     LI R6 0xFE
@@ -287,7 +291,7 @@ COLLISION_HAPPEN:
     LI R7 0xFE   ; set game status
     SLL R7 R7 0x00
     LI R0 0x01   ; over
-    SW R7 R0 0x08
+    SW R7 R0 0x09
     B 0x01
 
 NO_COLLISION:
@@ -578,7 +582,7 @@ GROUND_FOR_J:   ;J=0~79
     LW_SP R7 0X07
 	JR R7   ;PRINT_GROUND END
 
-                                                                                        :
+PRINT_PIPE:
     SW_SP R0 0X00
     SW_SP R1 0X01
     SW_SP R2 0X02

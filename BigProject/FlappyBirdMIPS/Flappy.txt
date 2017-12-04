@@ -14,6 +14,8 @@
 ;0xFE05 - pipe1_coordinateX
 ;0xFE06 - pipe1_height
 ;0xFE07 - ground_coordinateX
+;0xFE08 
+;0xFE09 - game_status 0-on 1-over 2-pause
 NOP
 NOP
 NOP
@@ -45,13 +47,20 @@ GAME_LOOP:
 
 	MFPC R7
 	ADDIU R7 0x0002
-    B PIPE_COLLISION   ;检测碰撞
+    B DETECT_COLLISION   ;检测碰撞
 
-    ;BEQZ R0 0X04
-	;MFPC R7
-	;ADDIU R7 0x0002
-    ;B GAME_OVER   ;game over
-    ;B START
+    LI R6 0xFE
+    SLL R6 R6 0x00
+    LW R6 R0 0x09
+    ; LI R6 0xFF
+    ; SLL R6 R6 0x00
+    ; SW R6 R0 0x00
+    BEQZ R0 0X04
+	MFPC R7
+	ADDIU R7 0x0002
+    B GAME_OVER   ;game over
+
+    B START
 
 	MFPC R7
 	ADDIU R7 0x0002
@@ -65,9 +74,9 @@ GAME_LOOP:
 	ADDIU R7 0x0002
     B PRINT_BIRD   ;绘制鸟
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B WAIT_EVENT   ;等待事件
+	; MFPC R7
+	; ADDIU R7 0x0002
+    ; B WAIT_EVENT   ;等待事件
 
     B GAME_LOOP
 
@@ -103,11 +112,13 @@ RESET_PARAMETERS:
     SW R6 R0 0x07
     LI R0 0x00    ; 0xFE08
     SW R6 R0 0x08
+    LI R0 0x00    ; 0xFE09
+    SW R6 R0 0x09
     
     ;RESET BIRD
     LI R6 0xFE
     SLL R6 R6 0x00
-    LI R0 0x64    ; bird_coordinateY=100
+    LI R0 0x32    ; bird_coordinateY=100
     SW R6 R0 0x00
 
     LI R0 0x01    ; bird_velocity
@@ -255,6 +266,152 @@ UPDATE_PARAMETERS:
     LW_SP R6 0X06
     LW_SP R7 0X07
 	JR R7   ;END
+
+
+PIPE_COLLISION:
+    ; R0 - x
+    ; R1 - height
+    ; R2 - x0
+    ; R3 - y0
+
+    ; x0 + 8 <= x + 2   <==>   x - 6 >= x0
+    ADDIU R0 0xFA ; R0 = x - 6
+    SLT R0 R2
+    BTEQZ PIPE_NO_COLLISION
+    ADDIU R0 0x06
+
+    ; x0 >= x + 14  
+    ADDIU R0 0x0E ; R0 = x + 14
+    SLT R2 R0
+    BTEQZ PIPE_NO_COLLISION
+    ADDIU R0 0x0E
+
+    ; height + 11 >= y0
+    ADDIU R1 0x0B
+    SLT R1 R3
+    BTEQZ PIPE_COLLISION_HAPPEN
+    ADDIU R1 0xF5
+
+    ; y0 + 16 >= height + 80  <==> y0 >= height + 64 
+    ADDIU R1 0x40
+    SLT R3 R1
+    BTEQZ PIPE_COLLISION_HAPPEN
+    ADDIU R1 0xC0
+
+    B PIPE_NO_COLLISION
+
+PIPE_COLLISION_HAPPEN:
+    LI R0 0x01
+    B 0x01
+
+PIPE_NO_COLLISION:
+    LI R0 0x00
+
+    JR R7
+
+DETECT_COLLISION:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    LW R0 R6 0X02   ;图片地址 R6=MEM[bird_stateaddr]
+    
+    LI R5 0x00   ;I=0
+COLLISION_BIRD_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+COLLISION_BIRD_FOR_J:   ;J=0~7
+    LW R6 R3 0x00
+
+    LI R7 0XFF
+    AND R7 R3
+    BEQZ R7 NO_COLLISION  ;低8位为0
+   
+    LI R7 0XFF
+    SLL R7 R7 0X00
+    AND R7 R3
+    BEQZ R7 NO_COLLISION   ;高8位为0
+
+    ; TOP BORDER - NOT EXIST
+    ; BOTTOM BORDER - GROUND
+    LI R7 0xFE
+    SLL R7 R7 0x00
+    LW R7 R0 0x00
+    ADDIU3 R0 R1 0x10
+    LI R0 0x70
+    ADDIU R0 0x60
+    SLT R1 R0
+    BTEQZ COLLISION_HAPPEN  
+    
+    ; PIPE0
+    LI R7 0xFE
+    SLL R7 R7 0x00
+    LW R7 R0 0x03
+    LW R7 R1 0x04
+    LI R2 0x10
+    LW R7 R3 0x00
+
+    MFPC R7
+    ADDIU R7 0x02
+    B PIPE_COLLISION
+    BNEZ R0 COLLISION_HAPPEN
+
+    ; PIPE1
+    LI R7 0xFE
+    SLL R7 R7 0x00
+    LW R7 R0 0x05
+    LW R7 R1 0x06
+    LI R2 0x10
+    LW R7 R3 0x00
+
+    MFPC R7
+    ADDIU R7 0x02
+    B PIPE_COLLISION
+    BNEZ R0 COLLISION_HAPPEN
+
+    B NO_COLLISION
+
+COLLISION_HAPPEN:
+    LI R7 0xFE   ; set game status
+    SLL R7 R7 0x00
+    LI R0 0x01   ; over
+    SW R7 R0 0x09
+    B 0x01
+
+NO_COLLISION:
+    NOP
+
+    ADDIU R6 0x01
+    ADDIU R4 0x01
+    LI R7 0x07   ;R7=7
+    SLT R7 R4    ;7<R4
+    BTEQZ COLLISION_BIRD_FOR_J
+
+    LI R7 0X0F
+    SLT R7 R5    ;15<R5
+    BTEQZ COLLISION_BIRD_FOR_I
+
+
+
+    ADDSP 0xF8
+    LW_SP R0 0x00
+    LW_SP R1 0x01
+    LW_SP R2 0x02
+    LW_SP R3 0x03
+    LW_SP R4 0x04
+    LW_SP R5 0x05
+    LW_SP R6 0x06
+    LW_SP R7 0x07
+    JR R7
+
 
 WAIT_EVENT:
     SW_SP R0 0x00
@@ -989,28 +1146,6 @@ PRINT_BIRD_FOR_J:   ;J=0~7
 ;    LW_SP R7 0X07
 ;    JR R7   ;PRINT_BIRD END
     
-PIPE_COLLISION:
-    SW_SP R0 0x00
-    SW_SP R1 0x01
-    SW_SP R2 0x02
-    SW_SP R3 0x03
-    SW_SP R4 0x04
-    SW_SP R5 0x05
-    SW_SP R6 0x06
-    SW_SP R7 0x07
-    ADDSP 0x08
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;PAINT_START END
-
 PRINT_START:
     SW_SP R0 0x00
     SW_SP R1 0x01
@@ -1148,10 +1283,10 @@ WAIT_START_LOOP:
     ;BEQZ R1 0X01
     ;B WAIT_START_LOOP
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B WAIT_EVENT   ;等待按键
-    BNEZ R0 WAIT_START_LOOP
+	; MFPC R7
+	; ADDIU R7 0x0002
+    ; B WAIT_EVENT   ;等待按键
+    ; BNEZ R0 WAIT_START_LOOP
 
 	MFPC R7
 	ADDIU R7 0x0002
