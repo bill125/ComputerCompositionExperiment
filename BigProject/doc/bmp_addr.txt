@@ -2,13 +2,30 @@
 RRRGGBBB
 
 地址：
-0000~1FFF: code
+0000~0FFF: code
+1000~17FF: start       (128*32)
+1800~1BFF: game over   (128*16)
+1C00~1C7F: dead bird   (16*16)
+1C80~1CFF: 
+1D00~1FFF: break code
 2000~207F: bird1       (16*16)
 2080~20FF: bird2       (16*16)
 2100~217F: bird3       (16*16)
 2180~227F: pipe        (32*16)
 2280~2C7F: ground      (160*32)
 2C80~777F: background  (160*240)
+7780~77FF: num0        (16*16)
+7800~787F: num1        (16*16)
+7880~78FF: num2        (16*16)
+7900~797F: num3        (16*16)
+7980~79FF: num4        (16*16)
+7A00~7A7F: num5        (16*16)
+7A80~7AFF: num6        (16*16)
+7B00~7B7F: num7        (16*16)
+7B80~7BFF: num8        (16*16)
+7C00~7C7F: num9        (16*16)
+7C80~7FFF: 
+
 
 0xFE00 - bird_coordinateY 
 0xFE01 - bird_velocity 
@@ -21,6 +38,6 @@ RRRGGBBB
 0xFE08 - bird_state
 
 FF02 事件
-  0x00 没事
-  0x10 时间
-  0x2X 键盘
+  0x0000 没事
+  0x0100 时间
+  0x02XX 键盘

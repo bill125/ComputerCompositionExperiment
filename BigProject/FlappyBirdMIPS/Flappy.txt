@@ -31,20 +31,27 @@ START:
 	SLL R0 R0 0x0000
 	ADDIU R0 0x10   ;R0=0xFF10 
 	MTSP R0
-    MFPC R7
-    ADDIU R7 0x02
-    B RESET_PARAMETERS
 
 	MFPC R7
 	ADDIU R7 0x0002
-    B PRINT_BACKGROUND   ;绘制背景
+    B WAIT_START   ;等待开始
 
-    B PRINT_LOOP
+    B GAME_LOOP
 
-PRINT_LOOP:
+GAME_LOOP:
 	MFPC R7
 	ADDIU R7 0x0002
     B UPDATE_PARAMETERS   ;计算参数
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PIPE_COLLISION   ;检测碰撞
+
+    ;BEQZ R0 0X04
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B GAME_OVER   ;game over
+    ;B START
 
 	MFPC R7
 	ADDIU R7 0x0002
@@ -58,7 +65,11 @@ PRINT_LOOP:
 	ADDIU R7 0x0002
     B PRINT_BIRD   ;绘制鸟
 
-    B PRINT_LOOP
+	MFPC R7
+	ADDIU R7 0x0002
+    B WAIT_EVENT   ;等待事件
+
+    B GAME_LOOP
 
 RESET_PARAMETERS:
     SW_SP R0 0x00
@@ -96,7 +107,7 @@ RESET_PARAMETERS:
     ;RESET BIRD
     LI R6 0xFE
     SLL R6 R6 0x00
-    LI R0 0xB0    ; bird_coordinateY
+    LI R0 0x64    ; bird_coordinateY=100
     SW R6 R0 0x00
 
     LI R0 0x01    ; bird_velocity
@@ -113,8 +124,8 @@ RESET_PARAMETERS:
     LI R0 0XFE
     SLL R0 R0 0X00
     ADDIU R0 0X03
-    LI R1 0X20
-    SW R0 R1 0X00   ;pipe0_coordinateX=32
+    LI R1 0X30
+    SW R0 R1 0X00   ;pipe0_coordinateX=16+32
     
     LI R0 0XFE
     SLL R0 R0 0X00
@@ -125,16 +136,14 @@ RESET_PARAMETERS:
     LI R0 0XFE
     SLL R0 R0 0X00
     ADDIU R0 0X05
-    LI R1 0X4F
-    SW R0 R1 0X00   ;pipe1_coordinateX=79
+    LI R1 0X5F
+    SW R0 R1 0X00   ;pipe1_coordinateX=16+79
 
     LI R0 0XFE
     SLL R0 R0 0X00
     ADDIU R0 0X06
     LI R1 0X50
     SW R0 R1 0X00   ;pipe1_height=80
-
-
 
     ADDSP 0xF8
     LW_SP R0 0x00
@@ -246,6 +255,41 @@ UPDATE_PARAMETERS:
     LW_SP R6 0X06
     LW_SP R7 0X07
 	JR R7   ;END
+
+WAIT_EVENT:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    LI R0 0XFF
+    SLL R0 R0 0X00
+    ADDIU R0 0X02
+WAIT_EVENT_LOOP:
+    LW R0 R1 0X00
+    BEQZ R1 WAIT_EVENT_LOOP
+
+    LI R2 0X00
+    SW R0 R2 0X00   ;写回0
+
+    SRA R0 R1 0X00
+    ADDIU R0 0XFF
+
+    ADDSP 0xF8
+    ;R0= 0:时间   1:键盘
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+	JR R7   ;WAIT_EVENT END
 
 PRINT_BACKGROUND:
     SW_SP R0 0X00
@@ -944,111 +988,214 @@ PRINT_BIRD_FOR_J:   ;J=0~7
 ;    LW_SP R6 0X06
 ;    LW_SP R7 0X07
 ;    JR R7   ;PRINT_BIRD END
+    
+PIPE_COLLISION:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
 
-;PRINT_BIRD:
-;    SW_SP R0 0x00
-;    SW_SP R1 0x01
-;    SW_SP R2 0x02
-;    SW_SP R3 0x03
-;    SW_SP R4 0x04
-;    SW_SP R5 0x05
-;    SW_SP R6 0x06
-;    SW_SP R7 0x07
-;    ADDSP 0x08
-;
-;    LI R6 0xFE
-;    SLL R6 R6 0x00
-;    ADDIU R6 0x20 ; R6 = 0xFE20  <- bird status
-;    LW R6 R3 0x00
-;
-;    LI R5 0x20
-;    SLL R5 R5 0x00 ; R5 = 0x2000 
-;
-;    BEQZ R3 BIRD_END_IF ; if bird_status >= 1
-;    ADDIU R3 0xFF
-;    ADDIU R5 0x40
-;    ADDIU R5 0x40
-;
-;    BEQZ R3 BIRD_END_IF ; if bird_status = 2
-;    ADDIU R5 0x40
-;    ADDIU R5 0x40
-;BIRD_END_IF: ; R5 = bird_pic
-;
-;    LI R6 0xFE
-;    SLL R6 R6 0x00 ; R6 = 0xFE00
-;    LW R6 R3 0x00 ; R3 = bird_coordinateY
-;
-;    LI R0 0x00
-;    LI R6 0x80 
-;    SLL R6 R6 0x00 ; R6 = 0x8000
-;    ADDIU R3 0xFF
-;BIRD_ADDR_JUMP:
-;    ADDIU R6 0x50 ; next line
-;    ADDIU R0 0x01 ; ++ R0
-;    SLT R3 R0 ; if R3 >= bird_coordinateY
-;    BTEQZ BIRD_ADDR_JUMP
-;
-;    ; bird_pic address in R5
-;    ; target line head address in R6
-;    LI R0 0x00 ; R0 = 0
-;BIRD_COPY_LOOP:
-;    LI R1 0x00 ; R1 = 0
-;BIRD_COPY_LINE_LOOP:
-;    ; Brute Force Copy
-;    ;LW R5 R2 0x00 ; R2 = bird pixel
-;    ;SW R6 R2 0x10 ; Store R2 to R6+0x10
-;
-;    ; Selective Replace
-;    ; High - 8
-;    LW R5 R2 0x00
-;    SRA R2 R2 0x00
-;    LI R7 0xFF
-;    AND R2 R7 ; get high-8 bits
-;    ADDIU R2 0x01 ; Transparent Pixel
-;    BNEZ R2 0x02
-;    LW R6 R2 0x00 ; Use Previous
-;    B 0x02
-;    ADDIU R2 0xFF ; Use New
-;    SLL R2 R2 0x00
-;
-;    ; Low - 8
-;    LW R5 R3 0x00
-;    LI R7 0xFF
-;    AND R3 R7 ; get low-8 bits
-;    ADDIU R3 0x01 ; Transparent Pixel
-;    BNEZ R3 0x05
-;    LW R6 R7 0x00 ; Use Previous
-;    LI R3 0xFF
-;    AND R7 R3
-;    ADDU R2 R7 R2;
-;    B 0x02
-;    ADDIU R3 0xFF ; Use New
-;    ADDU R2 R3 R2
-;
-;    SW R6 R2 0x00 ; Store R2 to R4
-;    
-;    ADDIU R6 0x01 ; ++ R6
-;    ADDIU R5 0x01 ; ++ R5
-;    ADDIU R1 0x01 ; ++ R1
-;    SLTUI R1 0x08 ; if R1 < 8
-;    BTEQZ 0x01 ; loop
-;    B BIRD_COPY_LINE_LOOP 
-;    
-;    ADDIU R6 0x48 ; R6 jump line
-;    ADDIU R0 0x01 ; ++ R0
-;    SLTUI R0 0x10 ; if R0 < 16
-;    BTEQZ 0x01 ; loop
-;    B BIRD_COPY_LOOP 
-;
-;    ADDSP 0xF8
-;    LW_SP R0 0x00
-;    LW_SP R1 0x01
-;    LW_SP R2 0x02
-;    LW_SP R3 0x03
-;    LW_SP R4 0x04
-;    LW_SP R5 0x05
-;    LW_SP R6 0x06
-;    LW_SP R7 0x07
-;    JR R7 
-;
-;
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PAINT_START END
+
+PRINT_START:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    LI R3 0X10
+    SLL R3 R3 0X00   ;图片地址 R3=0X1000
+    
+    LI R1 0X10   ;Y: R1=16
+    LI R0 0X80
+    SLL R0 R0 0X00
+    ADDIU R0 0X08   ;X: 8
+PRINT_START_ADDLOOP:   ;计算显存地址R0
+    BEQZ R1 0X03
+    ADDIU R1 0XFF
+    ADDIU R0 0X50   ;R0+=80
+    B PRINT_START_ADDLOOP
+    
+    LI R5 0x00   ;I=0
+PRINT_START_FOR_I:   ;I=0~31
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_START_FOR_J:   ;J=0~63
+    LW R3 R6 0x00
+
+    LI R7 0XFF
+    AND R7 R6
+    BNEZ R7 0X04   ;低8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    AND R7 R1
+    OR R6 R7
+
+    LI R7 0XFF
+    SLL R7 R7 0X00
+    AND R7 R6
+    BNEZ R7 0X05   ;高8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    SLL R1 R1 0X00
+    AND R7 R1
+    OR R6 R7
+    
+    SW R0 R6 0x00
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x3F   ;R7=63
+    SLT R7 R4    ;63<R4
+    BTEQZ PRINT_START_FOR_J
+
+    ADDIU R0 0X10
+    LI R7 0X1F
+    SLT R7 R5    ;31<R5
+    BTEQZ PRINT_START_FOR_I
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PAINT_START END
+
+PRINT_GAME_OVER:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PRINT_GAME_OVER END
+
+WAIT_START:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+    
+    MFPC R7
+    ADDIU R7 0x02
+    B RESET_PARAMETERS   ;重置参数
+    
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BACKGROUND  ;绘制背景
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_GROUND   ;绘制地板
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_PIPE   ;绘制管道
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BIRD   ;绘制鸟
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_START   ;绘制开始
+
+    LI R1 0X40
+WAIT_START_LOOP:
+    ;ADDIU R1 0XFF
+    ;BEQZ R1 0X01
+    ;B WAIT_START_LOOP
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B WAIT_EVENT   ;等待按键
+    BNEZ R0 WAIT_START_LOOP
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BACKGROUND  ;绘制背景
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;WAIT_START END
+
+GAME_OVER:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_GAME_OVER   ;绘制game over
+
+GAME_OVER_LOOP:
+	MFPC R7
+	ADDIU R7 0x0002
+    B WAIT_EVENT   ;等待按键
+    BNEZ R0 WAIT_START_LOOP
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;GAME_OVER END
