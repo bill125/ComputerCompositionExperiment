@@ -42,8 +42,8 @@ DELINT:   ;中断处理程序
 	LI R3 0x02
 	OR R6 R3
 
-	LI R0 0x00FF
-	SLL R0 0x0000
+	LI R0 0x0002
+	SLL R0 R0 0x0000
 	;mem[0xFF02]=mem[0xFF03]
 	SW R6 R0 0x00
 	
