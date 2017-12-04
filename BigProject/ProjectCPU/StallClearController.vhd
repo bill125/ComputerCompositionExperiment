@@ -67,10 +67,10 @@ begin
     clear(1) <= ((not i_nReset) or (not i_predSucc));
     clear(0) <= not i_nReset;
     clear(4 downto 2) <= (others => not i_nReset);
-    o_forceClear(stage_PC) <= '0';
+    -- o_forceClear(stage_PC) <= '0';
     o_forceClear(stage_EX_MEM) <= '0';
     o_forceClear(stage_MEM_WB) <= '0';
-    o_forceClear(stage_ID_EX downto stage_IF_ID) <= "11" when i_breakEN = '1' else "00";
+    o_forceClear(stage_ID_EX downto 0) <= "111" when i_breakEN = '1' else "000";
 
     -- stall
     PC_stall     <= (stage_IF_ID downto 0     => '1', others => '0')  -- IF stall request

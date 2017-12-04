@@ -123,6 +123,17 @@ begin
                         o_DMRE <= '0';
                         o_DMWR <= '0';
                         o_OP <= op_MTSP;
+                    when "010" => -- eret (SW_RS)
+                        o_ALUOP <= alu_nop;
+                        o_OP0Type <= work.op_type_constants.invalid;
+                        o_OP1Type <= work.op_type_constants.invalid;
+                        o_wbType <= work.op_type_constants.invalid;
+                        o_OP0Src <= opSrc_zero;
+                        o_OP1Src <= opSrc_zero;
+                        o_DMRE <= '0';
+                        o_DMWR <= '0';
+                        o_OP <= op_ERET;
+
                     when others =>
                         o_ALUOP <= alu_nop;
                         o_OP0Type <= work.op_type_constants.invalid;

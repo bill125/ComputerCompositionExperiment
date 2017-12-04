@@ -47,7 +47,7 @@ begin
     process(i_clock)
     begin
         if rising_edge(i_clock) and (i_stall = '0' or i_forceClear = '1') then
-            if i_clear = '1' or i_forceClear = '1' then
+            if i_clear = '1' then
                 o_PC <= (others => '0');
             else
                 o_PC <= i_nextPC;

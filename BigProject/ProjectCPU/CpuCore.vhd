@@ -7,15 +7,16 @@ use work.inst_const;
 
 entity CpuCore is
     port (
-        i_clock : in std_logic;  -- CPU主频时钟
+        i_clock : in std_logic;  
         i_nReset : in std_logic;
 
-        o_sysBusRequest : out  bus_request_t;   -- 系统总线
+        o_sysBusRequest : out  bus_request_t; 
         i_sysBusResponse:  in  bus_response_t; 
-        o_IM_extBusRequest : out  bus_request_t;   -- 拓展总线
+        o_IM_extBusRequest : out  bus_request_t;  
         i_IM_extBusResponse:  in  bus_response_t;
         o_DM_extBusRequest : out  bus_request_t;
         i_DM_extBusResponse:  in  bus_response_t;
+
         o_TEST_word : out word_t;
         o_TEST_addr : out bus_addr_t;
         o_TEST_EN : out std_logic;
@@ -50,6 +51,8 @@ entity CpuCore is
         o_ID_EX_o_OP1Src : out opSrc_t;
         o_ID_EX_o_imm : out word_t;
         o_ID_EX_o_wbAddr : out reg_addr_t;
+        o_BreakController_o_EPC : out word_t;
+        -- break
         o_keyNDataReceive : out std_logic;
         i_keyDataReady : in std_logic;
         i_keyData : in std_logic_vector(7 downto 0);
@@ -179,6 +182,7 @@ ARCHITECTURE behavior OF CpuCore IS
             i_OP1 : in word_t; -- PC
             i_imm : in word_t;
             i_OP : in op_t;
+            i_EPC : in word_t;
     
             o_jumpEN : out std_logic;
             o_jumpTarget : out word_t
@@ -341,8 +345,13 @@ ARCHITECTURE behavior OF CpuCore IS
             i_IH : in std_logic_vector(15 downto 0);
             i_clock : in std_logic;
             i_IF_FD_PC : in word_t;
+            i_IM_PC : in word_t;
+            i_IF_FD_cleared : in std_logic;
+            i_Control_OP : in op_t;
             -- i_PC_stalled : in std_logic;
             o_key : out std_logic_vector(7 downto 0);
+
+            o_IH : out std_logic; --debug
 
             o_keyNDataReceive : out std_logic;
             i_keyDataReady : in std_logic; 
@@ -428,12 +437,13 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BusDispatcher_DM_o_busResponse    : bus_response_t;
     signal BusDispatcher_DM_o_sysBusRequest  : bus_request_t;
     signal BusDispatcher_DM_o_extBusRequest  : bus_request_t;
-signal BreakController_o_breakEN : std_logic;
+    signal BreakController_o_breakEN : std_logic;
     signal BreakController_o_breakPC : word_t;
     signal BreakController_o_key : std_logic_vector(7 downto 0);
     -- signal BreakController_o_keyNDataReceive : 
     -- signal BreakController_o_clockNDataReceive
     signal BreakController_o_EPC : word_t;
+    signal BreakController_o_IH : std_logic;
 begin
     o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
     o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
@@ -465,7 +475,7 @@ begin
     o_ID_EX_o_wbAddr <= ID_EX_o_wbAddr;
     o_TEST_word <= StallClearController_o_stall -- 5
         & StallClearController_o_clear -- 5
-        & i_nReset -- 1
+        & BreakController_o_IH -- 1
         & JumpAndBranch_o_jumpEN -- 1
         & IM_o_inst(15 downto 12); -- 4
     o_TEST_addr <= StallClearController_o_stall -- 5 useless
@@ -570,6 +580,7 @@ begin
         i_OP1 => IF_ID_o_PC,
         i_imm => ImmExtend_o_immExtend,
         i_OP => Control_o_OP,
+        i_EPC => BreakController_o_EPC,
         o_jumpEN => JumpAndBranch_o_jumpEN,
         o_jumpTarget => JumpAndBranch_o_jumpTarget
     );
@@ -716,9 +727,14 @@ begin
         i_IH => myRegister_o_IH,
         o_key => BreakController_o_key,
         i_IF_FD_PC => IF_ID_o_PC,
+        i_IM_PC => PC_o_PC,
+        i_IF_FD_cleared => IF_ID_o_cleared,
+        i_Control_OP => Control_o_OP,
         o_EPC => BreakController_o_EPC,
         o_breakEN => BreakController_o_breakEN,
         o_breakPC => BreakController_o_breakPC,
+
+        o_IH => BreakController_o_IH, --debug
 
         o_keyNDataReceive => o_keyNDataReceive,
         i_keyDataReady => i_keyDataReady,

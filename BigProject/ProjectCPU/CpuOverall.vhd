@@ -152,7 +152,8 @@ architecture Behavioral of CPUOverall is
             o_ID_EX_o_OP0Src : out opSrc_t;
             o_ID_EX_o_OP1Src : out opSrc_t;
             o_ID_EX_o_imm : out word_t;
-            o_ID_EX_o_wbAddr : out reg_addr_t
+            o_ID_EX_o_wbAddr : out reg_addr_t;
+            o_BreakController_o_EPC : out word_t
         );
     end component;
     component SystemBusController 
@@ -318,6 +319,7 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_o_ID_EX_o_wbAddr : reg_addr_t;
     signal CPUCore_o_keyNDataReceive : std_logic;
     signal CPUCore_o_clockNDataReceive : std_logic;
+    signal CPUCore_o_BreakController_o_EPC : word_t;
 
     signal BusArbiter_busResponse_0 : bus_response_t;
     signal BusArbiter_busResponse_1 : bus_response_t;
@@ -423,6 +425,7 @@ begin
                 when "0000" => led <= CPUCore_o_PC_o_PC;
                 when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
                 when "0010" => led <= CPUCore_o_IM_o_inst;
+                when "0011" => led <= CPUCore_o_BreakController_o_EPC;
                 when others => led <= (others => '1');
             end case;
         elsif i_sw(12 downto 4) = "111000000" then
@@ -521,7 +524,8 @@ begin
         o_ID_EX_o_OP0Src => CPUCore_o_ID_EX_o_OP0Src,
         o_ID_EX_o_OP1Src => CPUCore_o_ID_EX_o_OP1Src,
         o_ID_EX_o_imm => CPUCore_o_ID_EX_o_imm,
-        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr
+        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr,
+        o_BreakController_o_EPC => CPUCore_o_BreakController_o_EPC
     );
 
     BusArbiter_inst: BusArbiter port map (

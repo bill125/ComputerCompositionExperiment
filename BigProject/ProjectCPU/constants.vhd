@@ -52,7 +52,7 @@ package constants is
                   op_JR, op_NOP, op_ADDU, op_AND,
                   op_CMP, op_MFIH, op_MFPC, op_MOVE,
                   op_MTIH, op_MTSP, op_NEG, op_NOT, op_OR,
-                  op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU);
+                  op_SLL, op_SLT, op_SLTUI, op_SRA, op_SUBU, op_ERET);
     type alu_op_t is (alu_nop, alu_cmp, alu_less, alu_uless,
                   alu_addu, alu_subu,
                   alu_or, alu_and, alu_xor, alu_nor, alu_not,
