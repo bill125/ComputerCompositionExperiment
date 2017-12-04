@@ -168,11 +168,40 @@ PIPE_COLLISION:
     ; R2 - x0
     ; R3 - y0
 
-    ADDIU3 R0 R4 0x02
-    ADDIU3 R0 R4 0x02 
+    ; x0 + 8 <= x + 2   <==>   x - 6 >= x0
+    ADDIU R0 0xFA ; R0 = x - 6
+    SLT R0 R2
+    BTEQZ PIPE_NO_COLLISION
+    ADDIU R0 0x06
+
+    ; x0 >= x + 14  
+    ADDIU R0 0x0E ; R0 = x + 14
+    SLT R2 R0
+    BTEQZ PIPE_NO_COLLISION
+    ADDIU R0 0x0E
+
+    ; height + 11 >= y0
+    ADDIU R1 0x0B
+    SLT R1 R3
+    BTEQZ PIPE_COLLISION_HAPPEN
+    ADDIU R1 0xF5
+
+    ; y0 + 16 >= height + 80  <==> y0 >= height + 64 
+    ADDIU R1 0x40
+    SLT R3 R1
+    BTEQZ PIPE_COLLISION_HAPPEN
+    ADDIU R1 0xC0
+
+    B PIPE_NO_COLLISION
+
+PIPE_COLLISION_HAPPEN:
+    LI R0 0x01
+    B 0x01
+
+PIPE_NO_COLLISION:
+    LI R0 0x00
 
     JR R7
-
 
 DETECT_COLLISION:
     SW_SP R0 0x00
@@ -188,63 +217,81 @@ DETECT_COLLISION:
     LI R0 0XFE
     SLL R0 R0 0X00
     ADDIU R0 0X02
-    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    LW R0 R6 0X00   ;图片地址 R3=MEM[bird_stateaddr]
     
-    LI R0 0XFE
-    SLL R0 R0 0X00
-    LW R0 R1 0X00   ;R1=bird_coordinateY 
-    LI R0 0X80
-    SLL R0 R0 0X00
-    ADDIU R0 0X10
-COLLISION_BIRD_ADDLOOP:   ;计算显存地址R0
-    BEQZ R1 0X03
-    ADDIU R1 0XFF
-    ADDIU R0 0X50   ;R0+=80
-    B COLLISION_BIRD_ADDLOOP
+;     LI R0 0XFE
+;     SLL R0 R0 0X00
+;     LW R0 R1 0X00   ;R1=bird_coordinateY 
+;     LI R0 0X80
+;     SLL R0 R0 0X00
+;     ADDIU R0 0X10
+; COLLISION_BIRD_ADDLOOP:   ;计算显存地址R0
+;     BEQZ R1 0X03
+;     ADDIU R1 0XFF
+;     ADDIU R0 0X50   ;R0+=80
+;     B COLLISION_BIRD_ADDLOOP
     
     LI R5 0x00   ;I=0
 COLLISION_BIRD_FOR_I:   ;I=0~15
     LI R4 0x00   ;J=0
     ADDIU R5 0x01
 COLLISION_BIRD_FOR_J:   ;J=0~7
-    LW R3 R6 0x00
+    LW R6 R3 0x00
 
     LI R7 0XFF
-    AND R7 R6
+    AND R7 R3
     BEQZ R7 NO_COLLISION  ;低8位为0
    
     LI R7 0XFF
     SLL R7 R7 0X00
-    AND R7 R6
+    AND R7 R3
     BEQZ R7 NO_COLLISION   ;高8位为0
 
     ; TOP BORDER - NOT EXIST
     ; BOTTOM BORDER - GROUND
+    LI R7 0xFE
+    SLL R7 R7 0x00
     ADDIU3 R7 R1 0x10
     LI R0 0x70
     ADDIU R0 0x60
     SLT R0 R1
     BTEQZ COLLISION_HAPPEN  
     
-    ; PIPE0 - 
-PIPE0_TOP:
+    ; PIPE0
+    LI R7 0xFE
+    SLL R7 R7 0x00
+    LW R7 R0 0x03
+    LW R7 R1 0x04
+    LI R2 0x10
+    LW R7 R3 0x00
+
+    MFPC R7
+    ADDIU R7 0x02
+    B PIPE_COLLISION
+    BNEZ R0 COLLISION_HAPPEN
+
+    ; PIPE1
+    LI R7 0xFE
+    SLL R7 R7 0x00
+    LW R7 R0 0x05
+    LW R7 R1 0x06
+    LI R2 0x10
+    LW R7 R3 0x00
+
+    MFPC R7
+    ADDIU R7 0x02
+    B PIPE_COLLISION
+    BNEZ R0 COLLISION_HAPPEN
 
 COLLISION_HAPPEN:
-    
+    LI R7 0xFE   ; set game status
+    SLL R7 R7 0x00
+    LI R0 0x01   ; over
+    SW R7 R0 0x08
+    B 0x01
 
 NO_COLLISION:
-    ; LI R1 0X53
-    ; SLL R1 R1 0X00
-    ; ADDIU R1 0X40
-    ; ADDIU R1 0X40  ;R1=背景地址
-    ; SUBU R0 R1 R1
-    ; LW R1 R7 0X00
-    ; LI R1 0XFF
-    ; SLL R1 R1 0X00
-    ; AND R7 R1
-    ; OR R6 R7
-    
-    SW R0 R6 0x00
+    NOP
 
     ADDIU R3 0x01
     ADDIU R0 0X01
@@ -258,34 +305,6 @@ NO_COLLISION:
     SLT R7 R5    ;15<R5
     BTEQZ COLLISION_BIRD_FOR_I
 
-
-    
-    ;(R7,)
-    ;(R7+0x10,)
-
-    ; Top Border
-; TOP_BORDER:
-;     LI R0 0x00
-;     SLT R7 R0
-;     BTEQZ COLLISION_HAPPEN
-    
-    ; Bottom Border
- 
-
-    ; pipe0 Top
-PIPE0_TOP:
-
-    ; pipe0 Bottom
-PIPE1_BOTTOM:
-
-    ; pipe1 Top
-PIPE1_TOP:
-
-    ; pipe1 Bottom
-    B NO_COLLISION
-COLLISION_HAPPEN:
-
-NO_COLLISION:
 
 
     ADDSP 0xF8
