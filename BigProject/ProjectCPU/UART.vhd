@@ -80,6 +80,9 @@ begin
                     "100" when r_TX_State = t_TX_4 else
                     "101";
 
+    
+    o_data <= i_bus_data;
+
     -- Read UART
     Receive_Data : process(i_clock)
         variable wait_turns : integer range 0 to 63 := 0;
@@ -112,10 +115,10 @@ begin
                         end if;
 
                     when t_RX_2 =>
-                        o_data <= i_bus_data;
                         r_RX_State <= t_RX_3;
 
                     when t_RX_3 =>
+                        o_rdn <= '1';
                         o_readDone <= '1';
                         wait_turns := uart_wait_turns;
                         r_RX_State <= t_RX_0;
