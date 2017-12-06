@@ -54,11 +54,11 @@ GAME_LOOP:
     SLL R6 R6 0x00
     LW R6 R0 0x09
     
-    ;BEQZ R0 0X04   ;游戏结束
-	;MFPC R7
-	;ADDIU R7 0x0002
-    ;B GAME_OVER   ;game over
-    ;B START
+    BEQZ R0 0X03   ;游戏结束
+	MFPC R7
+	ADDIU R7 0x0002
+    B GAME_OVER   ;game over
+    B START
 
 	MFPC R7
 	ADDIU R7 0x0002
@@ -763,6 +763,523 @@ PRINT_PIPE:
     LW_SP R7 0X07
 	JR R7   ;PRINT_GROUND END
 
+PRINT_BIRD:
+    SW_SP R0 0X00
+    SW_SP R1 0X01
+    SW_SP R2 0X02
+    SW_SP R3 0X03
+    SW_SP R4 0X04
+    SW_SP R5 0X05
+    SW_SP R6 0X06
+    SW_SP R7 0X07
+
+    ;LI R0 0XFE
+    ;SLL R0 R0 0X00
+    ;ADDIU R0 0X02
+    ;LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    LI R3 0X7C
+    SLL R3 R3 0X00
+    ADDIU R3 0X40
+    ADDIU R3 0X40   ;图片地址 R3=0X7C80
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    LW R0 R1 0X00   ;R1=bird_coordinateY 
+    MOVE R2 R1
+
+    LI R0 0X80
+    SLL R0 R0 0X00
+    ADDIU R0 0X10
+
+    LI R7 0X00
+    SLT R7 R1   ;0<R1
+    BTEQZ 0X04
+    LI R6 0X00
+    ADDIU R6 0XFF
+    LI R5 0X50
+    B PRINT_BIRD_ADDLOOP
+    LI R6 0X01
+    LI R5 0X00
+    ADDIU R5 0XB0
+PRINT_BIRD_ADDLOOP:   ;计算显存地址R0
+    BEQZ R1 0X03
+    ADDU R6 R1 R1
+    ADDU R0 R5 R0   ;R0+=80
+    B PRINT_BIRD_ADDLOOP
+    
+    LI R5 0x00   ;I=0
+PRINT_BIRD_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_BIRD_FOR_J:   ;J=0~7
+    LW R3 R6 0x00
+
+    LI R7 0XFF
+    AND R7 R6
+    BNEZ R7 0X09   ;低8位不为0
+    LI R1 0X53
+    SLL R1 R1 0X00
+    ADDIU R1 0X40
+    ADDIU R1 0X40  ;R1=背景地址 8000-2C80=5380
+    SUBU R0 R1 R1
+    LW R1 R7 0X00
+    LI R1 0XFF
+    AND R7 R1
+    OR R6 R7
+
+    LI R7 0XFF
+    SLL R7 R7 0X00
+    AND R7 R6
+    BNEZ R7 0X0A   ;高8位不为0
+    LI R1 0X53
+    SLL R1 R1 0X00
+    ADDIU R1 0X40
+    ADDIU R1 0X40  ;R1=背景地址
+    SUBU R0 R1 R1
+    LW R1 R7 0X00
+    LI R1 0XFF
+    SLL R1 R1 0X00
+    AND R7 R1
+    OR R6 R7
+    
+    ADDU R5 R2 R5
+    LI R7 0X00
+    ADDIU R7 0XFF   ;R7=-1
+    SLT R7 R5    ;-1<R5
+    BTEQZ 0X04
+    LI R7 0XF0
+    SLT R5 R7       ;R5<240
+    BTEQZ 0X01
+    SW R0 R6 0x00
+    SUBU R5 R2 R5
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x07   ;R7=7
+    SLT R7 R4    ;7<R4
+    BTEQZ PRINT_BIRD_FOR_J
+
+    ADDIU R0 0X48
+    LI R7 0X0F
+    SLT R7 R5    ;15<R5
+    BTEQZ PRINT_BIRD_FOR_I
+
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PRINT_BIRD END
+
+PRINT_BIRD_MEM:
+    SW_SP R0 0X00
+    SW_SP R1 0X01
+    SW_SP R2 0X02
+    SW_SP R3 0X03
+    SW_SP R4 0X04
+    SW_SP R5 0X05
+    SW_SP R6 0X06
+    SW_SP R7 0X07
+    ADDSP 0x08
+
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X02
+    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    LW R0 R1 0X00   ;R1=bird_coordinateY 
+    MOVE R2 R1
+
+    LI R0 0X7C
+    SLL R0 R0 0X00
+    ADDIU R0 0X40
+    ADDIU R0 0X40   ;计算显存地址R0=0X7C80
+    
+    LI R5 0x00   ;I=0
+PRINT_BIRD_MEM_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_BIRD_MEM_FOR_J:   ;J=0~7
+    LW R3 R6 0x00
+
+    ;LI R7 0XFF
+    ;AND R7 R6
+    ;BNEZ R7 0X09   ;低8位不为0
+    ;LI R1 0X53
+    ;SLL R1 R1 0X00
+    ;ADDIU R1 0X40
+    ;ADDIU R1 0X40  ;R1=背景地址 8000-2C80=5380
+    ;SUBU R0 R1 R1
+    ;LW R1 R7 0X00
+    ;LI R1 0XFF
+    ;AND R7 R1
+    ;OR R6 R7
+;
+    ;LI R7 0XFF
+    ;SLL R7 R7 0X00
+    ;AND R7 R6
+    ;BNEZ R7 0X0A   ;高8位不为0
+    ;LI R1 0X53
+    ;SLL R1 R1 0X00
+    ;ADDIU R1 0X40
+    ;ADDIU R1 0X40  ;R1=背景地址
+    ;SUBU R0 R1 R1
+    ;LW R1 R7 0X00
+    ;LI R1 0XFF
+    ;SLL R1 R1 0X00
+    ;AND R7 R1
+    ;OR R6 R7
+    
+    SW R0 R6 0x00
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x07   ;R7=7
+    SLT R7 R4    ;7<R4
+    BTEQZ PRINT_BIRD_MEM_FOR_J
+
+    LI R7 0X0F
+    SLT R7 R5    ;15<R5
+    BTEQZ PRINT_BIRD_MEM_FOR_I
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PRINT_BIRD_MEM END
+;PRINT_DEAD_BIRD:
+;    SW_SP R0 0X00
+;    SW_SP R1 0X01
+;    SW_SP R2 0X02
+;    SW_SP R3 0X03
+;    SW_SP R4 0X04
+;    SW_SP R5 0X05
+;    SW_SP R6 0X06
+;    SW_SP R7 0X07
+;
+;    LI R0 0XFE
+;    SLL R0 R0 0X00
+;    ADDIU R0 0X02
+;    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+;    
+;    LI R0 0XFE
+;    SLL R0 R0 0X00
+;    LW R0 R1 0X00   ;R1=bird_coordinateY 
+;    LI R0 0X80
+;    SLL R0 R0 0X00
+;    ADDIU R0 0X10
+;PRINT_DEAD_BIRD_ADDLOOP:   ;计算显存地址R0
+;    BEQZ R1 0X03
+;    ADDIU R1 0XFF
+;    ADDIU R0 0X50   ;R0+=80
+;    B PRINT_DEAD_BIRD_ADDLOOP
+;    
+;    LI R5 0x00   ;I=0
+;PRINT_DEAD_BIRD_FOR_I:   ;I=0~15
+;    LI R4 0x00   ;J=0
+;    ADDIU R5 0x01
+;PRINT_DEAD_BIRD_FOR_J:   ;J=0~7
+;    LW R3 R6 0x00
+;
+;    LI R7 0XFF
+;    AND R7 R6
+;    BNEZ R7 0X09   ;低8位不为0
+;    LW R0 R7 0X00
+;    LI R1 0XFF
+;    AND R7 R1
+;    OR R6 R7
+;
+;    LI R7 0XFF
+;    SLL R7 R7 0X00
+;    AND R7 R6
+;    BNEZ R7 0X0A   ;高8位不为0
+;    LW R0 R7 0X00
+;    LI R1 0XFF
+;    SLL R1 R1 0X00
+;    AND R7 R1
+;    OR R6 R7
+;    
+;    SW R0 R6 0x00
+;
+;    ADDIU R3 0x01
+;    ADDIU R0 0X01
+;    ADDIU R4 0x01
+;    LI R7 0x07   ;R7=7
+;    SLT R7 R4    ;7<R4
+;    BTEQZ PRINT_DEAD_BIRD_FOR_J
+;
+;    ADDIU R0 0X48
+;    LI R7 0X0F
+;    SLT R7 R5    ;15<R5
+;    BTEQZ PRINT_DEAD_BIRD_FOR_I
+;
+;    LW_SP R0 0X00
+;    LW_SP R1 0X01
+;    LW_SP R2 0X02
+;    LW_SP R3 0X03
+;    LW_SP R4 0X04
+;    LW_SP R5 0X05
+;    LW_SP R6 0X06
+;    LW_SP R7 0X07
+;    JR R7   ;PRINT_BIRD END
+    
+PRINT_START:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    LI R3 0X10
+    SLL R3 R3 0X00   ;图片地址 R3=0X1000
+    
+    LI R1 0X10   ;Y: R1=16
+    LI R0 0X80
+    SLL R0 R0 0X00
+    ADDIU R0 0X08   ;X: 8
+PRINT_START_ADDLOOP:   ;计算显存地址R0
+    BEQZ R1 0X03
+    ADDIU R1 0XFF
+    ADDIU R0 0X50   ;R0+=80
+    B PRINT_START_ADDLOOP
+    
+    LI R5 0x00   ;I=0
+PRINT_START_FOR_I:   ;I=0~31
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_START_FOR_J:   ;J=0~63
+    LW R3 R6 0x00
+
+    LI R7 0XFF
+    AND R7 R6
+    BNEZ R7 0X04   ;低8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    AND R7 R1
+    OR R6 R7
+
+    LI R7 0XFF
+    SLL R7 R7 0X00
+    AND R7 R6
+    BNEZ R7 0X05   ;高8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    SLL R1 R1 0X00
+    AND R7 R1
+    OR R6 R7
+    
+    SW R0 R6 0x00
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x3F   ;R7=63
+    SLT R7 R4    ;63<R4
+    BTEQZ PRINT_START_FOR_J
+
+    ADDIU R0 0X10
+    LI R7 0X1F
+    SLT R7 R5    ;31<R5
+    BTEQZ PRINT_START_FOR_I
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PAINT_START END
+
+PRINT_GAME_OVER:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+    LI R3 0X18
+    SLL R3 R3 0X00   ;图片地址 R3=0X1800
+    
+    LI R1 0X18   ;Y: R1=24
+    LI R0 0X80
+    SLL R0 R0 0X00
+    ADDIU R0 0X08   ;X: 8
+PRINT_GAME_OVER_ADDLOOP:   ;计算显存地址R0
+    BEQZ R1 0X03
+    ADDIU R1 0XFF
+    ADDIU R0 0X50   ;R0+=80
+    B PRINT_GAME_OVER_ADDLOOP
+    
+    LI R5 0x00   ;I=0
+PRINT_GAME_OVER_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_GAME_OVER_FOR_J:   ;J=0~63
+    LW R3 R6 0x00
+
+    LI R7 0XFF
+    AND R7 R6
+    BNEZ R7 0X04   ;低8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    AND R7 R1
+    OR R6 R7
+
+    LI R7 0XFF
+    SLL R7 R7 0X00
+    AND R7 R6
+    BNEZ R7 0X05   ;高8位不为0
+    LW R0 R7 0X00
+    LI R1 0XFF
+    SLL R1 R1 0X00
+    AND R7 R1
+    OR R6 R7
+    
+    SW R0 R6 0x00
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x3F   ;R7=63
+    SLT R7 R4    ;63<R4
+    BTEQZ PRINT_GAME_OVER_FOR_J
+
+    ADDIU R0 0X10
+    LI R7 0X0F
+    SLT R7 R5    ;15<R5
+    BTEQZ PRINT_GAME_OVER_FOR_I
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PRINT_GAME_OVER END
+
+WAIT_START:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+    
+    MFPC R7
+    ADDIU R7 0x02
+    B RESET_PARAMETERS   ;重置参数
+    
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BACKGROUND  ;绘制背景
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_GROUND   ;绘制地板
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_PIPE   ;绘制管道
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BIRD   ;绘制鸟
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_START   ;绘制开始
+
+    LI R1 0X40
+WAIT_START_LOOP:
+    ;ADDIU R1 0XFF
+    ;BEQZ R1 0X01
+    ;B WAIT_START_LOOP
+
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B WAIT_EVENT   ;等待按键
+    ;BEQZ R0 WAIT_START_LOOP
+    
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BACKGROUND  ;绘制背景
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;WAIT_START END
+
+GAME_OVER:
+    SW_SP R0 0x00
+    SW_SP R1 0x01
+    SW_SP R2 0x02
+    SW_SP R3 0x03
+    SW_SP R4 0x04
+    SW_SP R5 0x05
+    SW_SP R6 0x06
+    SW_SP R7 0x07
+    ADDSP 0x08
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_GAME_OVER   ;绘制game over
+
+GAME_OVER_LOOP:
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B WAIT_EVENT   ;等待按键
+    ;BEQZ R0 GAME_OVER_LOOP
+
+    ;LI R1 0XFF
+    ;SLL R1 R1 0X00
+    ;SW R1 R0 0X00
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;GAME_OVER END
+
 PRINT_PIPE_BODY:
     ;R0 : COORDX
     ;R1 : COORDY
@@ -1057,516 +1574,3 @@ PRINT_PIPE_HEAD_2_FOR_J:   ;J=0~15
     LW_SP R6 0X0E
     LW_SP R7 0X0F
 	JR R6   ;PRINT_GROUND END
-
-PRINT_BIRD:
-    SW_SP R0 0X00
-    SW_SP R1 0X01
-    SW_SP R2 0X02
-    SW_SP R3 0X03
-    SW_SP R4 0X04
-    SW_SP R5 0X05
-    SW_SP R6 0X06
-    SW_SP R7 0X07
-
-    ;LI R0 0XFE
-    ;SLL R0 R0 0X00
-    ;ADDIU R0 0X02
-    ;LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
-    LI R3 0X7C
-    SLL R3 R3 0X00
-    ADDIU R3 0X40
-    ADDIU R3 0X40   ;图片地址 R3=0X7C80
-    
-    LI R0 0XFE
-    SLL R0 R0 0X00
-    LW R0 R1 0X00   ;R1=bird_coordinateY 
-    MOVE R2 R1
-
-    LI R0 0X80
-    SLL R0 R0 0X00
-    ADDIU R0 0X10
-
-    LI R7 0X00
-    SLT R7 R1   ;0<R1
-    BTEQZ 0X04
-    LI R6 0X00
-    ADDIU R6 0XFF
-    LI R5 0X50
-    B PRINT_BIRD_ADDLOOP
-    LI R6 0X01
-    LI R5 0X00
-    ADDIU R5 0XB0
-PRINT_BIRD_ADDLOOP:   ;计算显存地址R0
-    BEQZ R1 0X03
-    ADDU R6 R1 R1
-    ADDU R0 R5 R0   ;R0+=80
-    B PRINT_BIRD_ADDLOOP
-    
-    LI R5 0x00   ;I=0
-PRINT_BIRD_FOR_I:   ;I=0~15
-    LI R4 0x00   ;J=0
-    ADDIU R5 0x01
-PRINT_BIRD_FOR_J:   ;J=0~7
-    LW R3 R6 0x00
-
-    LI R7 0XFF
-    AND R7 R6
-    BNEZ R7 0X09   ;低8位不为0
-    LI R1 0X53
-    SLL R1 R1 0X00
-    ADDIU R1 0X40
-    ADDIU R1 0X40  ;R1=背景地址 8000-2C80=5380
-    SUBU R0 R1 R1
-    LW R1 R7 0X00
-    LI R1 0XFF
-    AND R7 R1
-    OR R6 R7
-
-    LI R7 0XFF
-    SLL R7 R7 0X00
-    AND R7 R6
-    BNEZ R7 0X0A   ;高8位不为0
-    LI R1 0X53
-    SLL R1 R1 0X00
-    ADDIU R1 0X40
-    ADDIU R1 0X40  ;R1=背景地址
-    SUBU R0 R1 R1
-    LW R1 R7 0X00
-    LI R1 0XFF
-    SLL R1 R1 0X00
-    AND R7 R1
-    OR R6 R7
-    
-    ADDU R5 R2 R5
-    LI R7 0X00
-    ADDIU R7 0XFF   ;R7=-1
-    SLT R7 R5    ;-1<R5
-    BTEQZ 0X04
-    LI R7 0XF0
-    SLT R5 R7       ;R5<240
-    BTEQZ 0X01
-    SW R0 R6 0x00
-    SUBU R5 R2 R5`
-
-    ADDIU R3 0x01
-    ADDIU R0 0X01
-    ADDIU R4 0x01
-    LI R7 0x07   ;R7=7
-    SLT R7 R4    ;7<R4
-    BTEQZ PRINT_BIRD_FOR_J
-
-    ADDIU R0 0X48
-    LI R7 0X0F
-    SLT R7 R5    ;15<R5
-    BTEQZ PRINT_BIRD_FOR_I
-
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;PRINT_BIRD END
-
-PRINT_BIRD_MEM:
-    SW_SP R0 0X00
-    SW_SP R1 0X01
-    SW_SP R2 0X02
-    SW_SP R3 0X03
-    SW_SP R4 0X04
-    SW_SP R5 0X05
-    SW_SP R6 0X06
-    SW_SP R7 0X07
-    ADDSP 0x08
-
-    LI R0 0XFE
-    SLL R0 R0 0X00
-    ADDIU R0 0X02
-    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
-    
-    LI R0 0XFE
-    SLL R0 R0 0X00
-    LW R0 R1 0X00   ;R1=bird_coordinateY 
-    MOVE R2 R1
-
-    LI R0 0X7C
-    SLL R0 R0 0X00
-    ADDIU R0 0X40
-    ADDIU R0 0X40   ;计算显存地址R0=0X7C80
-    
-    LI R5 0x00   ;I=0
-PRINT_BIRD_MEM_FOR_I:   ;I=0~15
-    LI R4 0x00   ;J=0
-    ADDIU R5 0x01
-PRINT_BIRD_MEM_FOR_J:   ;J=0~7
-    LW R3 R6 0x00
-
-    ;LI R7 0XFF
-    ;AND R7 R6
-    ;BNEZ R7 0X09   ;低8位不为0
-    ;LI R1 0X53
-    ;SLL R1 R1 0X00
-    ;ADDIU R1 0X40
-    ;ADDIU R1 0X40  ;R1=背景地址 8000-2C80=5380
-    ;SUBU R0 R1 R1
-    ;LW R1 R7 0X00
-    ;LI R1 0XFF
-    ;AND R7 R1
-    ;OR R6 R7
-;
-    ;LI R7 0XFF
-    ;SLL R7 R7 0X00
-    ;AND R7 R6
-    ;BNEZ R7 0X0A   ;高8位不为0
-    ;LI R1 0X53
-    ;SLL R1 R1 0X00
-    ;ADDIU R1 0X40
-    ;ADDIU R1 0X40  ;R1=背景地址
-    ;SUBU R0 R1 R1
-    ;LW R1 R7 0X00
-    ;LI R1 0XFF
-    ;SLL R1 R1 0X00
-    ;AND R7 R1
-    ;OR R6 R7
-    
-    SW R0 R6 0x00
-
-    ADDIU R3 0x01
-    ADDIU R0 0X01
-    ADDIU R4 0x01
-    LI R7 0x07   ;R7=7
-    SLT R7 R4    ;7<R4
-    BTEQZ PRINT_BIRD_MEM_FOR_J
-
-    LI R7 0X0F
-    SLT R7 R5    ;15<R5
-    BTEQZ PRINT_BIRD_MEM_FOR_I
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;PAINT_START END
-;PRINT_DEAD_BIRD:
-;    SW_SP R0 0X00
-;    SW_SP R1 0X01
-;    SW_SP R2 0X02
-;    SW_SP R3 0X03
-;    SW_SP R4 0X04
-;    SW_SP R5 0X05
-;    SW_SP R6 0X06
-;    SW_SP R7 0X07
-;
-;    LI R0 0XFE
-;    SLL R0 R0 0X00
-;    ADDIU R0 0X02
-;    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
-;    
-;    LI R0 0XFE
-;    SLL R0 R0 0X00
-;    LW R0 R1 0X00   ;R1=bird_coordinateY 
-;    LI R0 0X80
-;    SLL R0 R0 0X00
-;    ADDIU R0 0X10
-;PRINT_DEAD_BIRD_ADDLOOP:   ;计算显存地址R0
-;    BEQZ R1 0X03
-;    ADDIU R1 0XFF
-;    ADDIU R0 0X50   ;R0+=80
-;    B PRINT_DEAD_BIRD_ADDLOOP
-;    
-;    LI R5 0x00   ;I=0
-;PRINT_DEAD_BIRD_FOR_I:   ;I=0~15
-;    LI R4 0x00   ;J=0
-;    ADDIU R5 0x01
-;PRINT_DEAD_BIRD_FOR_J:   ;J=0~7
-;    LW R3 R6 0x00
-;
-;    LI R7 0XFF
-;    AND R7 R6
-;    BNEZ R7 0X09   ;低8位不为0
-;    LW R0 R7 0X00
-;    LI R1 0XFF
-;    AND R7 R1
-;    OR R6 R7
-;
-;    LI R7 0XFF
-;    SLL R7 R7 0X00
-;    AND R7 R6
-;    BNEZ R7 0X0A   ;高8位不为0
-;    LW R0 R7 0X00
-;    LI R1 0XFF
-;    SLL R1 R1 0X00
-;    AND R7 R1
-;    OR R6 R7
-;    
-;    SW R0 R6 0x00
-;
-;    ADDIU R3 0x01
-;    ADDIU R0 0X01
-;    ADDIU R4 0x01
-;    LI R7 0x07   ;R7=7
-;    SLT R7 R4    ;7<R4
-;    BTEQZ PRINT_DEAD_BIRD_FOR_J
-;
-;    ADDIU R0 0X48
-;    LI R7 0X0F
-;    SLT R7 R5    ;15<R5
-;    BTEQZ PRINT_DEAD_BIRD_FOR_I
-;
-;    LW_SP R0 0X00
-;    LW_SP R1 0X01
-;    LW_SP R2 0X02
-;    LW_SP R3 0X03
-;    LW_SP R4 0X04
-;    LW_SP R5 0X05
-;    LW_SP R6 0X06
-;    LW_SP R7 0X07
-;    JR R7   ;PRINT_BIRD END
-    
-PRINT_START:
-    SW_SP R0 0x00
-    SW_SP R1 0x01
-    SW_SP R2 0x02
-    SW_SP R3 0x03
-    SW_SP R4 0x04
-    SW_SP R5 0x05
-    SW_SP R6 0x06
-    SW_SP R7 0x07
-    ADDSP 0x08
-
-    LI R3 0X10
-    SLL R3 R3 0X00   ;图片地址 R3=0X1000
-    
-    LI R1 0X10   ;Y: R1=16
-    LI R0 0X80
-    SLL R0 R0 0X00
-    ADDIU R0 0X08   ;X: 8
-PRINT_START_ADDLOOP:   ;计算显存地址R0
-    BEQZ R1 0X03
-    ADDIU R1 0XFF
-    ADDIU R0 0X50   ;R0+=80
-    B PRINT_START_ADDLOOP
-    
-    LI R5 0x00   ;I=0
-PRINT_START_FOR_I:   ;I=0~31
-    LI R4 0x00   ;J=0
-    ADDIU R5 0x01
-PRINT_START_FOR_J:   ;J=0~63
-    LW R3 R6 0x00
-
-    LI R7 0XFF
-    AND R7 R6
-    BNEZ R7 0X04   ;低8位不为0
-    LW R0 R7 0X00
-    LI R1 0XFF
-    AND R7 R1
-    OR R6 R7
-
-    LI R7 0XFF
-    SLL R7 R7 0X00
-    AND R7 R6
-    BNEZ R7 0X05   ;高8位不为0
-    LW R0 R7 0X00
-    LI R1 0XFF
-    SLL R1 R1 0X00
-    AND R7 R1
-    OR R6 R7
-    
-    SW R0 R6 0x00
-
-    ADDIU R3 0x01
-    ADDIU R0 0X01
-    ADDIU R4 0x01
-    LI R7 0x3F   ;R7=63
-    SLT R7 R4    ;63<R4
-    BTEQZ PRINT_START_FOR_J
-
-    ADDIU R0 0X10
-    LI R7 0X1F
-    SLT R7 R5    ;31<R5
-    BTEQZ PRINT_START_FOR_I
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;PAINT_START END
-
-PRINT_GAME_OVER:
-    SW_SP R0 0x00
-    SW_SP R1 0x01
-    SW_SP R2 0x02
-    SW_SP R3 0x03
-    SW_SP R4 0x04
-    SW_SP R5 0x05
-    SW_SP R6 0x06
-    SW_SP R7 0x07
-    ADDSP 0x08
-
-    LI R3 0X18
-    SLL R3 R3 0X00   ;图片地址 R3=0X1800
-    
-    LI R1 0X18   ;Y: R1=24
-    LI R0 0X80
-    SLL R0 R0 0X00
-    ADDIU R0 0X08   ;X: 8
-PRINT_GAME_OVER_ADDLOOP:   ;计算显存地址R0
-    BEQZ R1 0X03
-    ADDIU R1 0XFF
-    ADDIU R0 0X50   ;R0+=80
-    B PRINT_GAME_OVER_ADDLOOP
-    
-    LI R5 0x00   ;I=0
-PRINT_GAME_OVER_FOR_I:   ;I=0~15
-    LI R4 0x00   ;J=0
-    ADDIU R5 0x01
-PRINT_GAME_OVER_FOR_J:   ;J=0~63
-    LW R3 R6 0x00
-
-    LI R7 0XFF
-    AND R7 R6
-    BNEZ R7 0X04   ;低8位不为0
-    LW R0 R7 0X00
-    LI R1 0XFF
-    AND R7 R1
-    OR R6 R7
-
-    LI R7 0XFF
-    SLL R7 R7 0X00
-    AND R7 R6
-    BNEZ R7 0X05   ;高8位不为0
-    LW R0 R7 0X00
-    LI R1 0XFF
-    SLL R1 R1 0X00
-    AND R7 R1
-    OR R6 R7
-    
-    SW R0 R6 0x00
-
-    ADDIU R3 0x01
-    ADDIU R0 0X01
-    ADDIU R4 0x01
-    LI R7 0x3F   ;R7=63
-    SLT R7 R4    ;63<R4
-    BTEQZ PRINT_GAME_OVER_FOR_J
-
-    ADDIU R0 0X10
-    LI R7 0X0F
-    SLT R7 R5    ;15<R5
-    BTEQZ PRINT_GAME_OVER_FOR_I
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;PRINT_GAME_OVER END
-
-WAIT_START:
-    SW_SP R0 0x00
-    SW_SP R1 0x01
-    SW_SP R2 0x02
-    SW_SP R3 0x03
-    SW_SP R4 0x04
-    SW_SP R5 0x05
-    SW_SP R6 0x06
-    SW_SP R7 0x07
-    ADDSP 0x08
-    
-    MFPC R7
-    ADDIU R7 0x02
-    B RESET_PARAMETERS   ;重置参数
-    
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_BACKGROUND  ;绘制背景
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_GROUND   ;绘制地板
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_PIPE   ;绘制管道
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_BIRD   ;绘制鸟
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_START   ;绘制开始
-
-    LI R1 0X40
-WAIT_START_LOOP:
-    ;ADDIU R1 0XFF
-    ;BEQZ R1 0X01
-    ;B WAIT_START_LOOP
-
-	;MFPC R7
-	;ADDIU R7 0x0002
-    ;B WAIT_EVENT   ;等待按键
-    ;BEQZ R0 WAIT_START_LOOP
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_BACKGROUND  ;绘制背景
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;WAIT_START END
-
-GAME_OVER:
-    SW_SP R0 0x00
-    SW_SP R1 0x01
-    SW_SP R2 0x02
-    SW_SP R3 0x03
-    SW_SP R4 0x04
-    SW_SP R5 0x05
-    SW_SP R6 0x06
-    SW_SP R7 0x07
-    ADDSP 0x08
-
-	MFPC R7
-	ADDIU R7 0x0002
-    B PRINT_GAME_OVER   ;绘制game over
-
-GAME_OVER_LOOP:
-	MFPC R7
-	ADDIU R7 0x0002
-    B WAIT_EVENT   ;等待按键
-    BEQZ R0 GAME_OVER_LOOP
-
-    ADDSP 0xF8
-    LW_SP R0 0X00
-    LW_SP R1 0X01
-    LW_SP R2 0X02
-    LW_SP R3 0X03
-    LW_SP R4 0X04
-    LW_SP R5 0X05
-    LW_SP R6 0X06
-    LW_SP R7 0X07
-    JR R7   ;GAME_OVER END
