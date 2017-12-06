@@ -14,8 +14,9 @@
 ;0xFE05 - pipe1_coordinateX
 ;0xFE06 - pipe1_height
 ;0xFE07 - ground_coordinateX
-;0xFE08 
+;0xFE08 - bird_state
 ;0xFE09 - game_status 0-on 1-over 2-pause
+;0xFE0A - flying_timer
 NOP
 NOP
 NOP
@@ -52,19 +53,20 @@ GAME_LOOP:
     LI R6 0xFE
     SLL R6 R6 0x00
     LW R6 R0 0x09
-    ; LI R6 0xFF
-    ; SLL R6 R6 0x00
-    ; SW R6 R0 0x00
-    BEQZ R0 0X04
-	MFPC R7
-	ADDIU R7 0x0002
-    B GAME_OVER   ;game over
-
-    B START
+    
+    ;BEQZ R0 0X04   ;游戏结束
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B GAME_OVER   ;game over
+    ;B START
 
 	MFPC R7
 	ADDIU R7 0x0002
     B PRINT_GROUND   ;绘制地板
+
+	MFPC R7
+	ADDIU R7 0x0002
+    B PRINT_BIRD_MEM   ;绘制鸟缓存
 
 	MFPC R7
 	ADDIU R7 0x0002
@@ -74,9 +76,19 @@ GAME_LOOP:
 	ADDIU R7 0x0002
     B PRINT_BIRD   ;绘制鸟
 
+GAME_LOOP_WAIT_TIME:
 	; MFPC R7
 	; ADDIU R7 0x0002
     ; B WAIT_EVENT   ;等待事件
+    ;BEQZ R0 GAME_LOOP
+
+    ;LI R1 0XFE   ;跳
+    ;SLL R1 R1 0X00
+    ;LI R2 0X01
+    ;SLL R2 R2 0X00
+    ;ADDIU R2 0X08
+    ;SW R1 R2 0X01
+    ;B GAME_LOOP_WAIT_TIME
 
     B GAME_LOOP
 
@@ -114,14 +126,19 @@ RESET_PARAMETERS:
     SW R6 R0 0x08
     LI R0 0x00    ; 0xFE09
     SW R6 R0 0x09
+    LI R0 0x00    ; 0xFE0A
+    SW R6 R0 0x0A
     
     ;RESET BIRD
     LI R6 0xFE
     SLL R6 R6 0x00
-    LI R0 0x32    ; bird_coordinateY=100
+    LI R0 0x5A    ; bird_coordinateY=90
     SW R6 R0 0x00
 
-    LI R0 0x01    ; bird_velocity
+    LI R0 0x00    ; bird_velocity=-F0
+    SLL R0 R0 0X00
+    ADDIU R0 0X78
+    ADDIU R0 0X78
     SW R6 R0 0X01
 
     LI R0 0x20    ; bird_stateaddr
@@ -130,6 +147,9 @@ RESET_PARAMETERS:
 
     LI R0 0X3F    ; bird_state
     SW R6 R0 0x08
+
+    LI R0 0X0F
+    SW R6 R0 0X0A ; flying_timer
 
     ;RESET PIPE
     LI R0 0XFE
@@ -213,6 +233,60 @@ UPDATE_PARAMETERS:
     SLL R0 R0 0X00
     ADDIU R0 0X02
     SW R0 R2 0X00
+
+    ;更新bird y坐标
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X01
+    LW R0 R1 0X00   ;R1=bird_velocity
+    MOVE R7 R1
+    MOVE R6 R1
+    SRA R6 R6 0X00
+
+    BEQZ R6 UPDATE_PARAMETERS_UP_ACC   ;处理加速度
+UPDATE_PARAMETERS_DOWN_ACC:
+    LI R6 0X80    ;DOWN
+    AND R6 R7
+    BNEZ R6 UPDATE_PARAMETERS_FINISH_ACC
+    ADDIU R7 0X04
+    SW R0 R7 0X00
+    B UPDATE_PARAMETERS_FINISH_ACC;
+UPDATE_PARAMETERS_UP_ACC:
+    ADDIU R7 0XFC    ;UP
+    LI R6 0X00
+    SLT R7 R6  ;R7<0
+    BTEQZ 0X03
+    LI R7 0X01
+    SLL R7 R7 0X00
+    ADDIU R7 0X01
+    SW R0 R7 0X00
+    
+UPDATE_PARAMETERS_FINISH_ACC:
+    LI R4 0XFF
+    AND R4 R1
+
+    LI R2 0XFE
+    SLL R2 R2 0X00
+    ADDIU R2 0X0A
+    LW R2 R3 0X00   ;R3=flying_timer
+    ADDU R4 R3 R3
+
+    LI R7 0XFF
+    SLT R7 R3   ;0XFF<flying_timer
+    BTEQZ 0X0A
+    LI R6 0XFE
+    SLL R6 R6 0X00
+    LW R6 R7 0X00   ;R7 = bird_coordinateY
+
+    LI R3 0X00
+    SRA R1 R1 0X00   ;UPDATE y
+    BEQZ R1 0X02
+    ADDIU R7 0X01   ;DOWN
+    B 0X01
+    ADDIU R7 0XFF   ;UP
+    SW R6 R7 0X00
+
+    SW R2 R3 0X00
 
     ;更新ground_coordinateX +1
     LI R0 0xFE
@@ -994,21 +1068,38 @@ PRINT_BIRD:
     SW_SP R6 0X06
     SW_SP R7 0X07
 
-    LI R0 0XFE
-    SLL R0 R0 0X00
-    ADDIU R0 0X02
-    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    ;LI R0 0XFE
+    ;SLL R0 R0 0X00
+    ;ADDIU R0 0X02
+    ;LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    LI R3 0X7C
+    SLL R3 R3 0X00
+    ADDIU R3 0X40
+    ADDIU R3 0X40   ;图片地址 R3=0X7C80
     
     LI R0 0XFE
     SLL R0 R0 0X00
     LW R0 R1 0X00   ;R1=bird_coordinateY 
+    MOVE R2 R1
+
     LI R0 0X80
     SLL R0 R0 0X00
     ADDIU R0 0X10
+
+    LI R7 0X00
+    SLT R7 R1   ;0<R1
+    BTEQZ 0X04
+    LI R6 0X00
+    ADDIU R6 0XFF
+    LI R5 0X50
+    B PRINT_BIRD_ADDLOOP
+    LI R6 0X01
+    LI R5 0X00
+    ADDIU R5 0XB0
 PRINT_BIRD_ADDLOOP:   ;计算显存地址R0
     BEQZ R1 0X03
-    ADDIU R1 0XFF
-    ADDIU R0 0X50   ;R0+=80
+    ADDU R6 R1 R1
+    ADDU R0 R5 R0   ;R0+=80
     B PRINT_BIRD_ADDLOOP
     
     LI R5 0x00   ;I=0
@@ -1046,7 +1137,16 @@ PRINT_BIRD_FOR_J:   ;J=0~7
     AND R7 R1
     OR R6 R7
     
+    ADDU R5 R2 R5
+    LI R7 0X00
+    ADDIU R7 0XFF   ;R7=-1
+    SLT R7 R5    ;-1<R5
+    BTEQZ 0X04
+    LI R7 0XF0
+    SLT R5 R7       ;R5<240
+    BTEQZ 0X01
     SW R0 R6 0x00
+    SUBU R5 R2 R5`
 
     ADDIU R3 0x01
     ADDIU R0 0X01
@@ -1070,6 +1170,90 @@ PRINT_BIRD_FOR_J:   ;J=0~7
     LW_SP R7 0X07
     JR R7   ;PRINT_BIRD END
 
+PRINT_BIRD_MEM:
+    SW_SP R0 0X00
+    SW_SP R1 0X01
+    SW_SP R2 0X02
+    SW_SP R3 0X03
+    SW_SP R4 0X04
+    SW_SP R5 0X05
+    SW_SP R6 0X06
+    SW_SP R7 0X07
+    ADDSP 0x08
+
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    ADDIU R0 0X02
+    LW R0 R3 0X00   ;图片地址 R3=MEM[bird_stateaddr]
+    
+    LI R0 0XFE
+    SLL R0 R0 0X00
+    LW R0 R1 0X00   ;R1=bird_coordinateY 
+    MOVE R2 R1
+
+    LI R0 0X7C
+    SLL R0 R0 0X00
+    ADDIU R0 0X40
+    ADDIU R0 0X40   ;计算显存地址R0=0X7C80
+    
+    LI R5 0x00   ;I=0
+PRINT_BIRD_MEM_FOR_I:   ;I=0~15
+    LI R4 0x00   ;J=0
+    ADDIU R5 0x01
+PRINT_BIRD_MEM_FOR_J:   ;J=0~7
+    LW R3 R6 0x00
+
+    ;LI R7 0XFF
+    ;AND R7 R6
+    ;BNEZ R7 0X09   ;低8位不为0
+    ;LI R1 0X53
+    ;SLL R1 R1 0X00
+    ;ADDIU R1 0X40
+    ;ADDIU R1 0X40  ;R1=背景地址 8000-2C80=5380
+    ;SUBU R0 R1 R1
+    ;LW R1 R7 0X00
+    ;LI R1 0XFF
+    ;AND R7 R1
+    ;OR R6 R7
+;
+    ;LI R7 0XFF
+    ;SLL R7 R7 0X00
+    ;AND R7 R6
+    ;BNEZ R7 0X0A   ;高8位不为0
+    ;LI R1 0X53
+    ;SLL R1 R1 0X00
+    ;ADDIU R1 0X40
+    ;ADDIU R1 0X40  ;R1=背景地址
+    ;SUBU R0 R1 R1
+    ;LW R1 R7 0X00
+    ;LI R1 0XFF
+    ;SLL R1 R1 0X00
+    ;AND R7 R1
+    ;OR R6 R7
+    
+    SW R0 R6 0x00
+
+    ADDIU R3 0x01
+    ADDIU R0 0X01
+    ADDIU R4 0x01
+    LI R7 0x07   ;R7=7
+    SLT R7 R4    ;7<R4
+    BTEQZ PRINT_BIRD_MEM_FOR_J
+
+    LI R7 0X0F
+    SLT R7 R5    ;15<R5
+    BTEQZ PRINT_BIRD_MEM_FOR_I
+
+    ADDSP 0xF8
+    LW_SP R0 0X00
+    LW_SP R1 0X01
+    LW_SP R2 0X02
+    LW_SP R3 0X03
+    LW_SP R4 0X04
+    LW_SP R5 0X05
+    LW_SP R6 0X06
+    LW_SP R7 0X07
+    JR R7   ;PAINT_START END
 ;PRINT_DEAD_BIRD:
 ;    SW_SP R0 0X00
 ;    SW_SP R1 0X01
@@ -1238,17 +1422,17 @@ PRINT_GAME_OVER:
     LI R0 0X80
     SLL R0 R0 0X00
     ADDIU R0 0X08   ;X: 8
-PRINT_START_ADDLOOP:   ;计算显存地址R0
+PRINT_GAME_OVER_ADDLOOP:   ;计算显存地址R0
     BEQZ R1 0X03
     ADDIU R1 0XFF
     ADDIU R0 0X50   ;R0+=80
-    B PRINT_START_ADDLOOP
+    B PRINT_GAME_OVER_ADDLOOP
     
     LI R5 0x00   ;I=0
-PRINT_START_FOR_I:   ;I=0~15
+PRINT_GAME_OVER_FOR_I:   ;I=0~15
     LI R4 0x00   ;J=0
     ADDIU R5 0x01
-PRINT_START_FOR_J:   ;J=0~63
+PRINT_GAME_OVER_FOR_J:   ;J=0~63
     LW R3 R6 0x00
 
     LI R7 0XFF
@@ -1276,12 +1460,12 @@ PRINT_START_FOR_J:   ;J=0~63
     ADDIU R4 0x01
     LI R7 0x3F   ;R7=63
     SLT R7 R4    ;63<R4
-    BTEQZ PRINT_START_FOR_J
+    BTEQZ PRINT_GAME_OVER_FOR_J
 
     ADDIU R0 0X10
     LI R7 0X0F
     SLT R7 R5    ;15<R5
-    BTEQZ PRINT_START_FOR_I
+    BTEQZ PRINT_GAME_OVER_FOR_I
 
     ADDSP 0xF8
     LW_SP R0 0X00
@@ -1335,9 +1519,9 @@ WAIT_START_LOOP:
     ;BEQZ R1 0X01
     ;B WAIT_START_LOOP
 
-	MFPC R7
-	ADDIU R7 0x0002
-    B WAIT_EVENT   ;等待按键
+	;MFPC R7
+	;ADDIU R7 0x0002
+    ;B WAIT_EVENT   ;等待按键
     ;BEQZ R0 WAIT_START_LOOP
 
 	MFPC R7
@@ -1374,7 +1558,7 @@ GAME_OVER_LOOP:
 	MFPC R7
 	ADDIU R7 0x0002
     B WAIT_EVENT   ;等待按键
-    BNEZ R0 WAIT_START_LOOP
+    BEQZ R0 GAME_OVER_LOOP
 
     ADDSP 0xF8
     LW_SP R0 0X00

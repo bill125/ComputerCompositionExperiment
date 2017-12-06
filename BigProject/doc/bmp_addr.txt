@@ -24,11 +24,13 @@ RRRGGBBB
 7B00~7B7F: num7        (16*16)
 7B80~7BFF: num8        (16*16)
 7C00~7C7F: num9        (16*16)
-7C80~7FFF: 
+7C80~7CFF: bird MEM    (16*16)
+7D00~7EFF: num MEM     (32*16)
+7F00~7FFF:
 
 
 0xFE00 - bird_coordinateY 
-0xFE01 - bird_velocity 
+0xFE01 - bird_velocity 0x01XX-down 0x00XX-up
 0xFE02 - bird_stateaddr
 0xFE03 - pipe0_coordinateX
 0xFE04 - pipe0_height
@@ -36,6 +38,8 @@ RRRGGBBB
 0xFE06 - pipe1_height
 0xFE07 - ground_coordinateX 
 0xFE08 - bird_state
+0xFE09 - game_status 0-on 1-over 2-pause
+0xFE0A - flying_timer
 
 FF02 事件
   0x0000 没事
