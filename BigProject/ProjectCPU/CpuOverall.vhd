@@ -633,7 +633,7 @@ begin
     Keyboard_inst: Keyboard port map (
         PS2Data => i_PS2_data,
         PS2Clock => i_PS2_clock,
-        Clock => clock_50m,
+        Clock => clock, --clock_50m,
         Reset => not i_nReset,
         DataReady => Keyboard_DataReady,  -- data output enable signal
         DataReceive => CPUCore_o_keyNDataReceive,
