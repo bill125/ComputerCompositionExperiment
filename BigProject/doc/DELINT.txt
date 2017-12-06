@@ -36,40 +36,40 @@ DELINT:   ;中断处理程序
 	;mem[0xFF02]=mem[0xFF03]
 	SW R6 R0 0x00
 	
-	;提示终端，进入中断处理
-	LI R3 0x000F
-	MFPC R7 
-	ADDIU R7 0x0003  
-	NOP
-	B TESTW 	
-	NOP
-	LI R0 0x000F
-	LI R6 0x00FF 
-	SLL R6 R6 0x0000 ;R6=0xFF00
-	SW R6 R0 0x0000
-	NOP
-	;输出中断号
-	MFPC R7 
-	ADDIU R7 0x0003  
-	NOP
-	B TESTW 	
-	NOP
-	LI R6 0x00FF 
-	SLL R6 R6 0x0000 ;R6=0xFF00 
-	SW R6 R1 0x0000
-	NOP
-	
-	;提示终端，中断处理结束
-	LI R3 0x000F
-	MFPC R7 
-	ADDIU R7 0x0003  
-	NOP
-	B TESTW 	
-	NOP
-	LI R6 0x00FF 
-	SLL R6 R6 0x0000 ;R6=0xFF00 
-	SW R6 R3 0x0000
-	NOP
+;	;提示终端，进入中断处理
+;	LI R3 0x000F
+;	MFPC R7 
+;	ADDIU R7 0x0003  
+;	NOP
+;	B TESTW 	
+;	NOP
+;	LI R0 0x000F
+;	LI R6 0x00FF 
+;	SLL R6 R6 0x0000 ;R6=0xFF00
+;	SW R6 R0 0x0000
+;	NOP
+;	;输出中断号
+;	MFPC R7 
+;	ADDIU R7 0x0003  
+;	NOP
+;	B TESTW 	
+;	NOP
+;	LI R6 0x00FF 
+;	SLL R6 R6 0x0000 ;R6=0xFF00 
+;	SW R6 R1 0x0000
+;	NOP
+;	
+;	;提示终端，中断处理结束
+;	LI R3 0x000F
+;	MFPC R7 
+;	ADDIU R7 0x0003  
+;	NOP
+;	B TESTW 	
+;	NOP
+;	LI R6 0x00FF 
+;	SLL R6 R6 0x0000 ;R6=0xFF00 
+;	SW R6 R3 0x0000
+;	NOP
 	
 	;用r3=IH（高位变成1）
 	MFIH R3

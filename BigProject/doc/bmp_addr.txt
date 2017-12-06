@@ -40,6 +40,7 @@ RRRGGBBB
 0xFE08 - bird_state
 0xFE09 - game_status 0-on 1-over 2-pause
 0xFE0A - flying_timer
+0XFE0B - mobe_timer
 
 FF02 事件
   0x0000 没事
