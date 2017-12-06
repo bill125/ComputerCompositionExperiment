@@ -740,7 +740,7 @@ begin
         i_keyDataReady => i_keyDataReady,
         i_keyData => i_keyData,
         o_clockNDataReceive => o_clockNDataReceive,
-        i_clockDataReady => '0'--i_clockDataReady
+        i_clockDataReady => i_clockDataReady
     );
 
 end;

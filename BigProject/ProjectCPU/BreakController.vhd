@@ -58,7 +58,7 @@ begin
         o_keyNDataReceive <= '1';
         o_clockNDataReceive <= '1';
         o_breakEN <= '0';
-        if IH = '0' then -- can break
+        if IH = '0' and i_IH(15) = '1' then -- can break
             if i_clockDataReady = '1' then
                 o_clockNDataReceive <= '0';
                 o_breakEN <= '1';
@@ -81,7 +81,7 @@ begin
             else 
             case r_RX_State is
                 when t_RX_0 =>
-                    if IH = '0' and (i_clockDataReady = '1' or i_keyDataReady = '1') then
+                    if IH = '0' and (i_clockDataReady = '1' or i_keyDataReady = '1') and i_IH(15) = '1'  then
                         if i_IF_FD_cleared = '0' then
                             o_EPC <= i_IF_FD_PC;
                         else 
