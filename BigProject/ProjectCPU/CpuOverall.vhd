@@ -182,7 +182,9 @@ architecture Behavioral of CPUOverall is
             o_bus_EN : out std_logic;
             i_bus_data : in word_t;
             o_bus_data : out word_t; 
-            o_bus_addr : out bus_addr_t
+            o_bus_addr : out bus_addr_t;
+
+            i_keyData : in std_logic_vector(7 downto 0)
         );
     end component;
     component ExtBusController 
@@ -576,7 +578,8 @@ begin
         o_bus_EN => SystemBusController_bus_EN,
         i_bus_data => io_sysBus_data,
         o_bus_data => SystemBusController_bus_data,
-        o_bus_addr => SystemBusController_bus_addr
+        o_bus_addr => SystemBusController_bus_addr,
+        i_keyData => Keyboard_Output
     );
     io_sysBus_data <= SystemBusController_bus_data when SystemBusController_bus_EN = '1' else
                       (others => 'Z');

@@ -31,6 +31,7 @@ package constants is
     constant uart_wait_turns: integer := 40;
     constant uart_control_addr: std_logic_vector (17 downto 0) := "001111111100000001";
     constant uart_data_addr: std_logic_vector (17 downto 0) := "001111111100000000";
+    constant key_data_addr : std_logic_vector(17 downto 0) := "001111111100000011";
 
 
     constant word_length: integer := 16;
@@ -80,9 +81,10 @@ package constants is
         stallRequest: std_logic;
     end record;
 
-    constant clock_break_PC : word_t := x"ff20";
+    constant clock_break_PC : word_t := x"1e00";
     constant key_break_PC : word_t := x"1d00";--x"0005";
 
     constant fps : integer := 833333;
     constant break_wait_turns : std_logic_vector(3 downto 0) := "1111";
+
 end constants;

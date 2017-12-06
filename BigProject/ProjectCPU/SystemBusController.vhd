@@ -56,7 +56,9 @@ entity SystemBusController is
         o_bus_EN : out std_logic;
         i_bus_data : in word_t;
         o_bus_data : out word_t; 
-        o_bus_addr : out bus_addr_t
+        o_bus_addr : out bus_addr_t;
+
+        i_keyData : in std_logic_vector(7 downto 0)
     );
 end SystemBusController;
 
@@ -67,7 +69,7 @@ begin
     process (i_clock, i_busRequest, i_bus_data,
              i_UART_readReady, i_UART_readDone,
              i_UART_writeReady, i_UART_writeDone,
-             i_UART_data, i_UART_bus_EN, i_UART_bus_data)
+             i_UART_data, i_UART_bus_EN, i_UART_bus_data, i_keyData)
     begin
         if i_busRequest.addr = uart_control_addr then -- UART control
             o_nCE <= '1';
@@ -114,7 +116,19 @@ begin
                 o_busResponse.data <= (others => '-');
                 o_busResponse.stallRequest <= '0';
             end if;
-            
+        elsif i_busRequest.addr = key_data_addr then -- keyboard data
+            o_nCE <= '1';
+            o_nOE <= '1';
+            o_nWE <= '1';
+            o_bus_EN <= '0';
+            o_busResponse.data <= x"02" & i_keyData;
+            o_bus_addr <= (others => '-');
+            o_bus_data <= (others => '-');
+            o_busResponse.stallRequest <= '0';
+
+            o_UART_data <= (others => '-');
+            o_UART_readBegin <= '0';
+            o_UART_writeBegin <= '0';      
         else -- SRAM
             o_UART_data <= (others => '-');
             o_UART_readBegin <= '0';
@@ -131,7 +145,7 @@ begin
             elsif i_busRequest.writeRequest = '1' then
                 o_nCE <= '0';
                 o_nOE <= '1';
-                o_nWE <= not i_clock;
+                o_nWE <= i_clock;
                 o_bus_addr <= i_busRequest.addr;
                 o_bus_data <= i_busRequest.data;
                 o_bus_EN <= '1';
