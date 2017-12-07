@@ -84,7 +84,7 @@ package constants is
     constant clock_break_PC : word_t := x"1e00";
     constant key_break_PC : word_t := x"1d00";--x"0005";
 
-    constant fps : integer := 833333; -- 30fps
+    constant fps : integer := 416666; -- 60fps
     constant break_wait_turns : std_logic_vector(3 downto 0) := "1111";
 
 end constants;
