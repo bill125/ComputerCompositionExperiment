@@ -17,41 +17,41 @@ entity CpuCore is
         o_DM_extBusRequest : out  bus_request_t;
         i_DM_extBusResponse:  in  bus_response_t;
 
-        o_TEST_word : out word_t;
-        o_TEST_addr : out bus_addr_t;
-        o_TEST_EN : out std_logic;
-        o_registers : out Reg;
-        o_PC_o_PC : out word_t;
-        o_IM_o_inst : out inst_t;
-        o_StallClearController_o_nextPC : out word_t;
-        o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
-        o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
-        o_Control_o_DMRE : out std_logic;
-        o_Control_o_DMWR : out std_logic;
-        o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
-        o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
-        o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
-        o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-        o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
-        o_ALU_MUX_o_ALURes : out word_t;
-        o_DM_o_DMRes : out word_t;
-        o_MEM_WB_o_wbAddr : out reg_addr_t;
-        o_MEM_WB_o_wbData : out word_t;
-        o_EX_MEM_o_ALURes : out word_t;
-        o_EX_MEM_o_DMRE : out std_logic;
-        o_EX_MEM_o_DMWR : out std_logic;
-        o_EX_MEM_o_addr : out word_t;
-        o_EX_MEM_o_data : out word_t;
-        o_ID_EX_o_DMRE : out std_logic;
-        o_ID_EX_o_DMWR : out std_logic;
-        o_ID_EX_o_OP : out op_t;
-        o_ID_EX_o_OP0 : out word_t;
-        o_ID_EX_o_OP1 : out word_t;
-        o_ID_EX_o_OP0Src : out opSrc_t;
-        o_ID_EX_o_OP1Src : out opSrc_t;
-        o_ID_EX_o_imm : out word_t;
-        o_ID_EX_o_wbAddr : out reg_addr_t;
-        o_BreakController_o_EPC : out word_t;
+        -- o_TEST_word : out word_t;
+        -- o_TEST_addr : out bus_addr_t;
+        -- o_TEST_EN : out std_logic;
+        -- o_registers : out Reg;
+        -- o_PC_o_PC : out word_t;
+        -- o_IM_o_inst : out inst_t;
+        -- o_StallClearController_o_nextPC : out word_t;
+        -- o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
+        -- o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
+        -- o_Control_o_DMRE : out std_logic;
+        -- o_Control_o_DMWR : out std_logic;
+        -- o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
+        -- o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
+        -- o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
+        -- o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
+        -- o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
+        -- o_ALU_MUX_o_ALURes : out word_t;
+        -- o_DM_o_DMRes : out word_t;
+        -- o_MEM_WB_o_wbAddr : out reg_addr_t;
+        -- o_MEM_WB_o_wbData : out word_t;
+        -- o_EX_MEM_o_ALURes : out word_t;
+        -- o_EX_MEM_o_DMRE : out std_logic;
+        -- o_EX_MEM_o_DMWR : out std_logic;
+        -- o_EX_MEM_o_addr : out word_t;
+        -- o_EX_MEM_o_data : out word_t;
+        -- o_ID_EX_o_DMRE : out std_logic;
+        -- o_ID_EX_o_DMWR : out std_logic;
+        -- o_ID_EX_o_OP : out op_t;
+        -- o_ID_EX_o_OP0 : out word_t;
+        -- o_ID_EX_o_OP1 : out word_t;
+        -- o_ID_EX_o_OP0Src : out opSrc_t;
+        -- o_ID_EX_o_OP1Src : out opSrc_t;
+        -- o_ID_EX_o_imm : out word_t;
+        -- o_ID_EX_o_wbAddr : out reg_addr_t;
+        -- o_BreakController_o_EPC : out word_t;
         -- break
         o_keyNDataReceive : out std_logic;
         i_keyDataReady : in std_logic;
@@ -445,43 +445,43 @@ ARCHITECTURE behavior OF CpuCore IS
     signal BreakController_o_EPC : word_t;
     signal BreakController_o_IH : std_logic;
 begin
-    o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
-    o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
-    o_Control_o_DMRE <= Control_o_DMRE;
-    o_Control_o_DMWR <= Control_o_DMWR;
-    o_Decoder_o_OP0Addr <= Decoder_o_OP0Addr;
-    o_Decoder_o_OP0Data <= Decoder_o_OP0Data;
-    o_Decoder_o_OP1Addr <= Decoder_o_OP1Addr;
-    o_Decoder_o_OP1Data <= Decoder_o_OP1Data;
-    o_ImmExtend_o_immExtend <= ImmExtend_o_immExtend;
-    o_registers <= myRegister_o_registers;
-    o_PC_o_PC  <= PC_o_PC;
-    o_StallClearController_o_nextPC <= StallClearController_o_nextPC;
-    o_IM_o_inst <= IM_o_inst;
-    o_MEM_WB_o_wbData <= MEM_WB_o_wbData;
-    o_EX_MEM_o_ALURes <= EX_MEM_o_ALURes;
-    o_EX_MEM_o_DMRE <= EX_MEM_o_DMRE;
-    o_EX_MEM_o_DMWR <= EX_MEM_o_DMWR;
-    o_EX_MEM_o_addr <= EX_MEM_o_addr;
-    o_EX_MEM_o_data <= EX_MEM_o_data;
-    o_ID_EX_o_DMRE <= ID_EX_o_DMRE;
-    o_ID_EX_o_DMWR <= ID_EX_o_DMWR;
-    o_ID_EX_o_OP <= ID_EX_o_OP;
-    o_ID_EX_o_OP0 <= ID_EX_o_OP0;
-    o_ID_EX_o_OP1 <= ID_EX_o_OP1;
-    o_ID_EX_o_OP0Src <= ID_EX_o_OP0Src;
-    o_ID_EX_o_OP1Src <= ID_EX_o_OP1Src;
-    o_ID_EX_o_imm <= ID_EX_o_imm;
-    o_ID_EX_o_wbAddr <= ID_EX_o_wbAddr;
-    o_TEST_word <= StallClearController_o_stall -- 5
-        & StallClearController_o_clear -- 5
-        & BreakController_o_IH -- 1
-        & JumpAndBranch_o_jumpEN -- 1
-        & IM_o_inst(15 downto 12); -- 4
-    o_TEST_addr <= StallClearController_o_stall -- 5 useless
-        & StallClearController_o_clear -- 5
-        & StallClearController_o_nextPC(7 downto 0); -- 8
-    o_TEST_EN <= i_nReset; -- useless
+    -- o_ForwardUnit_o_OP0 <= ForwardUnit_o_OP0;
+    -- o_ForwardUnit_o_OP1 <= ForwardUnit_o_OP1;
+    -- o_Control_o_DMRE <= Control_o_DMRE;
+    -- o_Control_o_DMWR <= Control_o_DMWR;
+    -- o_Decoder_o_OP0Addr <= Decoder_o_OP0Addr;
+    -- o_Decoder_o_OP0Data <= Decoder_o_OP0Data;
+    -- o_Decoder_o_OP1Addr <= Decoder_o_OP1Addr;
+    -- o_Decoder_o_OP1Data <= Decoder_o_OP1Data;
+    -- o_ImmExtend_o_immExtend <= ImmExtend_o_immExtend;
+    -- o_registers <= myRegister_o_registers;
+    -- o_PC_o_PC  <= PC_o_PC;
+    -- o_StallClearController_o_nextPC <= StallClearController_o_nextPC;
+    -- o_IM_o_inst <= IM_o_inst;
+    -- o_MEM_WB_o_wbData <= MEM_WB_o_wbData;
+    -- o_EX_MEM_o_ALURes <= EX_MEM_o_ALURes;
+    -- o_EX_MEM_o_DMRE <= EX_MEM_o_DMRE;
+    -- o_EX_MEM_o_DMWR <= EX_MEM_o_DMWR;
+    -- o_EX_MEM_o_addr <= EX_MEM_o_addr;
+    -- o_EX_MEM_o_data <= EX_MEM_o_data;
+    -- o_ID_EX_o_DMRE <= ID_EX_o_DMRE;
+    -- o_ID_EX_o_DMWR <= ID_EX_o_DMWR;
+    -- o_ID_EX_o_OP <= ID_EX_o_OP;
+    -- o_ID_EX_o_OP0 <= ID_EX_o_OP0;
+    -- o_ID_EX_o_OP1 <= ID_EX_o_OP1;
+    -- o_ID_EX_o_OP0Src <= ID_EX_o_OP0Src;
+    -- o_ID_EX_o_OP1Src <= ID_EX_o_OP1Src;
+    -- o_ID_EX_o_imm <= ID_EX_o_imm;
+    -- o_ID_EX_o_wbAddr <= ID_EX_o_wbAddr;
+    -- o_TEST_word <= StallClearController_o_stall -- 5
+    --     & StallClearController_o_clear -- 5
+    --     & BreakController_o_IH -- 1
+    --     & JumpAndBranch_o_jumpEN -- 1
+    --     & IM_o_inst(15 downto 12); -- 4
+    -- o_TEST_addr <= StallClearController_o_stall -- 5 useless
+    --     & StallClearController_o_clear -- 5
+    --     & StallClearController_o_nextPC(7 downto 0); -- 8
+    -- o_TEST_EN <= i_nReset; -- useless
 
     PC_inst: PC port map (
         i_clock => i_clock,

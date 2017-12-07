@@ -117,43 +117,43 @@ architecture Behavioral of CPUOverall is
             i_keyDataReady : in std_logic;
             i_keyData : in std_logic_vector(7 downto 0);
             o_clockNDataReceive : out std_logic;
-            i_clockDataReady : in std_logic;
+            i_clockDataReady : in std_logic
 
-            o_TEST_word : out word_t;
-            o_TEST_addr : out bus_addr_t;
-            o_TEST_EN : out std_logic;
-            o_registers : out Reg;
-            o_PC_o_PC : out word_t;
-            o_StallClearController_o_nextPC : out word_t;
-            o_IM_o_inst : out inst_t;
-            o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
-            o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
-            o_Control_o_DMRE : out std_logic;
-            o_Control_o_DMWR : out std_logic;
-            o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
-            o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
-            o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
-            o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
-            o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
-            o_ALU_MUX_o_ALURes : out word_t;
-            o_DM_o_DMRes : out word_t;
-            o_MEM_WB_o_wbAddr : out reg_addr_t;
-            o_MEM_WB_o_wbData : out word_t;
-            o_EX_MEM_o_ALURes : out word_t;
-            o_EX_MEM_o_DMRE : out std_logic;
-            o_EX_MEM_o_DMWR : out std_logic;
-            o_EX_MEM_o_addr : out word_t;
-            o_EX_MEM_o_data : out word_t;
-            o_ID_EX_o_DMRE : out std_logic;
-            o_ID_EX_o_DMWR : out std_logic;
-            o_ID_EX_o_OP : out op_t;
-            o_ID_EX_o_OP0 : out word_t;
-            o_ID_EX_o_OP1 : out word_t;
-            o_ID_EX_o_OP0Src : out opSrc_t;
-            o_ID_EX_o_OP1Src : out opSrc_t;
-            o_ID_EX_o_imm : out word_t;
-            o_ID_EX_o_wbAddr : out reg_addr_t;
-            o_BreakController_o_EPC : out word_t
+            -- o_TEST_word : out word_t;
+            -- o_TEST_addr : out bus_addr_t;
+            -- o_TEST_EN : out std_logic;
+            -- o_registers : out Reg;
+            -- o_PC_o_PC : out word_t;
+            -- o_StallClearController_o_nextPC : out word_t;
+            -- o_IM_o_inst : out inst_t;
+            -- o_ForwardUnit_o_OP0 : out std_logic_vector(15 downto 0);
+            -- o_ForwardUnit_o_OP1 : out std_logic_vector(15 downto 0);
+            -- o_Control_o_DMRE : out std_logic;
+            -- o_Control_o_DMWR : out std_logic;
+            -- o_Decoder_o_OP0Addr : out std_logic_vector(3 downto 0);
+            -- o_Decoder_o_OP0Data : out std_logic_vector(15 downto 0);
+            -- o_Decoder_o_OP1Addr : out std_logic_vector(3 downto 0);
+            -- o_Decoder_o_OP1Data : out std_logic_vector(15 downto 0);
+            -- o_ImmExtend_o_immExtend : out std_logic_vector(15 downto 0);
+            -- o_ALU_MUX_o_ALURes : out word_t;
+            -- o_DM_o_DMRes : out word_t;
+            -- o_MEM_WB_o_wbAddr : out reg_addr_t;
+            -- o_MEM_WB_o_wbData : out word_t;
+            -- o_EX_MEM_o_ALURes : out word_t;
+            -- o_EX_MEM_o_DMRE : out std_logic;
+            -- o_EX_MEM_o_DMWR : out std_logic;
+            -- o_EX_MEM_o_addr : out word_t;
+            -- o_EX_MEM_o_data : out word_t;
+            -- o_ID_EX_o_DMRE : out std_logic;
+            -- o_ID_EX_o_DMWR : out std_logic;
+            -- o_ID_EX_o_OP : out op_t;
+            -- o_ID_EX_o_OP0 : out word_t;
+            -- o_ID_EX_o_OP1 : out word_t;
+            -- o_ID_EX_o_OP0Src : out opSrc_t;
+            -- o_ID_EX_o_OP1Src : out opSrc_t;
+            -- o_ID_EX_o_imm : out word_t;
+            -- o_ID_EX_o_wbAddr : out reg_addr_t;
+            -- o_BreakController_o_EPC : out word_t
         );
     end component;
     component SystemBusController 
@@ -295,43 +295,43 @@ architecture Behavioral of CPUOverall is
     signal CPUCore_sysBusRequest : bus_request_t;
     signal CPUCore_IM_extBusRequest : bus_request_t;
     signal CPUCore_DM_extBusRequest : bus_request_t;
-	signal CPUCore_o_TEST_word : word_t;
-    signal CPUCore_o_TEST_addr : bus_addr_t;
-    signal CPUCore_o_TEST_EN : std_logic;
-    signal CPUCore_o_registers : Reg;
-    signal CPUCore_o_PC_o_PC : word_t;
-    signal CPUCore_o_IM_o_inst : inst_t;
-    signal CPUCore_o_i_StallClearController_o_nextPC : word_t;
-    signal CPUCore_o_ForwardUnit_o_OP0 : std_logic_vector(15 downto 0);
-    signal CPUCore_o_ForwardUnit_o_OP1 : std_logic_vector(15 downto 0);
-    signal CPUCore_o_Control_o_DMRE : std_logic;
-    signal CPUCore_o_Control_o_DMWR : std_logic;
-    signal CPUCore_o_Decoder_o_OP0Addr : std_logic_vector(3 downto 0);
-    signal CPUCore_o_Decoder_o_OP0Data : std_logic_vector(15 downto 0);
-    signal CPUCore_o_Decoder_o_OP1Addr : std_logic_vector(3 downto 0);
-    signal CPUCore_o_Decoder_o_OP1Data : std_logic_vector(15 downto 0);
-    signal CPUCore_o_ImmExtend_o_immExtend : std_logic_vector(15 downto 0);
-    signal CPUCore_o_ALU_MUX_o_ALURes : word_t;
-    signal CPUCore_o_DM_o_DMRes : word_t;
-    signal CPUCore_o_MEM_WB_o_wbAddr : reg_addr_t;
-    signal CPUCore_o_MEM_WB_o_wbData : word_t;
-    signal CPUCore_o_EX_MEM_o_ALURes : word_t;
-    signal CPUCore_o_EX_MEM_o_DMRE : std_logic;
-    signal CPUCore_o_EX_MEM_o_DMWR : std_logic;
-    signal CPUCore_o_EX_MEM_o_addr : word_t;
-    signal CPUCore_o_EX_MEM_o_data : word_t;
-    signal CPUCore_o_ID_EX_o_DMRE : std_logic;
-    signal CPUCore_o_ID_EX_o_DMWR : std_logic;
-    signal CPUCore_o_ID_EX_o_OP : op_t;
-    signal CPUCore_o_ID_EX_o_OP0 : word_t;
-    signal CPUCore_o_ID_EX_o_OP1 : word_t;
-    signal CPUCore_o_ID_EX_o_OP0Src : opSrc_t;
-    signal CPUCore_o_ID_EX_o_OP1Src : opSrc_t;
-    signal CPUCore_o_ID_EX_o_imm : word_t;
-    signal CPUCore_o_ID_EX_o_wbAddr : reg_addr_t;
+	-- signal CPUCore_o_TEST_word : word_t;
+    -- signal CPUCore_o_TEST_addr : bus_addr_t;
+    -- signal CPUCore_o_TEST_EN : std_logic;
+    -- signal CPUCore_o_registers : Reg;
+    -- signal CPUCore_o_PC_o_PC : word_t;
+    -- signal CPUCore_o_IM_o_inst : inst_t;
+    -- signal CPUCore_o_i_StallClearController_o_nextPC : word_t;
+    -- signal CPUCore_o_ForwardUnit_o_OP0 : std_logic_vector(15 downto 0);
+    -- signal CPUCore_o_ForwardUnit_o_OP1 : std_logic_vector(15 downto 0);
+    -- signal CPUCore_o_Control_o_DMRE : std_logic;
+    -- signal CPUCore_o_Control_o_DMWR : std_logic;
+    -- signal CPUCore_o_Decoder_o_OP0Addr : std_logic_vector(3 downto 0);
+    -- signal CPUCore_o_Decoder_o_OP0Data : std_logic_vector(15 downto 0);
+    -- signal CPUCore_o_Decoder_o_OP1Addr : std_logic_vector(3 downto 0);
+    -- signal CPUCore_o_Decoder_o_OP1Data : std_logic_vector(15 downto 0);
+    -- signal CPUCore_o_ImmExtend_o_immExtend : std_logic_vector(15 downto 0);
+    -- signal CPUCore_o_ALU_MUX_o_ALURes : word_t;
+    -- signal CPUCore_o_DM_o_DMRes : word_t;
+    -- signal CPUCore_o_MEM_WB_o_wbAddr : reg_addr_t;
+    -- signal CPUCore_o_MEM_WB_o_wbData : word_t;
+    -- signal CPUCore_o_EX_MEM_o_ALURes : word_t;
+    -- signal CPUCore_o_EX_MEM_o_DMRE : std_logic;
+    -- signal CPUCore_o_EX_MEM_o_DMWR : std_logic;
+    -- signal CPUCore_o_EX_MEM_o_addr : word_t;
+    -- signal CPUCore_o_EX_MEM_o_data : word_t;
+    -- signal CPUCore_o_ID_EX_o_DMRE : std_logic;
+    -- signal CPUCore_o_ID_EX_o_DMWR : std_logic;
+    -- signal CPUCore_o_ID_EX_o_OP : op_t;
+    -- signal CPUCore_o_ID_EX_o_OP0 : word_t;
+    -- signal CPUCore_o_ID_EX_o_OP1 : word_t;
+    -- signal CPUCore_o_ID_EX_o_OP0Src : opSrc_t;
+    -- signal CPUCore_o_ID_EX_o_OP1Src : opSrc_t;
+    -- signal CPUCore_o_ID_EX_o_imm : word_t;
+    -- signal CPUCore_o_ID_EX_o_wbAddr : reg_addr_t;
     signal CPUCore_o_keyNDataReceive : std_logic;
     signal CPUCore_o_clockNDataReceive : std_logic;
-    signal CPUCore_o_BreakController_o_EPC : word_t;
+    -- signal CPUCore_o_BreakController_o_EPC : word_t;
 
     signal BusArbiter_busResponse_0 : bus_response_t;
     signal BusArbiter_busResponse_1 : bus_response_t;
@@ -440,60 +440,60 @@ begin
              clock_50m when i_sw(15 downto 14) = "10" else 
              not i_click;
 
-    process (i_sw)
-    begin
-        if i_sw(11 downto 4) = "10000000" then
-            led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
-        elsif i_sw(11 downto 4) = "110000000" then
-            case i_sw(3 downto 0) is
-                when "0000" => led <= CPUCore_o_PC_o_PC;
-                when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
-                when "0010" => led <= CPUCore_o_IM_o_inst;
-                when "0011" => led <= CPUCore_o_BreakController_o_EPC;
-                when others => led <= (others => '1');
-            end case;
-        elsif i_sw(11 downto 4) = "11100000" then
-            case i_sw(3 downto 0) is
-                when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
-                when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
-                when "0010" => led <= UART_read_state &
-                    i_UART_tbre & i_UART_tsre & i_UART_data_ready & 
-                    UART_readReady & UART_readDone & 
-                    UART_writeReady & UART_writeDone & 
-                    UART_wrn & UART_rdn & 
-                    UART_bus_EN & ExtBusController_bus_EN & 
-                    SystemBusController_bus_EN & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
-                when "0011" => led <= UART_data;
-                when "0100" => led <= UART_bus_data;
-                when "0101" => led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
-                when "0110" => led <= CPUCore_o_Decoder_o_OP0Data ;
-                when "0111" => led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
-                when "1000" => led <= CPUCore_o_Decoder_o_OP1Data ;
-                when "1001" => led <= CPUCore_o_ImmExtend_o_immExtend ;
-                when "1010" => led <= CPUCore_o_ALU_MUX_o_ALURes;
-                when "1011" => led <= CPUCore_o_DM_o_DMRes;
-                when "1100" => led <= "000000000000" & CPUCore_o_MEM_WB_o_wbAddr;
-                when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
-                when others => led <= (others => '1') ;
-            end case;
-        elsif i_sw(11 downto 4) = "11110000" then
-            case i_sw(3 downto 0) is
-                when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
-                when "0010" => led <= UART_write_state & "000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
-                when "0011" => led <= CPUCore_o_EX_MEM_o_addr;
-                when "0100" => led <= CPUCore_o_EX_MEM_o_data;
-                when "1000" => led <= CPUCore_o_ID_EX_o_OP0;
-                when "1001" => led <= CPUCore_o_ID_EX_o_OP1;
-                when "1100" => led <= CPUCore_o_ID_EX_o_imm;
-                when "1101" => led <= "000000000000" & CPUCore_o_ID_EX_o_wbAddr;
-                when others => led <= (others => '1');
-            end case;
-        elsif i_sw(11 downto 4) = "11111000" then
-            led <= "0000" & VGA_hs & VGA_vs & VGA_r & VGA_g & VGA_b & VGA_o_read_EN;
-        else
-            led <= CPUCore_o_TEST_word; 
-        end if;
-    end process;
+    -- process (i_sw)
+    -- begin
+    --     if i_sw(11 downto 4) = "10000000" then
+    --         led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
+    --     elsif i_sw(11 downto 4) = "110000000" then
+    --         case i_sw(3 downto 0) is
+    --             when "0000" => led <= CPUCore_o_PC_o_PC;
+    --             when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
+    --             when "0010" => led <= CPUCore_o_IM_o_inst;
+    --             when "0011" => led <= CPUCore_o_BreakController_o_EPC;
+    --             when others => led <= (others => '1');
+    --         end case;
+    --     elsif i_sw(11 downto 4) = "11100000" then
+    --         case i_sw(3 downto 0) is
+    --             when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
+    --             when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
+    --             when "0010" => led <= UART_read_state &
+    --                 i_UART_tbre & i_UART_tsre & i_UART_data_ready & 
+    --                 UART_readReady & UART_readDone & 
+    --                 UART_writeReady & UART_writeDone & 
+    --                 UART_wrn & UART_rdn & 
+    --                 UART_bus_EN & ExtBusController_bus_EN & 
+    --                 SystemBusController_bus_EN & CPUCore_o_Control_o_DMRE & CPUCore_o_Control_o_DMWR ;
+    --             when "0011" => led <= UART_data;
+    --             when "0100" => led <= UART_bus_data;
+    --             when "0101" => led <= "000000000000" & CPUCore_o_Decoder_o_OP0Addr ;
+    --             when "0110" => led <= CPUCore_o_Decoder_o_OP0Data ;
+    --             when "0111" => led <= "000000000000" & CPUCore_o_Decoder_o_OP1Addr ;
+    --             when "1000" => led <= CPUCore_o_Decoder_o_OP1Data ;
+    --             when "1001" => led <= CPUCore_o_ImmExtend_o_immExtend ;
+    --             when "1010" => led <= CPUCore_o_ALU_MUX_o_ALURes;
+    --             when "1011" => led <= CPUCore_o_DM_o_DMRes;
+    --             when "1100" => led <= "000000000000" & CPUCore_o_MEM_WB_o_wbAddr;
+    --             when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
+    --             when others => led <= (others => '1') ;
+    --         end case;
+    --     elsif i_sw(11 downto 4) = "11110000" then
+    --         case i_sw(3 downto 0) is
+    --             when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
+    --             when "0010" => led <= UART_write_state & "000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
+    --             when "0011" => led <= CPUCore_o_EX_MEM_o_addr;
+    --             when "0100" => led <= CPUCore_o_EX_MEM_o_data;
+    --             when "1000" => led <= CPUCore_o_ID_EX_o_OP0;
+    --             when "1001" => led <= CPUCore_o_ID_EX_o_OP1;
+    --             when "1100" => led <= CPUCore_o_ID_EX_o_imm;
+    --             when "1101" => led <= "000000000000" & CPUCore_o_ID_EX_o_wbAddr;
+    --             when others => led <= (others => '1');
+    --         end case;
+    --     elsif i_sw(11 downto 4) = "11111000" then
+    --         led <= "0000" & VGA_hs & VGA_vs & VGA_r & VGA_g & VGA_b & VGA_o_read_EN;
+    --     else
+    --         led <= CPUCore_o_TEST_word; 
+    --     end if;
+    -- end process;
     o_Led <= led;
 
     CPUCore_inst: CPUCore port map (
@@ -512,44 +512,44 @@ begin
         i_keyDataReady => Keyboard_DataReady,
         i_keyData => Keyboard_Output,
         o_clockNDataReceive => CPUCore_o_clockNDataReceive,
-        i_clockDataReady => ClockBreak_o_dataReady,
+        i_clockDataReady => ClockBreak_o_dataReady
         
 		
-        o_TEST_word => CPUCore_o_TEST_word,
-		o_TEST_addr => CPUCore_o_TEST_addr,
-        o_TEST_EN => CPUCore_o_TEST_EN,
-        o_registers => CPUCore_o_registers,
-        o_PC_o_PC => CPUCore_o_PC_o_PC,
-        o_StallClearController_o_nextPC => CPUCore_o_i_StallClearController_o_nextPC,
-        o_IM_o_inst => CPUCore_o_IM_o_inst,
-        o_ForwardUnit_o_OP0 => CPUCore_o_ForwardUnit_o_OP0,
-        o_ForwardUnit_o_OP1 => CPUCore_o_ForwardUnit_o_OP1,
-        o_Control_o_DMRE => CPUCore_o_Control_o_DMRE,
-        o_Control_o_DMWR => CPUCore_o_Control_o_DMWR,
-        o_Decoder_o_OP0Addr => CPUCore_o_Decoder_o_OP0Addr,
-        o_Decoder_o_OP0Data => CPUCore_o_Decoder_o_OP0Data,
-        o_Decoder_o_OP1Addr => CPUCore_o_Decoder_o_OP1Addr,
-        o_Decoder_o_OP1Data => CPUCore_o_Decoder_o_OP1Data,
-        o_ImmExtend_o_immExtend => CPUCore_o_ImmExtend_o_immExtend,
-        o_ALU_MUX_o_ALURes => CPUCore_o_ALU_MUX_o_ALURes,
-        o_DM_o_DMRes => CPUCore_o_DM_o_DMRes,
-        o_MEM_WB_o_wbAddr => CPUCore_o_MEM_WB_o_wbAddr,
-        o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData,
-        o_EX_MEM_o_ALURes => CPUCore_o_EX_MEM_o_ALURes,
-        o_EX_MEM_o_DMRE => CPUCore_o_EX_MEM_o_DMRE,
-        o_EX_MEM_o_DMWR => CPUCore_o_EX_MEM_o_DMWR,
-        o_EX_MEM_o_addr => CPUCore_o_EX_MEM_o_addr,
-        o_EX_MEM_o_data => CPUCore_o_EX_MEM_o_data,
-        o_ID_EX_o_DMRE => CPUCore_o_ID_EX_o_DMRE,
-        o_ID_EX_o_DMWR => CPUCore_o_ID_EX_o_DMWR,
-        o_ID_EX_o_OP => CPUCore_o_ID_EX_o_OP,
-        o_ID_EX_o_OP0 => CPUCore_o_ID_EX_o_OP0,
-        o_ID_EX_o_OP1 => CPUCore_o_ID_EX_o_OP1,
-        o_ID_EX_o_OP0Src => CPUCore_o_ID_EX_o_OP0Src,
-        o_ID_EX_o_OP1Src => CPUCore_o_ID_EX_o_OP1Src,
-        o_ID_EX_o_imm => CPUCore_o_ID_EX_o_imm,
-        o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr,
-        o_BreakController_o_EPC => CPUCore_o_BreakController_o_EPC
+        -- o_TEST_word => CPUCore_o_TEST_word,
+		-- o_TEST_addr => CPUCore_o_TEST_addr,
+        -- o_TEST_EN => CPUCore_o_TEST_EN,
+        -- o_registers => CPUCore_o_registers,
+        -- o_PC_o_PC => CPUCore_o_PC_o_PC,
+        -- o_StallClearController_o_nextPC => CPUCore_o_i_StallClearController_o_nextPC,
+        -- o_IM_o_inst => CPUCore_o_IM_o_inst,
+        -- o_ForwardUnit_o_OP0 => CPUCore_o_ForwardUnit_o_OP0,
+        -- o_ForwardUnit_o_OP1 => CPUCore_o_ForwardUnit_o_OP1,
+        -- o_Control_o_DMRE => CPUCore_o_Control_o_DMRE,
+        -- o_Control_o_DMWR => CPUCore_o_Control_o_DMWR,
+        -- o_Decoder_o_OP0Addr => CPUCore_o_Decoder_o_OP0Addr,
+        -- o_Decoder_o_OP0Data => CPUCore_o_Decoder_o_OP0Data,
+        -- o_Decoder_o_OP1Addr => CPUCore_o_Decoder_o_OP1Addr,
+        -- o_Decoder_o_OP1Data => CPUCore_o_Decoder_o_OP1Data,
+        -- o_ImmExtend_o_immExtend => CPUCore_o_ImmExtend_o_immExtend,
+        -- o_ALU_MUX_o_ALURes => CPUCore_o_ALU_MUX_o_ALURes,
+        -- o_DM_o_DMRes => CPUCore_o_DM_o_DMRes,
+        -- o_MEM_WB_o_wbAddr => CPUCore_o_MEM_WB_o_wbAddr,
+        -- o_MEM_WB_o_wbData => CPUCore_o_MEM_WB_o_wbData,
+        -- o_EX_MEM_o_ALURes => CPUCore_o_EX_MEM_o_ALURes,
+        -- o_EX_MEM_o_DMRE => CPUCore_o_EX_MEM_o_DMRE,
+        -- o_EX_MEM_o_DMWR => CPUCore_o_EX_MEM_o_DMWR,
+        -- o_EX_MEM_o_addr => CPUCore_o_EX_MEM_o_addr,
+        -- o_EX_MEM_o_data => CPUCore_o_EX_MEM_o_data,
+        -- o_ID_EX_o_DMRE => CPUCore_o_ID_EX_o_DMRE,
+        -- o_ID_EX_o_DMWR => CPUCore_o_ID_EX_o_DMWR,
+        -- o_ID_EX_o_OP => CPUCore_o_ID_EX_o_OP,
+        -- o_ID_EX_o_OP0 => CPUCore_o_ID_EX_o_OP0,
+        -- o_ID_EX_o_OP1 => CPUCore_o_ID_EX_o_OP1,
+        -- o_ID_EX_o_OP0Src => CPUCore_o_ID_EX_o_OP0Src,
+        -- o_ID_EX_o_OP1Src => CPUCore_o_ID_EX_o_OP1Src,
+        -- o_ID_EX_o_imm => CPUCore_o_ID_EX_o_imm,
+        -- o_ID_EX_o_wbAddr => CPUCore_o_ID_EX_o_wbAddr,
+        -- o_BreakController_o_EPC => CPUCore_o_BreakController_o_EPC
     );
 
     BusArbiter_inst: BusArbiter port map (
