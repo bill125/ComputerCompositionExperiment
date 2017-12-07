@@ -2,7 +2,7 @@ DELINT:   ;中断处理程序
 	NOP
 	NOP
 	NOP
-	ADDSP 0x0020
+	ADDSP 0x0001
 	;保存用户程序现场
 	SW_SP R0 0x00
 	SW_SP R1 0x01
@@ -96,7 +96,7 @@ DELINT:   ;中断处理程序
 	LW_SP R5 0x05
 	LW_SP R6 0x06
 	LW_SP R7 0x07
-	ADDSP 0xFFE0
+	ADDSP 0xFFFF
 	
 	NOP	
 	NOP
