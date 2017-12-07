@@ -19,6 +19,7 @@ use work.op_type_constants;
 
 entity ClockBreak is
     port (
+        i_nReset : in std_logic;
         i_clock : in std_logic;
 		i_nReceive : in std_logic;
 		o_dataReady : out std_logic := '0'
@@ -32,7 +33,10 @@ begin
     process (i_clock)
         variable wait_turns : integer range 0 to fps := 0;
     begin
-        if rising_edge(i_clock) then
+        if i_nReset = '0' then
+            r_RX_State <= t_RX_0;
+            o_dataReady <= '0';
+        elsif rising_edge(i_clock) then
             if wait_turns /= 0 then
                 wait_turns := wait_turns - 1;
             else
