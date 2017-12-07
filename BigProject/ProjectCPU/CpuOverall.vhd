@@ -248,6 +248,7 @@ architecture Behavioral of CPUOverall is
     end component;
     component ClockBreak is
     port (
+        i_nReset : in std_logic;
         i_clock : in std_logic;
 		i_nReceive : in std_logic;
 		o_dataReady : out std_logic := '0'
@@ -281,6 +282,15 @@ architecture Behavioral of CPUOverall is
             i_busResponse : in bus_response_t
         );
     end component;
+    component ClockMultiplier is
+    port ( CLKIN_IN        : in    std_logic; 
+          RST_IN          : in    std_logic; 
+          CLKFX_OUT       : out   std_logic; 
+          CLKIN_IBUFG_OUT : out   std_logic; 
+          CLK0_OUT        : out   std_logic; 
+          LOCKED_OUT      : out   std_logic);
+    end component;
+
 
     signal CPUCore_sysBusRequest : bus_request_t;
     signal CPUCore_IM_extBusRequest : bus_request_t;
@@ -367,9 +377,11 @@ architecture Behavioral of CPUOverall is
     signal VGA_g : std_logic_vector(2 downto 0);
     signal VGA_o_read_EN : std_logic;
     signal clock : std_logic;
-    signal clock_50m : std_logic;
+    signal clock_buf : std_logic;
+    signal clock_40m : std_logic;
     signal clock_25m : std_logic;
     signal clock_12m : std_logic;
+    signal clock_50m : std_logic;
     -- debug
     signal led : word_t;
 
@@ -387,7 +399,6 @@ begin
         code => led(3 downto 0),
         seg_out => o_Dig2
     );
-    clock_50m <= i_clock;
     FD_Inst : FreqDiv
     generic map
     (
@@ -396,7 +407,7 @@ begin
     )
     port map
     (
-        CLK => i_clock,
+        CLK => clock_buf,
         RST => '0', 
         O => clock_25m
     );
@@ -408,21 +419,32 @@ begin
     )
     port map
     (
-        CLK => i_clock,
+        CLK => clock_buf,
         RST => '0', 
         O => clock_12m
     );
 
-    clock <= clock_50m when i_sw(15 downto 14) = "00" else
+
+    ClockMultiplier_inst : ClockMultiplier port map
+        ( 
+            CLKIN_IN => i_clock,
+            RST_IN => not i_nReset, 
+            LOCKED_OUT => open,
+            CLK0_OUT => clock_buf,
+            CLKFX_OUT => clock_40m,
+            CLKIN_IBUFG_OUT => clock_50m
+        );
+    -- clock_50m <= i_clock;
+    clock <= clock_40m when i_sw(15 downto 14) = "00" else
              clock_25m when i_sw(15 downto 14) = "01" else
-             clock_12m when i_sw(15 downto 14) = "10" else 
+             clock_50m when i_sw(15 downto 14) = "10" else 
              not i_click;
 
     process (i_sw)
     begin
-        if i_sw(12 downto 4) = "100000000" then
+        if i_sw(11 downto 4) = "10000000" then
             led <= CPUCore_o_registers(to_integer(unsigned(i_sw(3 downto 0))));
-        elsif i_sw(12 downto 4) = "110000000" then
+        elsif i_sw(11 downto 4) = "110000000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_PC_o_PC;
                 when "0001" => led <= CPUCore_o_i_StallClearController_o_nextPC;
@@ -430,7 +452,7 @@ begin
                 when "0011" => led <= CPUCore_o_BreakController_o_EPC;
                 when others => led <= (others => '1');
             end case;
-        elsif i_sw(12 downto 4) = "111000000" then
+        elsif i_sw(11 downto 4) = "11100000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_ForwardUnit_o_OP0 ;
                 when "0001" => led <= CPUCore_o_ForwardUnit_o_OP1 ;
@@ -454,7 +476,7 @@ begin
                 when "1101" => led <= CPUCore_o_MEM_WB_o_wbData;
                 when others => led <= (others => '1') ;
             end case;
-        elsif i_sw(12 downto 4) = "111100000" then
+        elsif i_sw(11 downto 4) = "11110000" then
             case i_sw(3 downto 0) is
                 when "0000" => led <= CPUCore_o_EX_MEM_o_ALURes;
                 when "0010" => led <= UART_write_state & "000000000" & CPUCore_o_ID_EX_o_DMRE & CPUCore_o_ID_EX_o_DMWR & CPUCore_o_EX_MEM_o_DMRE & CPUCore_o_EX_MEM_o_DMWR;
@@ -466,7 +488,7 @@ begin
                 when "1101" => led <= "000000000000" & CPUCore_o_ID_EX_o_wbAddr;
                 when others => led <= (others => '1');
             end case;
-        elsif i_sw(12 downto 4) = "111110000" then
+        elsif i_sw(11 downto 4) = "11111000" then
             led <= "0000" & VGA_hs & VGA_vs & VGA_r & VGA_g & VGA_b & VGA_o_read_EN;
         else
             led <= CPUCore_o_TEST_word; 
@@ -542,7 +564,7 @@ begin
     VGA_inst: VGA port map (
         i_busResponse => BusArbiter_busResponse_1,
         o_busRequest => VGA_busRequest,
-        i_clock => clock,
+        i_clock => clock_25m,
         o_hs => VGA_hs,
         o_vs => VGA_vs,
         o_r => VGA_r,
@@ -643,6 +665,7 @@ begin
         Output => Keyboard_Output
     );
     ClockBreak_inst: ClockBreak port map (
+        i_nReset => i_sw(12),
         i_clock => clock,
         i_nReceive => CPUCore_o_clockNDataReceive,
         o_dataReady => ClockBreak_o_dataReady
