@@ -282,14 +282,7 @@ architecture Behavioral of CPUOverall is
             i_busResponse : in bus_response_t
         );
     end component;
-    component ClockMultiplier is
-    port ( CLKIN_IN        : in    std_logic; 
-          RST_IN          : in    std_logic; 
-          CLKFX_OUT       : out   std_logic; 
-          CLKIN_IBUFG_OUT : out   std_logic; 
-          CLK0_OUT        : out   std_logic; 
-          LOCKED_OUT      : out   std_logic);
-    end component;
+   
 
 
     signal CPUCore_sysBusRequest : bus_request_t;
@@ -407,7 +400,7 @@ begin
     )
     port map
     (
-        CLK => clock_buf,
+        CLK => i_clock,
         RST => '0', 
         O => clock_25m
     );
@@ -419,25 +412,15 @@ begin
     )
     port map
     (
-        CLK => clock_buf,
+        CLK => i_clock,
         RST => '0', 
         O => clock_12m
     );
 
-
-    ClockMultiplier_inst : ClockMultiplier port map
-        ( 
-            CLKIN_IN => i_clock,
-            RST_IN => not i_nReset, 
-            LOCKED_OUT => open,
-            CLK0_OUT => clock_buf,
-            CLKFX_OUT => clock_40m,
-            CLKIN_IBUFG_OUT => clock_50m
-        );
     -- clock_50m <= i_clock;
-    clock <= clock_40m when i_sw(15 downto 14) = "00" else
+    clock <= clock_12m when i_sw(15 downto 14) = "00" else
              clock_25m when i_sw(15 downto 14) = "01" else
-             clock_50m when i_sw(15 downto 14) = "10" else 
+             i_clock when i_sw(15 downto 14) = "10" else 
              not i_click;
 
     -- process (i_sw)
