@@ -1,4 +1,5 @@
-# Computer Composition Experiment
+# Experiments for the Course Principles of Computer Organization
 
-计算机组成原理课程。
+Mainly a toy CPU in VHDL and a flappy bird game in assembly.
 
+Demo: <https://pan.baidu.com/s/18qxkGE3qUdhRr7b2Mf33Rg>
